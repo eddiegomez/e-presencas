@@ -10,4 +10,5 @@ class Participant_Has_Event extends Model
   use HasFactory;
 
   protected $table = 'participant_event';
+
 }

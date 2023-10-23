@@ -8,7 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
     <meta content="Coderthemes" name="author" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+
     
     @if(isset($isDark) && $isDark)
         @include('layouts.shared.head', ['isDark' => true])
@@ -69,10 +70,13 @@
     @include('layouts.shared.footer-script')
 
     @if (getenv('APP_ENV') === 'local')
-    <script id="__bs_script__">//<![CDATA[
-        document.write("<script async src='http://HOST:3000/browser-sync/browser-sync-client.js?v=2.26.7'><\/script>".replace("HOST", location.hostname));
-    //]]></script>
+    
     @endif
 </body>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- Include jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+<!-- Include Bootstrap JS (if not already included) -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </html>

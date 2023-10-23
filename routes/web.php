@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\ParticipantController;
+use App\Models\Participant;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,6 +28,10 @@ Route::middleware(['auth'])->group(function () {
   Route::get('/event/{id}', [EventController::class, 'show'])->name('event');
   Route::post('/event/{id}', [EventController::class, 'update'])->name('event.update');
   Route::post('/event/delete/{id}', [EventController::class, 'destroy'])->name('event.destroy');
+
+
+  // Participants Controllers
+  Route::get('/participants', [ParticipantController::class, 'index'])->name('participant.index');
 });
 
 Auth::routes();

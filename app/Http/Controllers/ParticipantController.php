@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Participant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class ParticipantsController extends Controller
+class ParticipantController extends Controller
 {
   /**
    * Display a listing of the resource.
@@ -15,8 +16,8 @@ class ParticipantsController extends Controller
   public function index()
   {
     $user = Auth::user();
-
-    return view("participants");
+    $participants = Participant::all();
+    return view("participants", compact("user", "participants"));
   }
 
   /**

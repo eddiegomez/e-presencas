@@ -1,7 +1,8 @@
 @extends('layouts.vertical')
 
 @section('css')
-<link href="{{ URL::asset('assets/libs/flatpickr/flatpickr.min.css') }}" rel="stylesheet" type="text/css" @endsection
+  <link href="{{ URL::asset('assets/libs/flatpickr/flatpickr.min.css') }}" rel="stylesheet" type="text/css" 
+@endsection
     @section('breadcrumb') 
   <div class="row page-title align-items-center">
     <div class="col-sm-4 col-xl-6">
@@ -179,20 +180,21 @@
           </tr>
         </thead>
         <tbody>
+          @foreach($data['participantes'] as $participante)
           <tr>
-            <td>John Doe</td>
-            <td>Ministro da Educaocao</td>
-            <td>Doe@gov.mz</td>
-            <td>+258 84 000 0000</td>
+            <td>{{$participante->name}}</td>
+            <td>{{$participante->description}}</td>
+            <td>{{$participante->email}}</td>
+            <td>{{$participante->phone_number}}</td>
             <td>
-              <button type="button" class="btn btn-danger p-2 participant_modal"
-                data-toggle="modal" data-target="#deleteParticipant"
-                data-delete-link="{{}}"
-              >
-                <i class='uil uil-trash-alt'></i> Delete
+              <button id="openModalBtn">Open Modal</button>
+
+              <button type="button" class="btn btn-danger p-2 participant_modal" onclick="showRemoveModal('{{$participante->name}}')" >
+                <i class='uil uil-trash-alt'></i> Remover
               </button>
             </td>
           </tr>
+          @endforeach
         </tbody>
       </table>
       
@@ -200,7 +202,7 @@
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel text-capitalize">Retirar nome dos Participantes?</h5>
+                  <h5 class="modal-title" id="user"></h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
                 </div>
                 <div class="modal-body">
@@ -218,4 +220,17 @@
           </div>
     </div>
   </div>
+  <script>
+     $(document).ready(function(){
+        $('#deleteParticipant').click(function(){
+            $('#myModal').modal('show');
+        });
+    });
+      function showRemoveModal(name){
+        text = document.getElementById("user").innerHTML = name;
+        window.alert(text); 
+        $('#deleteParticipant').show();
+      }
+    </script>
+    
 @endsection

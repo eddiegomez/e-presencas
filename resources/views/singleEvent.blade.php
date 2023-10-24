@@ -149,10 +149,70 @@
       <h2>Participantes</h2>
     </div>
 
+    @if (session('success'))
+      <div class="alert alert-success">
+        {{ session('success') }}
+      </div>
+    @endif
+
+
     <div class="col-md-4">
       <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#addParticipant">
         Adicionar Participante
       </button>
+
+      <div id="addParticipant" class="modal fade"  role=dialog>
+      <div class="modal-dialog">
+        {{-- Modal content --}}
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-capitalize" id="exampleModalLabel">Criar Participante</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+          </div>
+
+          {{-- Modal Body --}}
+          <div class="modal-body">
+            <form action="{{route('inviteParticipant', $event->id)}}" method="POST" >
+              @csrf
+              <div class="form-group">
+                <label for="participant">Nome do Participante</label>
+                  <select class="form-control @error('participant') is-invalid @enderror custom-select"
+                    name="participant" id="participant"
+                  >
+                  @foreach ($participants as $participant)
+                    @if(!$participant->hasEvent($event->id))
+                      <option value="{{$participant->id}}">{{$participant->name}}</option>
+                    @endif
+                  @endforeach
+                  </select>
+
+                @error('participant')
+                  <span class="invalid-feedback" role="alert"> <strong> {{$message}}</strong></span>
+                @enderror
+              </div>
+
+              <div class="form-group">
+                <label for="participant">Tipo de Participante</label>
+                  <select class="form-control @error('participant') is-invalid @enderror custom-select"
+                    name="type" id="type"
+                  >
+                    @foreach ($participant_type as $type )
+                      <option value="{{$type->id}}">{{$type->name}}</option>
+                    @endforeach
+                  </select>
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Adicionar Participante</button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
     </div>
 
   </div>
@@ -162,6 +222,9 @@
       <table class="table table-bordered">
         <thead>
           <tr class="table-light">
+            <th scope="col">
+              QR
+            </th>
             <th scope="col">
               Nome
             </th>
@@ -180,8 +243,9 @@
           </tr>
         </thead>
         <tbody>
-          @foreach($data['participantes'] as $participante)
+          @foreach($event->participants as $participante)
           <tr>
+            <td> <img src="{{asset ('storage/qrcodes/'. $participante->pivot->qr_url . '.svg')}}" width="40" alt=""></td>
             <td>{{$participante->name}}</td>
             <td>{{$participante->description}}</td>
             <td>{{$participante->email}}</td>

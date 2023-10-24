@@ -30,8 +30,10 @@ Route::middleware(['auth'])->group(function () {
   Route::post('/event/delete/{id}', [EventController::class, 'destroy'])->name('event.destroy');
 
 
+  Route::post('/inviteParticipant/{id}', [EventController::class, 'inviteParticipant'])->name('inviteParticipant');
   // Participants Controllers
   Route::get('/participants', [ParticipantController::class, 'index'])->name('participant.index');
+  Route::post('/participant/create', [ParticipantController::class, 'store'])->name('participant.store');
 });
 
 Auth::routes();

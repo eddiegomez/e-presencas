@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Participant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class ParticipantController extends Controller
 {
@@ -17,7 +18,7 @@ class ParticipantController extends Controller
   {
     $user = Auth::user();
     $participants = Participant::all();
-    return view("participants", compact("user", "participants"));
+    return response(view("participants", compact("user", "participants")));
   }
 
   /**
@@ -38,7 +39,36 @@ class ParticipantController extends Controller
    */
   public function store(Request $request)
   {
-    //
+    try {
+      $validator = Validator::make($request->all(), [
+        'name' => ['required', 'string'],
+        'email' => ['required', 'email'],
+        'phone_number' => ['required', 'numeric'],
+        'description' => ['required', 'string']
+      ]);
+
+      // dd($validator);
+
+      if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+    } catch (\Throwable $th) {
+      // dd($th);
+      throw $th;
+    }
+
+    $data = $request->all();
+    // dd($data);
+
+    $participant = new Participant();
+
+    $participant->name = $data['name'];
+    $participant->email = $data['email'];
+    $participant->description = $data['description'];
+    $participant->phone_number = $data['phone_number'];
+    $participant->save();
+
+    return redirect()->back()->with('message', 'O ' . $participant->name . 'foi criado!');
   }
 
   /**

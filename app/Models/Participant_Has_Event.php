@@ -11,4 +11,10 @@ class Participant_Has_Event extends Model
 
   protected $table = 'participant_event';
 
+  protected $fillable = [
+    'participant_id',
+    'event_id',
+    'participant_type_id',
+    'qr_url',
+  ];
 }

@@ -2,10 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Notifications\sendInvite;
 use App\Models\Event;
 use App\Models\Participant;
+use App\Models\Participant_Has_Event;
+use App\Models\ParticipantType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Validator;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class EventController extends Controller
 {
@@ -74,8 +81,9 @@ class EventController extends Controller
   {
     $user = Auth::user();
     $event = Event::find($id);
-    $data['participantes'] = Participant::all();
-    return view('singleEvent', compact('user', 'event', 'data'));
+    $participants = Participant::all();
+    $participant_type = ParticipantType::all();
+    return response(view('singleEvent', compact('user', 'event', 'participants', 'participant_type')),);
   }
 
 
@@ -135,5 +143,51 @@ class EventController extends Controller
     }
 
     return redirect()->route('events');
+  }
+
+
+  public function inviteParticipant(Request $request, $id)
+  {
+    try {
+      $validator = Validator::make($request->all(), [
+        'participant' => ['required', 'numeric'],
+        'type' => ['required', 'numeric']
+      ]);
+      if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+    } catch (\Throwable $th) {
+      dd($th);
+      throw $th;
+    }
+
+
+    $data = $request->all();
+    $qrCodeName = base64_encode($id . $data['participant']);
+
+    $participant_event = new Participant_Has_Event();
+    $participant_event->participant_id = $data['participant'];
+    $participant_event->event_id = $id;
+    $participant_event->participant_type_id = $data['type'];
+    $participant_event->qr_url = $qrCodeName;
+    $rsp = $this->generateQrcode($participant_event->qr_url);
+
+    // dd($participant_event);
+
+
+    if ($rsp == 0) {
+      return redirect()->back()->with('error', 'Algo de errado nao esta certo!');
+    } else {
+      $participant_event->save();
+      return redirect()->back()->with('Success', 'O participante ' . $participant_event->name . ' Foi convidado');
+    }
+  }
+
+  private function generateQrcode($name)
+  {
+    $qrCode = QrCode::format('svg')->size(100)->generate('QR code Message');
+    $qrCodePath = storage_path('app/public/qrcodes/' . $name . '.svg');
+    $resp = file_put_contents($qrCodePath, $qrCode);
+    return $resp;
   }
 }

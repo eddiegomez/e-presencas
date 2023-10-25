@@ -3,7 +3,8 @@
 @section('css')
   <link href="{{ URL::asset('assets/libs/flatpickr/flatpickr.min.css') }}" rel="stylesheet" type="text/css" 
 @endsection
-    @section('breadcrumb') 
+
+@section('breadcrumb') 
   <div class="row page-title align-items-center">
     <div class="col-sm-4 col-xl-6">
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
@@ -13,98 +14,98 @@
             </ol>
         </nav>
     </div>
+
     <div class="col-sm-8 col-xl-6">
-        <div class="float-sm-right mt-3 mt-sm-0">
-          <button type="button" class="btn btn-primary"
-            data-toggle="modal" data-target="#editEvent"
-          >
-              <i class='uil uil-edit-alt mr-1'></i>Edit 
-          </button>
-          <button type="button" class="btn btn-danger"
-            data-toggle="modal" data-target="#deleteEvent"
-          >
-            <i class='uil uil-trash-alt mr-1'></i>Delete
-          </button>
-          
-          {{-- Modal --}}
-          
-
-          
-
-          {{-- Modal --}}
-        </div>
+      <div class="float-sm-right mt-3 mt-sm-0">
+        <button type="button" class="btn btn-primary"
+          data-toggle="modal" data-target="#editEvent"
+        >
+            <i class='uil uil-edit-alt mr-1'></i>Edit 
+        </button>
+        <button type="button" class="btn btn-danger"
+          data-toggle="modal" data-target="#deleteEvent"
+        >
+          <i class='uil uil-trash-alt mr-1'></i>Delete
+        </button>
+      </div>
     </div>
 
 
     <div id="editEvent" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title text-capitalize" id="exampleModalLabel">Editar {{ $event->name }}</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="{{ route('event.update', $event->id)}}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <div class="form-group">
-                                <label for="name">Nome do seu evento</label>
-                                <input type="text" class="form-control" id="name" name="name"
-                                  aria-describedby="emailHelp" placeholder="Exemplo: Conferencia de kekeke" value="{{ $event->name }}">
-                            </div>
-                            <div class="form-group mb-3">
-                                <label for="date">Data</label>
-                                <input type="date" id="date" name="date" class="form-control"
-                                  placeholder="Date and Time" value="{{ $event->date }}">
-                            </div>
-
-                            <div class="form-group mb-3">
-                                <label for="banner">Default file
-                                    input</label>
-                                <div class="col-lg-10">
-                                    <input type="file" accept="image/*" class="form-control" id="banner"
-                                        name="banner">
-                                </div>
-                            </div>
-
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary" type="submit">Editar Evento</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                </div>
-            </div>
-  
-          </div>
-
-          <div id="deleteEvent" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel text-capitalize">Eliminar {{ $event->name }}</h5>
+      <div class="modal-dialog">
+          <!-- Modal content-->
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title text-capitalize" id="exampleModalLabel">Editar {{ $event->name }}</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
-                </div>
-                <div class="modal-body">
-                  Tem certeza que quer eliminar este evento?
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                  <form action="{{route("event.destroy", $event->id)}}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-danger">Eliminar</button>
-
-                  </form>
-                </div>
               </div>
-            </div>
+
+              <div class="modal-body">
+                  <form action="{{ route('event.update', $event->id)}}" method="POST" enctype="multipart/form-data">
+                      @csrf
+                      <div class="form-group">
+                          <label for="name">Nome do seu evento</label>
+                          <input type="text" class="form-control" id="name" name="name"
+                            aria-describedby="emailHelp" placeholder="Exemplo: Conferencia de kekeke" value="{{ $event->name }}">
+                      </div>
+                      <div class="form-group mb-3">
+                          <label for="date">Data</label>
+                          <input type="date" id="date" name="date" class="form-control"
+                            placeholder="Date and Time" value="{{ $event->date }}">
+                      </div>
+
+                      <div class="form-group mb-3">
+                          <label for="banner">Default file
+                              input
+                          </label>
+                          <div class="col-lg-10">
+                              <input type="file" accept="image/*" class="form-control" id="banner"
+                                  name="banner">
+                          </div>
+                      </div>
+
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                          <button type="submit" class="btn btn-primary" type="submit">Editar Evento</button>
+                      </div>
+                  </form>
+              </div>
           </div>
 
-          <div style="height: 2px" class="bg-white rounded w-100 mb-4">
-
+      </div>
     </div>
+  
+    <div id="deleteEvent" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        
+        {{-- Modal Content --}}
+        <div class="modal-content">
+          {{-- Modal Header --}}
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel text-capitalize">Eliminar {{ $event->name }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+          </div>
+          {{-- Modal Body --}}
+          <div class="modal-body">
+            Tem certeza que quer eliminar este evento?
+          </div>
+
+          {{-- Modal Footer --}}
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <form action="{{route("event.destroy", $event->id)}}" method="POST">
+              @csrf
+              <button type="submit" class="btn btn-danger">Eliminar</button>
+
+            </form>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+
+    <div style="height: 2px" class="bg-white rounded w-100 mb-4"></div>
+  </div>
 @endsection
 
 

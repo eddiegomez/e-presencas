@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\ParticipantController;
+use App\Models\Participant;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,5 +18,24 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+  return view('welcome');
 });
+
+Route::middleware(['auth'])->group(function () {
+  Route::get('/events', [EventController::class, 'index'])->name('events');
+  // Route::resource('event', EventController::class);
+  Route::post('/event', [EventController::class, 'store'])->name('event.store');
+  Route::get('/event/{id}', [EventController::class, 'show'])->name('event');
+  Route::post('/event/{id}', [EventController::class, 'update'])->name('event.update');
+  Route::post('/event/delete/{id}', [EventController::class, 'destroy'])->name('event.destroy');
+
+
+  Route::post('/inviteParticipant/{id}', [EventController::class, 'inviteParticipant'])->name('inviteParticipant');
+  // Participants Controllers
+  Route::get('/participants', [ParticipantController::class, 'index'])->name('participant.index');
+  Route::post('/participant/create', [ParticipantController::class, 'store'])->name('participant.store');
+});
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

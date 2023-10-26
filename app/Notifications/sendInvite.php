@@ -17,9 +17,13 @@ class sendInvite extends Notification
    *
    * @return void
    */
-  public function __construct()
+  public $eventId;
+  public $participantId;
+
+  public function __construct($eventId, $participantId)
   {
-    //
+    $this->eventId = $eventId;
+    $this->participantId = $participantId;
   }
 
   /**
@@ -44,7 +48,7 @@ class sendInvite extends Notification
     return (new MailMessage)
       ->line('The introduction to the notification.')
       ->line(QrCode::generate('Make me into a QrCode!'))
-      ->action('Notification Action', url('/'))
+      ->action('Notification Action', route('confirmPresence', ["encryptedevent" => base64_encode($this->eventId), "encryptedparticipant" => base64_encode($this->participantId)]))
       ->line('Thank you for using our application!');
   }
 

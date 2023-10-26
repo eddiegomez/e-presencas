@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\InviteController;
 use App\Http\Controllers\ParticipantController;
 use App\Models\Participant;
 use Illuminate\Support\Facades\Route;
@@ -21,7 +22,7 @@ Route::get('/', function () {
   return view('welcome');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'web'])->group(function () {
   Route::get('/events', [EventController::class, 'index'])->name('events');
   // Route::resource('event', EventController::class);
   Route::post('/event', [EventController::class, 'store'])->name('event.store');
@@ -34,7 +35,12 @@ Route::middleware(['auth'])->group(function () {
   // Participants Controllers
   Route::get('/participants', [ParticipantController::class, 'index'])->name('participant.index');
   Route::post('/participant/create', [ParticipantController::class, 'store'])->name('participant.store');
+
+  // Confirm Presence Controller
+  // Route::post('/confirm/{encryptedevent}/{encryptedparticipant}', [InviteController::class, 'confirmPresence'])->name('confirmPresence');
 });
+
+Route::get('/confirm/presence/{encryptedevent}/{encryptedparticipant}', [InviteController::class, 'show'])->name('confirmPresenceShow');
 
 Auth::routes();
 

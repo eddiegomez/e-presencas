@@ -156,6 +156,12 @@
       </div>
     @endif
 
+    @if(session()->has('message'))
+      <div class="alert alert-success">
+          {{ session()->get('message') }}
+      </div>
+    @endif
+
 
     <div class="col-md-4">
       <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#addParticipant">
@@ -252,8 +258,7 @@
             <td>{{$participante->email}}</td>
             <td>{{$participante->phone_number}}</td>
             <td>
-              <button id="openModalBtn">Open Modal</button>
-
+              
               <button type="button" class="btn btn-danger p-2 participant_modal" onclick="showRemoveModal('{{$participante->name}}')" >
                 <i class='uil uil-trash-alt'></i> Remover
               </button>

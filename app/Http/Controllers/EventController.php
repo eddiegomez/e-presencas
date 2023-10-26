@@ -10,6 +10,7 @@ use App\Models\ParticipantType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -157,7 +158,6 @@ class EventController extends Controller
         return redirect()->back()->withErrors($validator)->withInput();
       }
     } catch (\Throwable $th) {
-      dd($th);
       throw $th;
     }
 
@@ -170,15 +170,20 @@ class EventController extends Controller
     $participant_event->event_id = $id;
     $participant_event->participant_type_id = $data['type'];
     $participant_event->qr_url = $qrCodeName;
+    $participant = Participant::find($participant_event->participant_id);
+    $participantEmail = $participant->email;
+    // Mail::to($participantEmail)->send(new sendInvite);
+    Notification::route('mail', $participantEmail)->notify(new sendInvite($participant_event->event_id, $participant_event->participant_id));
+    dd($participant);
     $rsp = $this->generateQrcode($participant_event->qr_url);
 
-    // dd($participant_event);
 
 
     if ($rsp == 0) {
       return redirect()->back()->with('error', 'Algo de errado nao esta certo!');
     } else {
       $participant_event->save();
+
       return redirect()->back()->with('Success', 'O participante ' . $participant_event->name . ' Foi convidado');
     }
   }

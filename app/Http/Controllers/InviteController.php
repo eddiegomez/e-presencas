@@ -6,6 +6,7 @@ use App\Models\Event;
 use App\Models\Participant;
 use App\Models\Participant_Has_Event;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class InviteController extends Controller
@@ -96,9 +97,37 @@ class InviteController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy(Request $request)
   {
-    //
+    dd($request->all());
+  }
+
+  public function confirmEntrance($encryptedevent, $encryptedparticipant)
+  {
+    $user = Auth::user();
+    $eventId = base64_decode($encryptedevent);
+    $participantId = base64_decode($encryptedparticipant);
+    $event = Event::find($eventId);
+    $participant = Participant::find($participantId);
+    $invite = Participant_Has_Event::where([['event_id', $eventId], ['participant_id', $participantId]])->first();
+
+
+    return response(view('confirmEntrance', compact('user', 'event', 'encryptedevent', 'encryptedparticipant', 'participant', 'invite')));
+  }
+
+  public function confirmEntrancePost($encryptedevent, $encryptedparticipant)
+  {
+    $eventId = base64_decode($encryptedevent);
+    $participantId = base64_decode($encryptedparticipant);
+
+    $event = Event::where("id", $eventId)->first();
+
+
+    $rs = Participant_Has_Event::where([['event_id', $eventId], ['participant_id', $participantId]])
+      ->update(['status' => 'Presente']);
+
+
+    return redirect()->back()->with('success', 'A presenca do participante foi actualizada com sucesso!');
   }
 
   // public function confirmPresence($encryptedevent, $encryptedparticipant)

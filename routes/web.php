@@ -30,11 +30,38 @@ Route::middleware(['auth', 'web'])->group(function () {
   Route::post('/event/{id}', [EventController::class, 'update'])->name('event.update');
   Route::post('/event/delete/{id}', [EventController::class, 'destroy'])->name('event.destroy');
 
+  Route::post('/schedule/store/{id}', [EventController::class, 'createSchedule'])->name('schedule.create');
 
-  Route::post('/inviteParticipant/{id}', [EventController::class, 'inviteParticipant'])->name('inviteParticipant');
   // Participants Controllers
-  Route::get('/participants', [ParticipantController::class, 'index'])->name('participant.index');
-  Route::post('/participant/create', [ParticipantController::class, 'store'])->name('participant.store');
+  Route::get(
+    '/participants',
+    [ParticipantController::class, 'index']
+  )->name('participant.index');
+
+  Route::post(
+    '/participant/create',
+    [ParticipantController::class, 'store']
+  )->name('participant.store');
+
+
+  // Invite Controllers
+  Route::get(
+    '/confirm/entrance/{encryptedevent}/{encryptedparticipant}',
+    [InviteController::class, 'confirmEntrance']
+  )->name('participant.entrance');
+
+  Route::post(
+    'confirm/entrance/{encryptedevent}/{encryptedparticipant}',
+    [InviteController::class, 'confirmEntrancePost']
+  )->name('confirmEntranceUpdate');
+
+  Route::post(
+    '/inviteParticipant/{id}',
+    [EventController::class, 'inviteParticipant']
+  )->name('inviteParticipant');
+
+  Route::post('/invite/delete', [InviteController::class, 'destroy'])->name('invite.delete');
+
 
   // Confirm Presence Controller
   // Route::post('/confirm/{encryptedevent}/{encryptedparticipant}', [InviteController::class, 'confirmPresence'])->name('confirmPresence');

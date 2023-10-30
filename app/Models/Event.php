@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Event extends Model
@@ -23,7 +24,12 @@ class Event extends Model
   // Get Participants Function
   public function participants(): BelongsToMany
   {
-    return $this->belongsToMany(Participant::class, 'participant_event')->withPivot('qr_url');
+    return $this->belongsToMany(Participant::class, 'participant_event')->withPivot('qr_url', 'status');
+  }
+
+  public function hasParticipant($participant): HasOneThrough
+  {
+    return $this->hasOneThrough(Participant::class, 'participant_event');
   }
 
   // Get Schedules Function

@@ -105,7 +105,7 @@
                         <div class="media p-3">
                             <div class="media-body">
                                 <span class="text-muted text-uppercase font-size-12 font-weight-bold">{{$event->name}}</span>
-                                <h2 class="mb-0">24</h2>
+                                <h2 class="mb-0">{{$event->participants->count()}}</h2>
                             </div>
                             <div class="align-self-center">
                                 <span class="icon-lg icon-dual-primary" data-feather="user"></span>

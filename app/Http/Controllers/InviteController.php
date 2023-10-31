@@ -163,6 +163,14 @@ class InviteController extends Controller
     return redirect()->back()->with('success', 'A presenca do participante foi actualizada com sucesso!');
   }
 
+  public function removerParticipante(Request $request){
+    try{
+      $participantEvent = Participant_Has_Event::where([['event_id', $request->eventId], ['participant_id', $request->participantId]])->delete();
+      return redirect()->back()->with('success', 'Participante removido com sucesso!');
+    } catch (Exception $e) {
+    }
+  }
+
   // public function confirmPresence($encryptedevent, $encryptedparticipant)
   // {
   //   // return redirect()->route('event', 1)->with('message', 'IT WORKS!');

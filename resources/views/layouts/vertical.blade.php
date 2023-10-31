@@ -9,7 +9,7 @@
   <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
   <meta content="Coderthemes" name="author" />
 
-
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   @if (isset($isDark) && $isDark)
     @include("layouts.shared.head", ["isDark" => true])

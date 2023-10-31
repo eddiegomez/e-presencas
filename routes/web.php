@@ -60,7 +60,11 @@ Route::middleware(['auth', 'web'])->group(function () {
     [EventController::class, 'inviteParticipant']
   )->name('inviteParticipant');
 
-  Route::post('/invite/delete', [InviteController::class, 'destroy'])->name('invite.delete');
+  Route::get(
+    '/invite/delete/{eventid}/{participantid}',
+    [InviteController::class, 'delete']
+  )->name('invite.delete');
+  Route::post('/invite/destroy', [InviteController::class, 'destroy'])->name('invite.destroy');
 
 
   // Confirm Presence Controller

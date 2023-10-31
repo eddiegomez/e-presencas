@@ -1,4 +1,3 @@
-@component("mail::messages")
-  {{-- {{ dd(asset($image_path)) }} --}}
-  <img src="{{ asset("storage/qrcodes/" . $image_path) }}">
-@endcomponent
+  <div>
+    <img src="{{ asset("storage/qrcodes/" . $image_path . ".svg") }}">
+  </div>{{-- {{ dd(asset($image_path)) }} --}}

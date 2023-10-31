@@ -29,4 +29,5 @@ class Participant_Has_Event extends Model
   {
     return $this->hasOne(Event::class, 'id', 'event_id');
   }
+
 }

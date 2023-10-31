@@ -133,7 +133,7 @@
               </div>
 
               <div class="form-group row">
-                <label for="schedule" class="col-lg-8 col-form-label">Escolha o seu programa</label>
+                <label for="schedule" class="col-lg-8 col-form-label">Submeta o programa em PDF</label>
                 <input type="file" name="schedule" id="schedule" class="form-control">
               </div>
 
@@ -157,7 +157,6 @@
 @endsection
   @section("content") 
 
-<script src="{{ asset("js/handleModals.js") }}"></script>
   <div class="row justify-content-between">
     <div class="col-md-4">
         <h1 class="text-capitalize">{{ $event->name }}</h1>
@@ -189,7 +188,7 @@
             @endif
 
             @foreach ($event->schedules as $schedule)
-              <a href="{{ asset("storage/schedules/" . $schedule->pdf_url) }}" class="btn btn-secondary">{{ $schedule->name }}</a>
+              <a href="{{ asset("storage/schedules/" . $schedule->pdf_url) }}" target="_blank"class="btn btn-secondary">{{ $schedule->name }}</a>
             @endforeach
           </div>
         </div>
@@ -320,17 +319,17 @@
             <td>{{ $participante->phone_number }}</td>
             <td>
 
-              <button type="button" class="btn btn-danger p-2 participant_modal" data-toggle="modal"
-                data-id="{{ $participante->id }}" data-target="#deleteParticipant">
+              <a class="btn btn-danger p-2 participant_modal"
+                href="{{ route("invite.delete", ["eventid" => $event->id, "participantid" => $participante->id]) }}">
                 <i class='uil uil-trash-alt'></i> Remover
-              </button>
+              </a>
             </td>
           </tr>
         @endforeach
       </tbody>
     </table>
 
-    <div id="deleteParticipant" class="modal fade" role="dialog">
+    {{-- <div id="deleteParticipant" class="modal fade" role="dialog">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -343,7 +342,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-            <form id="deleteForm" method="POST" action="{{ route("invite.delete") }}">
+            <form id="deleteForm" method="POST" action="{{ route("invite.destroy") }}">
               @csrf
               <input type="hidden" id="participant_id" name="participant_id" value="" />
               <button type="submit" class="btn btn-danger">Eliminar</button>
@@ -351,7 +350,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> --}}
   </div>
 </div>
 <script>

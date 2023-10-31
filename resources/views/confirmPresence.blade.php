@@ -38,7 +38,8 @@
           @foreach ($event->schedules as $schedule)
             <a href="{{ asset("storage/schedules/" . $schedule->pdf_url) }}" target="_blank"
               class="btn btn-secondary mt-2 w-100">Programa
-              do dia {{ $schedule->date }}</a>
+              do dia {{ $schedule->date }}
+            </a>
           @endforeach
 
           {{-- <a href="#" class="btn btn-primary mt-2 w-100">Verificar o Programa</a> --}}

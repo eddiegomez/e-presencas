@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Participant;
 use App\Models\Participant_Has_Event;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class InviteController extends Controller
 {
@@ -97,9 +99,40 @@ class InviteController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
+  public function delete(Request $request, $eventId, $participantId)
+  {
+    $user = Auth::user();
+    $event = Event::find($eventId);
+    $participant = Participant::find($participantId);
+    $invite = Participant_Has_Event::where([['event_id', $eventId], ['participant_id', $participantId]])->first();
+
+    return response(view("delete", compact('user', 'event', 'invite', 'participant')));
+  }
   public function destroy(Request $request)
   {
-    dd($request->all());
+    try {
+      $validator = Validator::make($request->all(), [
+        "event" => ['required', 'numeric'],
+        "participant" => ['required', 'numeric'],
+      ]);
+
+      if ($validator->fails()) {
+        return redirect()->back()->with('error', 'Something went wrong!');
+      }
+    } catch (Exception $e) {
+      throw $e;
+    }
+
+    $data = $request->all();
+    $invite = Participant_Has_Event::where([['event_id', $data['event']], ['participant_id', $data['participant']]])->first();
+
+
+    if (!$invite) {
+      return redirect()->back()->with('error', 'Esse participante naoa faz parte da lista do evento.');
+    }
+
+    Participant_Has_Event::where([['event_id', $data['event']], ['participant_id', $data['participant']]])->delete();
+    return redirect(route('event', $data['event']))->with('success', 'O participante foi removido com sucesso!');
   }
 
   public function confirmEntrance($encryptedevent, $encryptedparticipant)

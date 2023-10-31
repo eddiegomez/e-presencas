@@ -53,8 +53,8 @@ class sendInvite extends Notification
     // dd($this->qr_url);
     return (new MailMessage)
       ->line('The introduction to the notification.')
-      ->view('emails.qrcode', compact('image_path'))
       ->action('Notification Action', route('confirmPresenceShow', ["encryptedevent" => base64_encode($this->eventId), "encryptedparticipant" => base64_encode($this->participantId)]))
+      ->view('emails.qrcode', compact('image_path'))
       ->line('Thank you for using our application!');
   }
 

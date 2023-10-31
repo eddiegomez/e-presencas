@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Schedule;
 use App\Notifications\sendInvite;
 use App\Models\Event;
 use App\Models\Participant;
@@ -9,7 +10,6 @@ use App\Models\Participant_Has_Event;
 use App\Models\ParticipantType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -27,7 +27,7 @@ class EventController extends Controller
     $events = Event::all();
     // dd($events);
 
-    return view('event', compact('user', 'events'));
+    return response(view('event', compact('user', 'events')));
   }
 
   /**
@@ -45,7 +45,7 @@ class EventController extends Controller
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public function store(Request $request)
+  public function store(Request $request, Int $id)
   {
     try {
       $this->validate(request(), [
@@ -157,7 +157,6 @@ class EventController extends Controller
         return redirect()->back()->withErrors($validator)->withInput();
       }
     } catch (\Throwable $th) {
-      dd($th);
       throw $th;
     }
 
@@ -170,22 +169,77 @@ class EventController extends Controller
     $participant_event->event_id = $id;
     $participant_event->participant_type_id = $data['type'];
     $participant_event->qr_url = $qrCodeName;
-    $rsp = $this->generateQrcode($participant_event->qr_url);
+    $participant = Participant::find($participant_event->participant_id);
+    $participantEmail = $participant->email;
+    // Mail::to($participantEmail)->send(new sendInvite);
 
-    // dd($participant_event);
+    $rsp = $this->generateQrcode($participant_event->qr_url, $participant_event);
+
 
 
     if ($rsp == 0) {
       return redirect()->back()->with('error', 'Algo de errado nao esta certo!');
     } else {
+      Notification::route('mail', $participantEmail)->notify(new sendInvite(
+        $participant_event->event_id,
+        $participant_event->participant_id,
+        $participant_event->qr_url
+      ));
+
       $participant_event->save();
       return redirect()->back()->with('Success', 'O participante ' . $participant_event->name . ' Foi convidado');
     }
   }
 
-  private function generateQrcode($name)
+  public function createSchedule(Request $request, $id)
   {
-    $qrCode = QrCode::format('svg')->size(100)->generate('QR code Message');
+    try {
+
+      // dd($request);
+      $this->validate(request(), [
+        'name' => ['required', 'string'],
+        'date' => ['required', 'date'],
+        'schedule' => ['required', 'mimetypes:application/pdf'],
+      ]);
+
+      // if ($validator->fails()) {
+      //   return redirect()->back()->withErrors($validator)->withInput();
+      // }
+    } catch (\Throwable $th) {
+      throw $th;
+    }
+
+    $data = $request->all();
+    $encryptedEvent = base64_encode($id);
+    // $savePdf = file_put_contents(storage_path('app/public/schedules/schedule-' . $encryptedEvent . '-' . $data['date'] . '.pdf'), $data['schedule']);
+
+    if ($request->file('schedule')->isValid()) {
+      $file = $request->file('schedule');
+      $scheduleName = 'schedule-' . $encryptedEvent . '-' . $data['date'] . '.' . $file->getClientOriginalExtension();
+      $file->storeAs('schedules', $scheduleName, 'public');
+
+      $schedule = new Schedule();
+      $schedule->name = $data['name'];
+      $schedule->date = $data['date'];
+      $schedule->event_id = $id;
+      $schedule->pdf_url = $scheduleName;
+      $schedule->save();
+
+      return redirect()->back()->with('Success', 'Schedule created sucessfully');
+    }
+
+
+    return redirect()->back()->with('error', 'Something went wrong!');
+  }
+  private function generateQrcode($name, Participant_Has_Event $participant_event)
+  {
+    $encryptedEvent = base64_encode($participant_event->event_id);
+    $encryptedParticipant = base64_encode($participant_event->participant_id);
+
+    $qrCode = QrCode::format('svg')->size(100)->generate(route(
+      'confirmPresenceShow',
+      ['encryptedevent' => $encryptedEvent, 'encryptedparticipant' => $encryptedParticipant]
+    ));
     $qrCodePath = storage_path('app/public/qrcodes/' . $name . '.svg');
     $resp = file_put_contents($qrCodePath, $qrCode);
     return $resp;

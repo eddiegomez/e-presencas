@@ -1,32 +1,32 @@
 <ul class="metismenu" id="menu-bar">
-    <li class="menu-title">Navigation</li>
+  <li class="menu-title">Navigation</li>
 
-    <li>
-        <a href="/">
-            <i data-feather="home"></i>
-            <span class="badge badge-success float-right">1</span>
-            <span> Dashboard </span>
-        </a>
-    </li>
-    <li>
-        <a href="/events">
-            <i data-feather="calendar"></i>
-            <span> Events </span>
-        </a>
-    </li>
-    <li>
-        <a href="/participants">
-            <i data-feather="user"></i>
-            <span> Participants </span>
-        </a>
-    </li>
-    <li>
+  <li>
+    <a href="/home">
+      <i data-feather="home"></i>
+      <span class="badge badge-success float-right">1</span>
+      <span> Dashboard </span>
+    </a>
+  </li>
+  <li>
+    <a href="/events">
+      <i data-feather="calendar"></i>
+      <span> Events </span>
+    </a>
+  </li>
+  <li>
+    <a href="/participants">
+      <i data-feather="user"></i>
+      <span> Participants </span>
+    </a>
+  </li>
+  {{-- <li>
         <a href="/schedule">
             <i data-feather="layers"></i>
             <span> Programas </span>
         </a>
-    </li>
-    {{-- <li>
+    </li> --}}
+  {{-- <li>
         <a href="javascript: void(0);">
             <i data-feather="inbox"></i>
             <span> Email </span>

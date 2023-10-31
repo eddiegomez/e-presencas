@@ -1,10 +1,8 @@
-@extends('layouts.vertical')
+@extends("layouts.vertical")
 
-@section('css')
-  <link href="{{ URL::asset('assets/libs/flatpickr/flatpickr.min.css') }}" rel="stylesheet" type="text/css" 
-@endsection
-
-@section('breadcrumb') 
+@section("css")
+<link href="{{ URL::asset("assets/libs/flatpickr/flatpickr.min.css") }}" rel="stylesheet" type="text/css" @endsection
+  @section("breadcrumb") 
   <div class="row page-title align-items-center">
     <div class="col-sm-4 col-xl-6">
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
@@ -17,15 +15,22 @@
 
     <div class="col-sm-8 col-xl-6">
       <div class="float-sm-right mt-3 mt-sm-0">
+        <button type="button" class="btn btn-outline-secondary"
+          data-toggle="modal" data-target="#submitSchedule"
+        >
+          <i class='uil uil-upload-alt mr-1'></i>Submeter Programa
+        </button>
+
         <button type="button" class="btn btn-primary"
           data-toggle="modal" data-target="#editEvent"
         >
-            <i class='uil uil-edit-alt mr-1'></i>Edit 
+            <i class='uil uil-edit-alt mr-1'></i>Editar 
         </button>
+        
         <button type="button" class="btn btn-danger"
           data-toggle="modal" data-target="#deleteEvent"
         >
-          <i class='uil uil-trash-alt mr-1'></i>Delete
+          <i class='uil uil-trash-alt mr-1'></i>Apagar
         </button>
       </div>
     </div>
@@ -41,7 +46,7 @@
               </div>
 
               <div class="modal-body">
-                  <form action="{{ route('event.update', $event->id)}}" method="POST" enctype="multipart/form-data">
+                  <form action="{{ route("event.update", $event->id) }}" method="POST" enctype="multipart/form-data">
                       @csrf
                       <div class="form-group">
                           <label for="name">Nome do seu evento</label>
@@ -93,7 +98,7 @@
           {{-- Modal Footer --}}
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-            <form action="{{route("event.destroy", $event->id)}}" method="POST">
+            <form action="{{ route("event.destroy", $event->id) }}" method="POST">
               @csrf
               <button type="submit" class="btn btn-danger">Eliminar</button>
 
@@ -104,14 +109,54 @@
       </div>
     </div>
 
-    <div style="height: 2px" class="bg-white rounded w-100 mb-4"></div>
+    <div id="submitSchedule" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        {{-- Modal Content --}}
+        <div class="modal-content">
+          {{-- Modal Header --}}
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel text-capitalize">Submeter programa do evento {{ $event->name }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+          </div>
+          {{-- Modal Body --}}
+          <div class="modal-body">
+            <form action="{{ route("schedule.create", $event->id) }}" method="POST" enctype="multipart/form-data">
+              @csrf
+              <div class="form-group row">
+                <label for="name" class="col-lg-8 col-form-label">Nomeie o seu program</label>
+                <input type="text" name="name" id="name" class="form-control">
+              </div>
+
+              <div class="form-group row">
+                <label for="date" class="col-lg-8 col-form-label">Escolha a data do programa</label>
+                <input type="date" name="date" id="date" class="form-control">
+              </div>
+
+              <div class="form-group row">
+                <label for="schedule" class="col-lg-8 col-form-label">Submeta o programa em PDF</label>
+                <input type="file" name="schedule" id="schedule" class="form-control">
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-success">Eliminar</button>
+
+              </div>
+            </form>
+          </div>
+
+          {{-- Modal Footer --}}
+        </div>
+        
+      </div>
+    </div>
+
   </div>
+
+  <div style="height: 2px" class="bg-white rounded w-100 mb-4"></div>
 @endsection
+  @section("content") 
 
-
-@section('content') 
-
-<script src="{{asset ('js/handleModals.js')}}"></script>
   <div class="row justify-content-between">
     <div class="col-md-4">
         <h1 class="text-capitalize">{{ $event->name }}</h1>
@@ -126,7 +171,7 @@
 
         <h5 class="d-flex align-items-strecth">
             Localizacao:
-            <span class="ml-1">{{ 'UJC' }}</span>
+            <span class="ml-1">{{ "UJC" }}</span>
         </h5>
 
         <h5 class="d-flex align-items-strecth">
@@ -134,11 +179,24 @@
             <span class="ml-1">08:00 - 12:00</span>
         </h5>
 
+        <div class="d-flex align-items-center">
+          <h5 class="mr-2">Programas:</h5>
+          <div>
+
+            @if ($event->schedules->count() == 0)
+              <span class="text-danger font-size-14">Ainda nao temos o programa deste evento!</span>
+            @endif
+
+            @foreach ($event->schedules as $schedule)
+              <a href="{{ asset("storage/schedules/" . $schedule->pdf_url) }}" target="_blank"class="btn btn-secondary">{{ $schedule->name }}</a>
+            @endforeach
+          </div>
+        </div>
     </div>
 
     <div class="col-md-6">
         <div class="w-100 mx-auto border border-dark rounded"
-            style="height: 180px; background-image: url('{{ asset('storage/' . $event->banner_url) }}'); background-size: cover">
+            style="height: 180px; background-image: url('{{ asset("storage/" . $event->banner_url) }}'); background-size: cover">
         </div>
     </div>
   </div>
@@ -150,152 +208,165 @@
       <h2>Participantes</h2>
     </div>
 
-    @if (session('success'))
+    @if (session("success"))
       <div class="alert alert-success">
-        {{ session('success') }}
+        {{ session("success") }}
+      </div>
+    @endif
+
+    @if (session()->has("message"))
+      <div class="alert alert-success">
+          {{ session()->get("message") }}
       </div>
     @endif
 
 
-    <div class="col-md-4">
+    <div class="col-12 col-md-2">
       <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#addParticipant">
         Adicionar Participante
       </button>
 
       <div id="addParticipant" class="modal fade"  role=dialog>
-      <div class="modal-dialog">
-        {{-- Modal content --}}
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title text-capitalize" id="exampleModalLabel">Criar Participante</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
-          </div>
+        <div class="modal-dialog">
+          {{-- Modal content --}}
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title text-capitalize" id="exampleModalLabel">Criar Participante</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+            </div>
 
-          {{-- Modal Body --}}
-          <div class="modal-body">
-            <form action="{{route('inviteParticipant', $event->id)}}" method="POST" >
-              @csrf
-              <div class="form-group">
-                <label for="participant">Nome do Participante</label>
-                  <select class="form-control @error('participant') is-invalid @enderror custom-select"
+            {{-- Modal Body --}}
+            <div class="modal-body">
+              <form action="{{ route("inviteParticipant", $event->id) }}" method="POST" >
+                @csrf
+                <div class="form-group">
+                  <label for="participant">Nome do Participante</label>
+                  <select class="form-control inline_directive custom-select"
                     name="participant" id="participant"
                   >
-                  @foreach ($participants as $participant)
-                    @if(!$participant->hasEvent($event->id))
-                      <option value="{{$participant->id}}">{{$participant->name}}</option>
-                    @endif
-                  @endforeach
-                  </select>
+                    @foreach ($participants as $participant)
+                      @if (!$participant->hasEvent($event->id))
+                        <option value="{{ $participant->id }}">{{ $participant->name }}</option>
+                      @endif
+  @endforeach
+</select>
+@error("participant")
+  <span class="invalid-feedback" role="alert"> <strong> {{ $message }}</strong></span>
+@enderror
+</div>
+<div class="form-group">
+  <label for="participant">Tipo de Participante</label>
+  <select class="form-control @error("participant") is-invalid @enderror custom-select" name="type" id="type">
+    @foreach ($participant_type as $type)
+      <option value="{{ $type->id }}">{{ $type->name }}</option>
+    @endforeach
+  </select>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+  <button type="submit" class="btn btn-primary">Adicionar Participante</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
 
-                @error('participant')
-                  <span class="invalid-feedback" role="alert"> <strong> {{$message}}</strong></span>
-                @enderror
-              </div>
+</div>
+<div class="row mt-4">
 
-              <div class="form-group">
-                <label for="participant">Tipo de Participante</label>
-                  <select class="form-control @error('participant') is-invalid @enderror custom-select"
-                    name="type" id="type"
-                  >
-                    @foreach ($participant_type as $type )
-                      <option value="{{$type->id}}">{{$type->name}}</option>
-                    @endforeach
-                  </select>
-              </div>
+  <div class="col-md-12">
+    <table class="table table-bordered">
+      <thead>
+        <tr class="table-light">
+          <th scope="col">
+            QR
+          </th>
+          <th scope="col">
+            Nome
+          </th>
+          <th scope="col">
+            Descricao
+          </th>
+          <th scope="col">
+            Email
+          </th>
+          <th scope="col">
+            Celular
+          </th>
+          <th scope="col">
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach ($event->participants as $participante)
+          <tr
+            class="
+          @if ($participante->pivot->status == "Presente") table-success 
+          @elseif ($participante->pivot->status == "Em espera")table-primary 
+          @elseif ($participante->pivot->status == "Confirmada")table-info
+          @elseif ($participante->pivot->status == "Participou")table-success
+          @elseif ($participante->pivot->status == "Rejeitada")table-warning
+          @elseif ($participante->pivot->status == "Ausente")table-danger @endif
+          ">
+            <td> <img src="{{ asset("storage/qrcodes/" . $participante->pivot->qr_url . ".svg") }}" width="40"
+                alt=""></td>
+            <td>{{ $participante->name }}</td>
+            <td>{{ $participante->description }}</td>
+            <td>{{ $participante->email }}</td>
+            <td>{{ $participante->phone_number }}</td>
+            <td>
 
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary">Adicionar Participante</button>
-              </div>
+              <a class="btn btn-danger p-2 participant_modal"
+                href="{{ route("invite.delete", ["eventid" => $event->id, "participantid" => $participante->id]) }}">
+                <i class='uil uil-trash-alt'></i> Remover
+              </a>
+            </td>
+          </tr>
+        @endforeach
+      </tbody>
+    </table>
 
+    {{-- <div id="deleteParticipant" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="user"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+          </div>
+          <div class="modal-body">
+
+            Tem certeza que quer eliminar este Convidado?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <form id="deleteForm" method="POST" action="{{ route("invite.destroy") }}">
+              @csrf
+              <input type="hidden" id="participant_id" name="participant_id" value="" />
+              <button type="submit" class="btn btn-danger">Eliminar</button>
             </form>
           </div>
         </div>
       </div>
-    </div>
-
-    </div>
-
+    </div> --}}
   </div>
-  <div class="row mt-4">
+</div>
+<script>
+  var removeModal = document.getElementById('deleteParticipant');
+  removeModal.addEventListener('show.bs.modal', function(e) {
+    // Button that trigerred the modal
+    var Button = e.relatedTarget;
 
-    <div class="col-md-12">
-      <table class="table table-bordered">
-        <thead>
-          <tr class="table-light">
-            <th scope="col">
-              QR
-            </th>
-            <th scope="col">
-              Nome
-            </th>
-            <th scope="col">
-              Descricao
-            </th>
-            <th scope="col">
-              Email
-            </th>
-            <th scope="col">
-              Celular
-            </th>
-            <th scope="col">
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          @foreach($event->participants as $participante)
-          <tr>
-            <td> <img src="{{asset ('storage/qrcodes/'. $participante->pivot->qr_url . '.svg')}}" width="40" alt=""></td>
-            <td>{{$participante->name}}</td>
-            <td>{{$participante->description}}</td>
-            <td>{{$participante->email}}</td>
-            <td>{{$participante->phone_number}}</td>
-            <td>
-              <button id="openModalBtn">Open Modal</button>
+    //Extract info from data attributes
+    var id = button.getAttribute('id');
 
-              <button type="button" class="btn btn-danger p-2 participant_modal" onclick="showRemoveModal('{{$participante->name}}')" >
-                <i class='uil uil-trash-alt'></i> Remover
-              </button>
-            </td>
-          </tr>
-          @endforeach
-        </tbody>
-      </table>
-      
-      <div id="deleteParticipant" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="user"></h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
-                </div>
-                <div class="modal-body">
-                <input type="hidden" id="participant_id" name="participant_id" value=""/>
-                  Tem certeza que quer eliminar este Convidado?
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                  <form id="deleteForm" method="POST" action="">
-                    <button type="button" class="btn btn-danger">Eliminar</button>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-    </div>
-  </div>
-  <script>
-     $(document).ready(function(){
-        $('#deleteParticipant').click(function(){
-            $('#myModal').modal('show');
-        });
-    });
-      function showRemoveModal(name){
-        text = document.getElementById("user").innerHTML = name;
-        window.alert(text); 
-        $('#deleteParticipant').show();
-      }
-    </script>
-    
+    var idInput = removeModal.querySelector('.modal #participant_id');
+
+    idInput.value = id;
+
+  })
+</script>
+
 @endsection

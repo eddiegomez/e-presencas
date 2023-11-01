@@ -45,7 +45,7 @@ class EventController extends Controller
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public function store(Request $request, Int $id)
+  public function store(Request $request)
   {
     try {
       $this->validate(request(), [
@@ -148,6 +148,7 @@ class EventController extends Controller
 
   public function inviteParticipant(Request $request, $id)
   {
+   
     try {
       $validator = Validator::make($request->all(), [
         'participant' => ['required', 'numeric'],
@@ -174,8 +175,6 @@ class EventController extends Controller
     // Mail::to($participantEmail)->send(new sendInvite);
 
     $rsp = $this->generateQrcode($participant_event->qr_url, $participant_event);
-
-
 
     if ($rsp == 0) {
       return redirect()->back()->with('error', 'Algo de errado nao esta certo!');

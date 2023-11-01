@@ -63,8 +63,6 @@
             "time": "2022-01-18T09:12:03+00:00"
         },
         {
-<<<<<<< HEAD
-=======
             "name": "bacon/bacon-qr-code",
             "version": "2.0.8",
             "source": {
@@ -119,7 +117,6 @@
             "time": "2022-12-07T17:46:57+00:00"
         },
         {
->>>>>>> secondary
             "name": "brick/math",
             "version": "0.9.3",
             "source": {
@@ -180,8 +177,6 @@
             "time": "2021-08-15T20:50:18+00:00"
         },
         {
-<<<<<<< HEAD
-=======
             "name": "dasprid/enum",
             "version": "1.0.5",
             "source": {
@@ -232,7 +227,6 @@
             "time": "2023-08-25T16:18:39+00:00"
         },
         {
->>>>>>> secondary
             "name": "dflydev/dot-access-data",
             "version": "v3.0.2",
             "source": {
@@ -1438,8 +1432,6 @@
             "time": "2023-08-15T14:27:00+00:00"
         },
         {
-<<<<<<< HEAD
-=======
             "name": "laravel/ui",
             "version": "v3.4.6",
             "source": {
@@ -1501,7 +1493,6 @@
             "time": "2022-05-20T13:38:08+00:00"
         },
         {
->>>>>>> secondary
             "name": "league/commonmark",
             "version": "2.4.1",
             "source": {
@@ -3111,8 +3102,6 @@
             "time": "2021-09-25T23:10:38+00:00"
         },
         {
-<<<<<<< HEAD
-=======
             "name": "simplesoftwareio/simple-qrcode",
             "version": "4.2.0",
             "source": {
@@ -3181,7 +3170,6 @@
             "time": "2021-02-08T20:43:55+00:00"
         },
         {
->>>>>>> secondary
             "name": "swiftmailer/swiftmailer",
             "version": "v6.3.0",
             "source": {
@@ -8036,9 +8024,5 @@
         "php": "^7.3|^8.0"
     },
     "platform-dev": [],
-<<<<<<< HEAD
-    "plugin-api-version": "2.3.0"
-=======
     "plugin-api-version": "2.6.0"
->>>>>>> secondary
 }

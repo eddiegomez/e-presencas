@@ -34,6 +34,25 @@
         </button>
       </div>
     </div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalLabel">Modal Title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Modal content goes here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
     <div id="editEvent" class="modal fade" role="dialog">
@@ -231,13 +250,13 @@
           {{-- Modal content --}}
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title text-capitalize" id="exampleModalLabel">Criar Participante</h5>
+              <h5 class="modal-title text-capitalize" id="exampleModalLabel">Adicionar Participante</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
             </div>
 
             {{-- Modal Body --}}
             <div class="modal-body">
-              <form action="{{ route("inviteParticipant", $event->id) }}" method="POST" >
+              <form action="{{ route('inviteParticipant', $event->id) }}" method="POST" >
                 @csrf
                 <div class="form-group">
                   <label for="participant">Nome do Participante</label>
@@ -318,9 +337,7 @@
             <td>{{ $participante->email }}</td>
             <td>{{ $participante->phone_number }}</td>
             <td>
-
-              <a class="btn btn-danger p-2 participant_modal"
-                href="{{ route("invite.delete", ["eventid" => $event->id, "participantid" => $participante->id]) }}">
+              <a class="btn btn-danger p-2 participant_modal" onclick='showDeleteModal({{$participante->id}},@json($participante->name), {{$event->id}})' >
                 <i class='uil uil-trash-alt'></i> Remover
               </a>
             </td>
@@ -329,7 +346,7 @@
       </tbody>
     </table>
 
-    {{-- <div id="deleteParticipant" class="modal fade" role="dialog">
+    <div id="deleteParticipant" class="modal fade" role="dialog">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -338,35 +355,38 @@
           </div>
           <div class="modal-body">
 
-            Tem certeza que quer eliminar este Convidado?
+            <p>Tem certeza que pretende remover o participante <strong id="rmNome"></strong> do(a) <strong id="">{{ $event->name }}</strong>?</p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-            <form id="deleteForm" method="POST" action="{{ route("invite.destroy") }}">
-              @csrf
-              <input type="hidden" id="participant_id" name="participant_id" value="" />
-              <button type="submit" class="btn btn-danger">Eliminar</button>
+            <form id="removeParticipant" method="POST">
+              <input type="hidden" name="_method" value="DELETE">
+              <input type="hidden" name="_token" value="{{ csrf_token() }}">
+              <input type="hidden" id="participantId" name="participantId" value="" />
+              <input type="hidden" id="eventId" name="eventId" value="" />
+              <button type="submit" class="btn btn-danger">Confirmar remoção</button>
             </form>
           </div>
         </div>
       </div>
-    </div> --}}
+    </div>
   </div>
 </div>
+
 <script>
-  var removeModal = document.getElementById('deleteParticipant');
-  removeModal.addEventListener('show.bs.modal', function(e) {
-    // Button that trigerred the modal
-    var Button = e.relatedTarget;
+function showDeleteModal(participantId, name, eventId){
+  // Get a reference to the form element
+  var form = document.getElementById('removeParticipant');
 
-    //Extract info from data attributes
-    var id = button.getAttribute('id');
+  // Set the action attribute to the desired URL
+  form.action = "{{ route('removerParticipante') }}"; // Replace with your desired URL
 
-    var idInput = removeModal.querySelector('.modal #participant_id');
-
-    idInput.value = id;
-
-  })
+  document.getElementById('participantId').value=participantId;
+  document.getElementById('eventId').value=eventId;
+  document.getElementById('rmNome').innerHTML = name;
+  $("#deleteParticipant").modal('show');
+}
 </script>
+
 
 @endsection

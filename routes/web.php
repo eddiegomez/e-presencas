@@ -43,6 +43,16 @@ Route::middleware(['auth', 'web'])->group(function () {
     [ParticipantController::class, 'store']
   )->name('participant.store');
 
+  Route::get('/participant/{id}', [ParticipantController::class, 'show'])->name('participant.show');
+  Route::post(
+    '/participant/{id}/edit',
+    [ParticipantController::class, 'update']
+  )->name('participant.update');
+  Route::post(
+    '/participant/{id}/delete',
+    [ParticipantController::class, 'destroy']
+  )->name('participant.destroy');
+
 
   // Invite Controllers
   Route::get(
@@ -65,6 +75,7 @@ Route::middleware(['auth', 'web'])->group(function () {
     [InviteController::class, 'delete']
   )->name('invite.delete');
   Route::post('/invite/destroy', [InviteController::class, 'destroy'])->name('invite.destroy');
+
 
 
   // Confirm Presence Controller

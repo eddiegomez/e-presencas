@@ -8,11 +8,7 @@
 @section("breadcrumb")
   <div class= "row page-title align-items-center">
     <div class = "col-sm-4 col-xl-6">
-      <nav style= "--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-        <ol>
-          <h4 class="breadcrumb-item text-muted fs-4"><a href="/events" class="text-muted">Participantes</a></h4>
-        </ol>
-      </nav>
+      <h4 class="breadcrumb-item text-muted fs-4"><a href="#" class="text-muted">Participantes</a></h4>
     </div>
 
     <div class = "col-sm-4 col-xl-6">
@@ -83,6 +79,7 @@
   </div>
 
   <div style="height: 2px" class="bg-white rounded w-100 mb-4"></div>
+
 @endsection
 
 @section("content")
@@ -90,7 +87,7 @@
 
     @foreach ($participants as $participant)
       <div class="col-md-6 col-xl-4">
-        <div class="card">
+        <a href="{{ route("participant.show", $participant->id) }}" class="card">
           <div class="card-body p-0">
             <div class="media p-3">
               <div class="media-body">
@@ -107,7 +104,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </a>
       </div>
     @endforeach
 

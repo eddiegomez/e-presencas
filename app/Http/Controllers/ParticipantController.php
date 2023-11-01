@@ -79,7 +79,10 @@ class ParticipantController extends Controller
    */
   public function show($id)
   {
-    //
+    $user = Auth::user();
+    $participant = Participant::find($id);
+
+    return response(view('singleParticipant', compact('user', 'participant')));
   }
 
   /**
@@ -88,9 +91,8 @@ class ParticipantController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function edit($id)
+  public function edit(Request $request, $id)
   {
-    //
   }
 
   /**
@@ -102,7 +104,30 @@ class ParticipantController extends Controller
    */
   public function update(Request $request, $id)
   {
-    //
+    try {
+      $validator = Validator::make($request->all(), [
+        "name" => ["required", "string"],
+        "description" => ["required", "string"],
+        "phone_number" => ["required", "numeric"],
+        "email" => ["required", "email"],
+      ]);
+
+      if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+    } catch (\Throwable $e) {
+      throw $e;
+    }
+
+    $participant = Participant::find($id);
+    $participant->name = $request->name;
+    $participant->description = $request->description;
+    $participant->phone_number = $request->phone_number;
+    $participant->email = $request->email;
+
+    $participant->update();
+
+    return redirect()->back()->with('success', 'Participante foi editado com sucesso!');
   }
 
   /**
@@ -113,6 +138,12 @@ class ParticipantController extends Controller
    */
   public function destroy($id)
   {
-    //
+    $participant = Participant::find($id);
+
+    if ($participant) {
+      $participant->delete();
+      return redirect()->route('participant.index')->with('success', 'Participante de nome ' . $participant->name . 'foi apagado!');
+    }
+    return redirect()->back()->with('error', 'Esse participante nao existe!');
   }
 }

@@ -30,4 +30,8 @@ class Participant_Has_Event extends Model
     return $this->hasOne(Event::class, 'id', 'event_id');
   }
 
+  public function participantType($participantType): HasOne
+  {
+    return $this->hasOne(ParticipantType::class, 'id', 'participant_type_id');
+  }
 }

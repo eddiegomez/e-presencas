@@ -17,8 +17,11 @@ class Event extends Model
 
   protected $fillable = [
     'name',
-    'date',
-    'banner_url'
+    'banner_url',
+    'start_date',
+    'end_date',
+    'start_time',
+    'end_time'
   ];
 
   // Get Participants Function

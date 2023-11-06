@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Address;
+use App\Models\Event_Has_Address;
 use App\Models\Schedule;
 use App\Notifications\sendInvite;
 use App\Models\Event;
@@ -25,9 +27,9 @@ class EventController extends Controller
   {
     $user = Auth::user();
     $events = Event::all();
-    // dd($events);
+    $addresses = Address::all();
 
-    return response(view('event', compact('user', 'events')));
+    return response(view('event', compact('user', 'events', 'addresses')));
   }
 
   /**
@@ -50,23 +52,53 @@ class EventController extends Controller
     try {
       $this->validate(request(), [
         'name' => ['required', 'string'],
-        'date' => ['required', 'date'],
         'banner' => ['required', 'image'],
+        'start_date' => ['required', 'date'],
+        'end_date' => ['required', 'date'],
+        'start_time' => ['required', 'date_format:H:i'],
+        'end_time' => ['required', 'date_format:H:i', 'after:start_time'],
       ]);
     } catch (\Throwable $e) {
       throw $e;
     }
 
+
+
     $data = $request->all();
     // dd($data);  
     // $bannerUrl = time() . '.' . $data['name'];
     // dd($bannerUrl);
+
+    if ($data['address'] === 'new') {
+      $validator = Validator::make($request->all(), [
+        'newLocation' => ['required', 'string'],
+        'url' => ['required', 'url'],
+      ]);
+
+      if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+      $address = new Address();
+
+      $address->name = $data['newLocation'];
+      $address->url = $data['url'];
+      $address->save();
+    }
+
     $bannerUrl = $request->file('banner')->store('banners', 'public');
     $event = new Event();
     $event->name = $data['name'];
-    $event->date = $data['date'];
+    $event->start_date = $data['start_date'];
+    $event->end_date = $data['end_date'];
+    $event->start_time = $data['start_time'];
+    $event->end_time = $data['end_time'];
     $event->banner_url = $bannerUrl;
     $event->save();
+
+    $event_address = new Event_Has_Address();
+    $event_address->event_id = $event->id;
+    $event_address->address_id = $address->id;
 
     return redirect()->back();
   }
@@ -148,7 +180,7 @@ class EventController extends Controller
 
   public function inviteParticipant(Request $request, $id)
   {
-   
+
     try {
       $validator = Validator::make($request->all(), [
         'participant' => ['required', 'numeric'],

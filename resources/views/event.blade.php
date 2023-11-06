@@ -63,7 +63,7 @@
 
       <!-- Modal -->
 
-      <div id="createEvent" class="modal fade" role="dialog">
+      <div id="createEvent" class="modal fade" role="dialog" onload="checkLocationField()">
         <div class="modal-dialog">
 
           <!-- Modal content-->
@@ -80,17 +80,61 @@
                   <input type="text" class="form-control" id="name" name="name" aria-describedby="emailHelp"
                     placeholder="Exemplo: Conferencia de kekeke">
                 </div>
-                <div class="form-group mb-3">
-                  <label for="date">Date & Time</label>
-                  <input type="datetime-local" id="date" name="date" class="form-control"
-                    placeholder="Date and Time">
+
+                <div class="row justify-content-between">
+                  <div class="form-group mb-3 col-5">
+                    <label for="start_date">Data de Inicio</label>
+                    <input type="date" id="start_date" name="start_date" class="form-control"
+                      placeholder="Data de inicio">
+                  </div>
+                  <div class="form-group mb-3 col-5">
+                    <label for="end_date">Data de Fim</label>
+                    <input type="date" id="end_date" name="end_date" class="form-control" placeholder="Data de Fim">
+                  </div>
+                </div>
+
+                <div class="row justify-content-between">
+                  <div class="form-group mb-3 col-5">
+                    <label for="start_time">Hora de Inicio</label>
+                    <input type="time" id="start_time" name="start_time" class="form-control"
+                      placeholder="Hora de Inicio">
+                  </div>
+                  <div class="form-group mb-3 col-5">
+                    <label for="end_time">Hora de Fim</label>
+                    <input type="time" id="end_time" name="end_time" class="form-control" placeholder="Hora de Fim">
+                  </div>
                 </div>
 
                 <div class="form-group mb-3">
-                  <label for="banner">Default file
-                    input</label>
+                  <label for="banner">Escolha o banner</label>
                   <div class="col-lg-10">
                     <input type="file" accept="image/*" class="form-control" id="banner" name="banner">
+                  </div>
+                </div>
+
+                <div class="form-group row">
+                  <label class="col-lg-6 col-form-label" for="address">Selecione a localizacao</label>
+                  <div class="col-lg-12">
+                    <select class="form-control custom-select" id="address" name="address">
+                      <option value="" selected hidden>Seleciona o local do seu evento!</option>
+                      @foreach ($addresses as $address)
+                        <option value = "{{ $address->id }}"> {{ $address->name }}</option>
+                      @endforeach
+                      <option value="new">Outra...</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div id="newLocationFields" style="display:none;">
+                  <div class="form-group">
+                    <label for="newLocation">Enter new Location name</label>
+                    <input type="text" name="newLocation" id="newLocation" class="form-control"
+                      placeholder="Centro de Conferencias Joaquim Chissano">
+                  </div>
+                  <div class="form-group">
+                    <label for="url">Enter new location map URL</label>
+                    <input type="text" name="url" id="url" class="form-control"
+                      placeholder="https://example.com" pattern="https://.*">
                   </div>
                 </div>
 
@@ -125,4 +169,22 @@
       </div>
     @endforeach
   </div>
+
+  <script>
+    function checkLocationField() {
+      var select = document.getElementById('address');
+      var selectedLocation = select.value;
+      var newLocationFields = document.getElementById('newLocationFields');
+
+      if (selectedLocation === "new") {
+        newLocationFields.style.display = 'block';
+      } else {
+        newLocationFields.style.display = 'none';
+      }
+    };
+
+
+
+    document.getElementById('address').addEventListener('change', checkLocationField);
+  </script>
 @endsection

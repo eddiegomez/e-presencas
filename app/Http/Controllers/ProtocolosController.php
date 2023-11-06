@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class ProtocolosController extends Controller
 {
@@ -15,19 +18,11 @@ class ProtocolosController extends Controller
   public function index()
   {
     $user = Auth::user();
+    $protocolos = User::where('user_role', 2)->get();
 
-    return response(view('Protocolos.index', compact('user')));
+    return response(view('Protocolos.index', compact('user', 'protocolos')));
   }
 
-  /**
-   * Show the form for creating a new resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function create()
-  {
-    //
-  }
 
   /**
    * Store a newly created resource in storage.
@@ -37,7 +32,32 @@ class ProtocolosController extends Controller
    */
   public function store(Request $request)
   {
-    //
+    try {
+      $validator = Validator::make($request->all(), [
+        'name' => ['required', 'string'],
+        'email' => ['required', 'string'],
+      ]);
+
+      if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+    } catch (\Throwable $th) {
+      throw $th;
+    }
+
+    $data = $request->all();
+    $password = "MoreN37#123";
+    $role = 2;
+
+    $protocolo = new User();
+
+    $protocolo->name = $data["name"];
+    $protocolo->email = $data["email"];
+    $protocolo->password = Hash::make($password);
+    $protocolo->user_role = $role;
+    $protocolo->save();
+
+    return redirect()->back()->with('success', 'Protocolo criado com Sucesso!');
   }
 
   /**

@@ -5,6 +5,12 @@
 @endsection
 
 @section("breadcrumb")
+  @if (session("success"))
+    <div class="alert alert-success">
+      {{ session("success") }}
+    </div>
+  @endif
+
   <div class="row page-title align-items-center">
     <div class="col-sm-4 col-xl-6">
       <h4 class="mb-1 mt-0">Protocolos</h4>
@@ -34,7 +40,7 @@
         </div>
 
         <div class="modal-body">
-          <form action="" method="POST" enctype="multipart/form-data">
+          <form action="{{ route("protocolo.store") }}" method="POST">
             @csrf
 
             {{-- Name Input --}}
@@ -44,12 +50,21 @@
                 placeholder="Exemplo: Conferencia de kekeke">
             </div>
 
-            {{-- Name Input --}}
+            {{-- email Input --}}
             <div class="form-group">
-              <label for="name">Nome do Protocolo</label>
-              <input type="text" class="form-control" id="name" name="name" aria-describedby="emailHelp"
-                placeholder="Exemplo: Conferencia de kekeke">
+              <label for="email">Email do Protocolo</label>
+              <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp"
+                placeholder="Exemplo: John.doe@inage.gov.mz">
             </div>
+
+            {{-- password Input --}}
+            {{-- <div class="form-group">
+              <label for="password">Password do Protocolo</label>
+              <input type="password" class="form-control" id="password" name="password" aria-describedby="emailHelp"
+                placeholder="Exemplo: John.doe@inage.gov.mz">
+            </div> --}}
+
+
             {{-- <div class="form-group mb-3">
               <label for="date">Data</label>
               <input type="date" id="date" name="date" class="form-control" placeholder="Date and Time">
@@ -66,7 +81,7 @@
 
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-              <button type="submit" class="btn btn-primary" type="submit">Editar Evento</button>
+              <button type="submit" class="btn btn-primary" type="submit">Criar Protocolo</button>
             </div>
           </form>
         </div>
@@ -90,37 +105,41 @@
             <table class="table table-hover table-nowrap mb-0">
               <thead>
                 <tr>
-                  <th scope="col">QR</th>
+                  <th scope="col">#</th>
                   <th scope="col">Nome</th>
-                  <th scope="col">Evento</th>
-                  <th scope="col">Data</th>
+                  <th scope="col">Email</th>
                   <th scope="col">Status</th>
+                  <th scope="col" class="text-right">Action</th>
                 </tr>
               </thead>
               <tbody>
-                {{-- @foreach ($events as $event)
-                  @foreach ($event->participants as $participant)
-                    <tr>
-                      <td>{{ $participant->id }}</td>
-                      <td>{{ $participant->name }}</td>
-                      <td>{{ $event->name }}</td>
-                      <td>{{ $event->start_date }}</td>
-                      <td>
-                        <span
-                          class="badge py-1
-                            @if ($participant->pivot->status == "Presente") badge-soft-success 
-                            @elseif ($participant->pivot->status == "Em espera") badge-soft-warning 
-                            @elseif ($participant->pivot->status == "Confirmada") badge-soft-info 
-                            @elseif ($participant->pivot->status == "Participou") badge-soft-success 
-                            @elseif ($participant->pivot->status == "Rejeitada")badge-soft-warning 
-                            @elseif ($participant->pivot->status == "Ausente") badge-soft-danger @endif
-                          ">
-                          {{ $participant->pivot->status }}
+                @foreach ($protocolos as $protocolo)
+                  <tr>
+                    <td>{{ $loop->index + 1 }}</td>
+                    <td>{{ $protocolo->name }}</td>
+                    <td>{{ $protocolo->email }}</td>
+                    <td>
+                      @if (!$protocolo->email_verified_at)
+                        <span class="badge py-1 badge-soft-warning">
+                          Em espera
                         </span>
-                      </td>
-                    </tr>
-                  @endforeach
-                @endforeach --}}
+                      @else
+                        <span class="badge py-1 badge-soft-success">
+                        </span>
+                      @endif
+
+                    </td>
+
+                    <td class="text-right">
+                      <a href="#" class="btn btn-primary">
+                        <i class='uil uil-pen font-size-11'></i>
+                      </a>
+                      <a href="#" class="btn btn-danger">
+                        <i class='uil uil-trash-alt font-size-11'></i>
+                      </a>
+                    </td>
+                  </tr>
+                @endforeach
               </tbody>
             </table>
           </div> <!-- end table-responsive-->

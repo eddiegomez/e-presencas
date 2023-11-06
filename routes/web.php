@@ -113,7 +113,18 @@ Route::middleware(['auth', 'web'])->group(function () {
     [InviteController::class, 'removerParticipante']
   )->name('removerParticipante');
 
-  Route::get('/protocolos', [ProtocolosController::class, 'index'])->name('protocolos.index');
+
+  // Get all staff members Controller
+  Route::get(
+    '/protocolos',
+    [ProtocolosController::class, 'index']
+  )->name('protocolos.index');
+
+  // Create a new staff member Controller
+  Route::post(
+    '/protocolo/create',
+    [ProtocolosController::class, 'store']
+  )->name('protocolo.store');
 });
 
 // Confirm Presence Controller

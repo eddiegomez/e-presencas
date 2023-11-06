@@ -162,21 +162,25 @@
         <h1 class="text-capitalize">{{ $event->name }}</h1>
         <h5 class="d-flex align-items-strecth">
             Data de Inicio:
-            <span class="ml-1">{{ $event->date }}</span>
+            <span class="ml-1">{{ $event->start_date }}</span>
         </h5>
         <h5 class="d-flex align-items-strecth">
             Data de Fim:
-            <span class="ml-1">{{ $event->date }}</span>
+            <span class="ml-1">{{ $event->end_date }}</span>
         </h5>
 
         <h5 class="d-flex align-items-strecth">
             Localizacao:
-            <span class="ml-1">{{ "UJC" }}</span>
+            @if ($event->Address[0]->url)
+              <a href="{{ $event->Address[0]->url }}" class="ml-1" target="_blank">{{ $event->Address[0]->name }}</a>
+            @else
+              <span class="ml-1">{{ $event->Address[0]->name }}</span>
+            @endif
         </h5>
 
         <h5 class="d-flex align-items-strecth">
-            Periodo de tempo
-            <span class="ml-1">08:00 - 12:00</span>
+            Periodo de tempo: 
+            <span class="ml-1">{{ date("H:i", strtotime($event->start_time)) }} - {{ date("H:i", strtotime($event->end_time)) }}</span>
         </h5>
 
         <div class="d-flex align-items-center">

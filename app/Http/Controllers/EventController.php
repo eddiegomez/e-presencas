@@ -99,6 +99,7 @@ class EventController extends Controller
     $event_address = new Event_Has_Address();
     $event_address->event_id = $event->id;
     $event_address->address_id = $address->id;
+    $event_address->save();
 
     return redirect()->back();
   }

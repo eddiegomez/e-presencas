@@ -254,7 +254,7 @@
               <div class="modal-body">
 
                 <p>Tem certeza que pretende remover o participante <strong id="rmNome"></strong> do(a) <strong
-                    id="">{{ $event->name }}</strong>?</p>
+                    id=""></strong>?</p>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>

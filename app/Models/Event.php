@@ -40,4 +40,9 @@ class Event extends Model
   {
     return $this->hasMany(Schedule::class);
   }
+
+  public function Address(): BelongsToMany
+  {
+    return $this->belongsToMany(Address::class, 'event_address');
+  }
 }

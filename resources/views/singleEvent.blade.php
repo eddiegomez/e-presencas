@@ -324,7 +324,7 @@
             <td>
 
               <a class="btn btn-danger p-2 participant_modal"
-                href="{{ route("invite.delete", ["eventid" => $event->id, "participantid" => $participante->id]) }}">
+                href="{{ route("invite.destroy", ["eventid" => $event->id, "participantid" => $participante->id]) }}">
                 <i class='uil uil-trash-alt'></i> Remover
               </a>
             </td>

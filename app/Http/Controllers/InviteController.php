@@ -166,6 +166,7 @@ class InviteController extends Controller
   public function removerParticipante(Request $request){
     try{
       $participantEvent = Participant_Has_Event::where([['event_id', $request->eventId], ['participant_id', $request->participantId]])->delete();
+      
       return redirect()->back()->with('success', 'Participante removido com sucesso!');
     } catch (Exception $e) {
     }

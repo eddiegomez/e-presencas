@@ -1,6 +1,5 @@
 @extends("layouts.vertical")
 
-
 @section("css")
   <link href="{{ URL::asset("assets/libs/flatpickr/flatpickr.min.css") }}" rel="stylesheet" type="text/css" />
 @endsection
@@ -8,74 +7,78 @@
 @section("breadcrumb")
   <div class="row page-title align-items-center">
     <div class="col-sm-4 col-xl-6">
-      <h4 class="mb-1 mt-0">Dashboard</h4>
+      <h4 class="mb-1 mt-0">Protocolos</h4>
+    </div>
+
+    <div class="col-sm-8 col-xl-6">
+      <div class="float-sm-right mt-3 mt-sm-0">
+        <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#createStaff">
+          <i class='uil uil-plus mr-1'></i>Adicionar Protocolo
+        </button>
+      </div>
     </div>
   </div>
 
   {{-- Divider line --}}
   <div style="height: 2px" class="bg-white dark:bg-white rounded w-100 mb-4"></div>
+
+  {{-- Modal --}}
+
+  <div id="createStaff" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-capitalize" id="exampleModalLabel">Editar</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <form action="" method="POST" enctype="multipart/form-data">
+            @csrf
+
+            {{-- Name Input --}}
+            <div class="form-group">
+              <label for="name">Nome do Protocolo</label>
+              <input type="text" class="form-control" id="name" name="name" aria-describedby="emailHelp"
+                placeholder="Exemplo: Conferencia de kekeke">
+            </div>
+
+            {{-- Name Input --}}
+            <div class="form-group">
+              <label for="name">Nome do Protocolo</label>
+              <input type="text" class="form-control" id="name" name="name" aria-describedby="emailHelp"
+                placeholder="Exemplo: Conferencia de kekeke">
+            </div>
+            {{-- <div class="form-group mb-3">
+              <label for="date">Data</label>
+              <input type="date" id="date" name="date" class="form-control" placeholder="Date and Time">
+            </div> --}}
+
+            {{-- <div class="form-group mb-3">
+              <label for="banner">Default file
+                input
+              </label>
+              <div class="col-lg-12">
+                <input type="file" accept="image/*" class="form-control" id="banner" name="banner">
+              </div>
+            </div> --}}
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-primary" type="submit">Editar Evento</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
 @endsection
 
 @section("content")
   <div class="row">
-    <div class="col-md-6 col-xl-3">
-      <div class="card">
-        <div class="card-body p-0">
-          <div class="media p-3">
-            <div class="media-body">
-              <span class="text-muted text-uppercase font-size-12 font-weight-bold">Eventos</span>
-              <h2 class="mb-0">{{ $events->count() }}</h2>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-6 col-xl-3">
-      <div class="card">
-        <div class="card-body p-0">
-          <div class="media p-3">
-            <div class="media-body">
-              <span class="text-muted text-uppercase font-size-12 font-weight-bold">Participantes</span>
-              <h2 class="mb-0">{{ $participants->count() }}</h2>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-6 col-xl-3">
-      <div class="card">
-        <div class="card-body p-0">
-          <div class="media p-3">
-            <div class="media-body">
-              <span class="text-muted text-uppercase font-size-12 font-weight-bold">Protocolos</span>
-              <h2 class="mb-0">11</h2>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-6 col-xl-3">
-      <div class="card">
-        <div class="card-body p-0">
-          <div class="media p-3">
-            <div class="media-body">
-              <span class="text-muted text-uppercase font-size-12 font-weight-bold">Convites entregues</span>
-              <h2 class="mb-0">{{ $invites->count() }}</h2>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- row -->
-
-  <!-- products -->
-  <div class="row">
-    <div class="col-xl-8">
+    <div class="col-xl-12">
       <div class="card">
         <div class="card-body">
           {{-- <a href="" class="btn btn-primary btn-sm float-right">
@@ -95,7 +98,7 @@
                 </tr>
               </thead>
               <tbody>
-                @foreach ($events as $event)
+                {{-- @foreach ($events as $event)
                   @foreach ($event->participants as $participant)
                     <tr>
                       <td>{{ $participant->id }}</td>
@@ -117,25 +120,12 @@
                       </td>
                     </tr>
                   @endforeach
-                @endforeach
+                @endforeach --}}
               </tbody>
             </table>
           </div> <!-- end table-responsive-->
         </div> <!-- end card-body-->
       </div> <!-- end card-->
-    </div> <!-- end col-->
+    </div>
   </div>
-  <!-- end row -->
-@endsection
-
-@section("script")
-  <!-- optional plugins -->
-  <script src="{{ URL::asset("assets/libs/moment/moment.min.js") }}"></script>
-  <script src="{{ URL::asset("assets/libs/apexcharts/apexcharts.min.js") }}"></script>
-  <script src="{{ URL::asset("assets/libs/flatpickr/flatpickr.min.js") }}"></script>
-@endsection
-
-@section("script-bottom")
-  <!-- init js -->
-  <script src="{{ URL::asset("assets/js/pages/dashboard.init.js") }}"></script>
 @endsection

@@ -20,6 +20,12 @@
       <span> Participants </span>
     </a>
   </li>
+  <li>
+    <a href="/protocolos">
+      <i data-feather="user"></i>
+      <span> Protocolos </span>
+    </a>
+  </li>
   {{-- <li>
         <a href="/schedule">
             <i data-feather="layers"></i>

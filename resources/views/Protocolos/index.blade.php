@@ -131,10 +131,12 @@
                     </td>
 
                     <td class="text-right">
-                      <a href="#" class="btn btn-primary">
+                      <a href="#" class="btn btn-primary"
+                        onclick='showEditModal({{ $protocolo->id }},@json($protocolo->name),@json($protocolo->email))'>
                         <i class='uil uil-pen font-size-11'></i>
                       </a>
-                      <a href="#" class="btn btn-danger">
+                      <a href="#" class="btn btn-danger"
+                        onclick='showDeleteModal({{ $protocolo->id }},@json($protocolo->name))'>
                         <i class='uil uil-trash-alt font-size-11'></i>
                       </a>
                     </td>
@@ -147,4 +149,96 @@
       </div> <!-- end card-->
     </div>
   </div>
+
+  <div id="deleteStaff" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="user">Remover o protocolo <strong id="pNome"></strong>?
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+
+          <p>Tem certeza que pretende remover o protocolo <strong id="rmNome"></strong>?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <form id="removeStaff" method="POST">
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" id="protocoloId" name="protocoloId" value="" />
+            <button type="submit" class="btn btn-danger">Confirmar remoção</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="editStaff" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="user">Editar informacoes do protocolo <strong id="ENome"></strong>?
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="editStaffForm" method="POST">
+            @csrf
+            <input type="hidden" id="Eid" name="Eid" value="" />
+
+            <div class="form-group row">
+              <label for="name" class="col-lg-8 col-form-label">Nome do Protocolo </label>
+              <input type="text" name="Ename" id="Ename" class="form-control" value=""
+                placeholder="John Xibadula">
+            </div>
+
+            <div class="form-group row">
+              <label for="email" class="col-lg-8 col-form-label">Email do protocolo </label>
+              <input type="text" name="Eemail" id="Eemail" class="form-control" value=""
+                placeholder="xibadula@inage.gov.mz">
+            </div>
+
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Confirmar edição</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <script>
+    function showDeleteModal(protocoloId, name) {
+      // Get a reference to the form element
+      var form = document.getElementById('removeStaff');
+
+      // Set the action attribute to the desired URL
+      form.action = "{{ route("protocolo.delete", $protocolo->id) }}"; // Replace with your desired URL
+
+      document.getElementById('protocoloId').value = protocoloId;
+      document.getElementById('rmNome').innerHTML = name;
+      document.getElementById('pNome').innerHTML = name;
+      $("#deleteStaff").modal('show');
+    }
+
+    function showEditModal(protocoloId, name, email) {
+      // Get a reference to the form element
+      var form = document.getElementById('editStaffForm');
+
+      // Set the action attribute to the desired URL
+      form.action = "{{ route("protocolo.edit") }}"; // Replace with your desired URL
+
+      document.getElementById('Eid').value = protocoloId;
+      document.getElementById('ENome').innerHTML = name;
+      document.getElementById('Ename').value = name;
+      document.getElementById('Eemail').value = email;
+      $("#editStaff").modal('show');
+    }
+  </script>
 @endsection

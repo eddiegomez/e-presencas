@@ -71,16 +71,6 @@ class ProtocolosController extends Controller
     //
   }
 
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function edit($id)
-  {
-    //
-  }
 
   /**
    * Update the specified resource in storage.
@@ -89,9 +79,30 @@ class ProtocolosController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function update(Request $request, $id)
+  public function update(Request $request)
   {
-    //
+    try {
+      $validator = Validator::make($request->all(), [
+        "Eid" => ["required", "numeric"],
+        "Ename" => ["required", "string"],
+        "Eemail" => ["required", "email"]
+      ]);
+
+      if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+    } catch (\Throwable $th) {
+      throw $th;
+    }
+
+    $data = $request->all();
+    $protocolo = User::find($data['Eid']);
+
+    $protocolo->name = $data['Ename'];
+    $protocolo->email = $data['Eemail'];
+    $protocolo->update();
+
+    return redirect()->back()->with('success', 'O protocolo foi editado com sucesso!');
   }
 
   /**
@@ -100,8 +111,23 @@ class ProtocolosController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy(Request $request)
   {
-    //
+    try {
+      $validator = Validator::make($request->all(), [
+        "protocoloId" => ["required", "numeric"]
+      ]);
+
+      if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+    } catch (\Throwable $th) {
+      throw $th;
+    }
+
+    $data = $request->all();
+    User::where('id', $data['protocoloId'])->delete();
+
+    return redirect()->back()->with('success', 'O protocolo foi removido com sucesso!');
   }
 }

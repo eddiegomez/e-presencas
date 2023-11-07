@@ -125,7 +125,20 @@ Route::middleware(['auth', 'web'])->group(function () {
     '/protocolo/create',
     [ProtocolosController::class, 'store']
   )->name('protocolo.store');
+
+  // Delete a Staff Member Controller
+  Route::delete(
+    '/protocolo/delete',
+    [ProtocolosController::class, 'destroy']
+  )->name('protocolo.delete');
+
+  Route::post(
+    '/protocolo/edit',
+    [ProtocolosController::class, 'update']
+  )->name('protocolo.edit');
 });
+
+
 
 // Confirm Presence Controller
 Route::get('/confirm/presence/{encryptedevent}/{encryptedparticipant}', [InviteController::class, 'show'])->name('confirmPresenceShow');

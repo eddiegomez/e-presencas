@@ -137,7 +137,16 @@ Route::middleware(['auth', 'web'])->group(function () {
     [ProtocolosController::class, 'update']
   )->name('protocolo.edit');
 });
+// Confirmar registro de protocolo!
+Route::get(
+  '/protocolo/{encryptedId}/confirmation/',
+  [ProtocolosController::class, 'emailConfirmation']
+)->name('protocolo.confirmation');
 
+Route::post(
+  '/protocolo/{encryptedId}/confirmation',
+  [ ProtocolosController::class, 'confirmRegister' ]
+)->name('protocolo.confirmRegister');
 
 
 // Confirm Presence Controller

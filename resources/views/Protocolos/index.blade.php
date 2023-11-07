@@ -125,6 +125,7 @@
                         </span>
                       @else
                         <span class="badge py-1 badge-soft-success">
+                          Activo
                         </span>
                       @endif
 

@@ -17,6 +17,12 @@
 @endsection
 
 @section("content")
+  @if (session("error"))
+    <div class="alert alert-danger">
+      {{ session("error") }}
+    </div>
+  @endif
+
   <div class="row">
     <div class="col-md-6 col-xl-3">
       <div class="card">

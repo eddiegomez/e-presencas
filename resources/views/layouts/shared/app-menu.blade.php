@@ -20,12 +20,14 @@
       <span> Participants </span>
     </a>
   </li>
-  <li>
-    <a href="/protocolos">
-      <i data-feather="user"></i>
-      <span> Protocolos </span>
-    </a>
-  </li>
+  @if (Auth::user()->user_role == 1)
+    <li>
+      <a href="/protocolos">
+        <i data-feather="user"></i>
+        <span> Protocolos </span>
+      </a>
+    </li>
+  @endif
   {{-- <li>
         <a href="/schedule">
             <i data-feather="layers"></i>

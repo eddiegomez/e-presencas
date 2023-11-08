@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Participant;
 use App\Models\Participant_Has_Event;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,9 +32,8 @@ class HomeController extends Controller
     $events = Event::all();
     $participants = Participant::all();
     $invites = Participant_Has_Event::all();
+    $protocolos = User::where('user_role', 2)->get();
 
-    // dd($invites);
-
-    return view('dashboard', compact('user', 'events', 'participants', 'invites'));
+    return view('dashboard', compact('user', 'events', 'participants', 'invites', 'protocolos'));
   }
 }

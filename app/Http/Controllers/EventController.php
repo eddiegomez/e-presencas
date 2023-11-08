@@ -32,20 +32,12 @@ class EventController extends Controller
     return response(view('event', compact('user', 'events', 'addresses')));
   }
 
-  /**
-   * Show the form for creating a new resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function create(Request $request)
-  {
-  }
 
   /**
    * Store a newly created resource in storage.
    *
    * @param  \Illuminate\Http\Request  $request
-   * @return \Illuminate\Http\Response
+   * @return \Illuminate\Http\RedirectResponse
    */
   public function store(Request $request)
   {
@@ -117,17 +109,6 @@ class EventController extends Controller
     $participants = Participant::all();
     $participant_type = ParticipantType::all();
     return response(view('singleEvent', compact('user', 'event', 'participants', 'participant_type')),);
-  }
-
-
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function edit($id)
-  {
   }
 
   /**

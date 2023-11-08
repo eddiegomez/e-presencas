@@ -182,7 +182,7 @@
                 </td>
 
                 <td>
-                  <a href="#" class="text-body">
+                  <a href="{{ route("event", $event->id) }}" class="text-body text-capitalize">
                     {{ $event->name }}
                   </a>
                 </td>
@@ -201,12 +201,22 @@
                   @endswitch
                 </td>
                 <td>
-                  {{ $event->pivot->status }}
+                  <span
+                    class="badge py-1 font-size-13
+                      @if ($event->pivot->status == "Presente") badge-soft-success 
+                      @elseif ($event->pivot->status == "Em espera") badge-soft-warning 
+                      @elseif ($event->pivot->status == "Confirmada") badge-soft-info 
+                      @elseif ($event->pivot->status == "Participou") badge-soft-success 
+                      @elseif ($event->pivot->status == "Rejeitada")badge-soft-warning 
+                      @elseif ($event->pivot->status == "Ausente") badge-soft-danger @endif
+                    ">
+                    {{ $event->pivot->status }}
+                  </span>
                 </td>
                 <td class="text-right">
-                  <a class="btn btn-danger p-2 participant_modal"
+                  <a class="btn btn-danger p-2 participant_modal text-white" href="#"
                     onclick='showDeleteModal({{ $participant->id }},@json($participant->name), {{ $event->id }},@json($event->name))'>
-                    <i class='uil uil-trash-alt'></i> Remover
+                    <i class='uil uil-trash-alt'></i>
                   </a>
                 </td>
               <tr>

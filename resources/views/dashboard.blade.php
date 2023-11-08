@@ -56,7 +56,9 @@
           <div class="media p-3">
             <div class="media-body">
               <span class="text-muted text-uppercase font-size-12 font-weight-bold">Protocolos</span>
-              <h2 class="mb-0">11</h2>
+              <h2 class="mb-0">
+                {{ $protocolos->count() }}
+              </h2>
             </div>
           </div>
         </div>
@@ -106,7 +108,7 @@
                     <tr>
                       <td>{{ $participant->id }}</td>
                       <td>{{ $participant->name }}</td>
-                      <td>{{ $event->name }}</td>
+                      <td class="text-capitalize">{{ $event->name }}</td>
                       <td>{{ $event->start_date }}</td>
                       <td>
                         <span

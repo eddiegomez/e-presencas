@@ -13,36 +13,6 @@ use Illuminate\Support\Facades\Validator;
 
 class InviteController extends Controller
 {
-  /**
-   * Display a listing of the resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function index()
-  {
-    //
-  }
-
-  /**
-   * Show the form for creating a new resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function create()
-  {
-    //
-  }
-
-  /**
-   * Store a newly created resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @return \Illuminate\Http\Response
-   */
-  public function store(Request $request)
-  {
-    //
-  }
 
   /**
    * Display the specified resource.
@@ -70,28 +40,7 @@ class InviteController extends Controller
     return response(view('confirmPresence', compact('successMessage', 'event', 'participant', 'encryptedevent', 'encryptedparticipant'))->with('success', 'A sua presenca foi confirmada no evento ' . $event->name));
   }
 
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function edit($id)
-  {
-    //
-  }
 
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function update(Request $request, $id)
-  {
-    //
-  }
 
   /**
    * Remove the specified resource from storage.
@@ -163,10 +112,11 @@ class InviteController extends Controller
     return redirect()->back()->with('success', 'A presenca do participante foi actualizada com sucesso!');
   }
 
-  public function removerParticipante(Request $request){
-    try{
+  public function removerParticipante(Request $request)
+  {
+    try {
       $participantEvent = Participant_Has_Event::where([['event_id', $request->eventId], ['participant_id', $request->participantId]])->delete();
-      
+
       return redirect()->back()->with('success', 'Participante removido com sucesso!');
     } catch (Exception $e) {
     }

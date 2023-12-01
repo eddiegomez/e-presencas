@@ -12,9 +12,21 @@ class Schedule extends Model
 
   protected $table = 'schedules';
 
-  // Get Event 
-  public function events() : BelongsToMany{
-    return $this->belongsToMany(Event::class, 'event_schedule');
-  }
+  /**
+   * The attributes that are mass assignable.
+   *
+   * @var array<int, string>
+   */
+  protected $fillable = [
+    "name",
+    "pdf_url",
+    "date",
+    "event_id"
+  ];
 
+  // Get Event 
+  public function events(): BelongsToMany
+  {
+    return $this->belongsToMany(Event::class, 'invites');
+  }
 }

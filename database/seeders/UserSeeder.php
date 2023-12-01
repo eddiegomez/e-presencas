@@ -20,8 +20,8 @@ class UserSeeder extends Seeder
     \App\Models\User::factory()->create([
       'name' => 'admin',
       'email' => 'admin@admin.com',
+      'phone' => '+258821234567',
       'password' => Hash::make($password),
-      'user_role' => 1,
     ]);
   }
 }

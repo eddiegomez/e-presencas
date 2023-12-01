@@ -99,7 +99,7 @@
           {{-- <a href="" class="btn btn-primary btn-sm float-right">
             <i class='uil uil-export ml-1'></i> Export
           </a> --}}
-          <h5 class="card-title mt-0 mb-0 header-title">Eventos & Participantes</h5>
+          <h5 class="card-title mt-0 mb-0 header-title">Protocolos</h5>
 
           <div class="table-responsive mt-4">
             <table class="table table-hover table-nowrap mb-0">

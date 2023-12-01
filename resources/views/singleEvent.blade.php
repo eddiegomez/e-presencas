@@ -171,10 +171,10 @@
 
         <h5 class="d-flex align-items-strecth">
             Localizacao:
-            @if ($event->Address[0]->url)
-              <a href="{{ $event->Address[0]->url }}" class="ml-1" target="_blank">{{ $event->Address[0]->name }}</a>
+            @if ($event->addresses[0]->url)
+              <a href="{{ $event->addresses[0]->url }}" class="ml-1" target="_blank">{{ $event->addresses[0]->name }}</a>
             @else
-              <span class="ml-1">{{ $event->Address[0]->name }}</span>
+              <span class="ml-1">{{ $event->addresses[0]->name }}</span>
             @endif
         </h5>
 

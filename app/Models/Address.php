@@ -15,6 +15,4 @@ class Address extends Model
     "name",
     "url"
   ];
-
-  
 }

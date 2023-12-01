@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateTypeParticipantEventTable extends Migration
+class CreateAddressTable extends Migration
 {
   /**
    * Run the migrations.
@@ -13,9 +13,11 @@ class UpdateTypeParticipantEventTable extends Migration
    */
   public function up()
   {
-    Schema::table('participant_event', function (Blueprint $table) {
-      $table->string('qr_url')->unique();
-      $table->foreignId('participant_type_id');
+    Schema::create('address', function (Blueprint $table) {
+      $table->id();
+      $table->string('name')->unique();
+      $table->string('url')->nullable();
+      $table->timestamps();
     });
   }
 
@@ -26,8 +28,6 @@ class UpdateTypeParticipantEventTable extends Migration
    */
   public function down()
   {
-    Schema::table('participant_event', function (Blueprint $table) {
-      //
-    });
+    Schema::dropIfExists('address');
   }
 }

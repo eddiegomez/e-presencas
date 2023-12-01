@@ -30,6 +30,7 @@ class Event extends Model
     return $this->belongsToMany(Participant::class, 'participant_event')->withPivot('qr_url', 'status');
   }
 
+  // Check if it has participant by ID
   public function hasParticipant($participant): HasOneThrough
   {
     return $this->hasOneThrough(Participant::class, 'participant_event');
@@ -41,7 +42,8 @@ class Event extends Model
     return $this->hasMany(Schedule::class);
   }
 
-  public function Address(): BelongsToMany
+  // Get the event address
+  public function addresses(): BelongsToMany
   {
     return $this->belongsToMany(Address::class, 'event_address');
   }

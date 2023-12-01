@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Participant_Has_Event extends Model
+class Invites extends Model
 {
   use HasFactory;
 
-  protected $table = 'participant_event';
+  protected $table = 'invites';
 
   protected $fillable = [
     'participant_id',

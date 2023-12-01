@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateScheduleTable extends Migration
+class CreateOrganizationTable extends Migration
 {
   /**
    * Run the migrations.
@@ -13,11 +13,13 @@ class CreateScheduleTable extends Migration
    */
   public function up()
   {
-    Schema::create('schedules', function (Blueprint $table) {
+    Schema::create('organization', function (Blueprint $table) {
       $table->id();
-      $table->string('name');
-      $table->string('pdf_url');
-      $table->date('date');
+      $table->string('name')->unique();
+      $table->string('email')->unique();
+      $table->string('phone')->unique();
+      $table->string('location')->unique();
+      $table->string('website')->unique();
       $table->timestamps();
     });
   }
@@ -29,6 +31,6 @@ class CreateScheduleTable extends Migration
    */
   public function down()
   {
-    Schema::dropIfExists('schedules');
+    Schema::dropIfExists('organization');
   }
 }

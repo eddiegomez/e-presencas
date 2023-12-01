@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\InviteController;
+use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\ProtocolosController;
 use App\Models\Participant;
@@ -26,6 +27,9 @@ Route::get('/', function () {
 Route::middleware(['auth', 'web'])->group(function () {
   Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+  // ManagerController Routes
+  Route::get('/managers', [ManagerController::class, 'index'])->name('managers.list');
+  Route::post('/manager/create', [ManagerController::class, 'store'])->name('manager.store');
 
   // Get all events Controller
   Route::get('/events', [EventController::class, 'index'])->name('events');

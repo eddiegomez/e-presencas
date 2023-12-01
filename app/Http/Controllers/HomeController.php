@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Invites;
+use App\Models\Organization;
 use App\Models\Participant;
 use App\Models\Participant_Has_Event;
 use App\Models\User;
@@ -28,12 +30,11 @@ class HomeController extends Controller
    */
   public function index()
   {
-    $user = Auth::user();
-    $events = Event::all();
-    $participants = Participant::all();
-    $invites = Participant_Has_Event::all();
-    $protocolos = User::where('user_role', 2)->get();
+    $events = Event::all()->count();
+    $participants = Participant::all()->count();
+    $organizations = Organization::all()->count();
+    $users = User::all()->count();
 
-    return view('dashboard', compact('user', 'events', 'participants', 'invites', 'protocolos'));
+    return view('dashboard', compact('events', 'participants', 'organizations', 'users'));
   }
 }

@@ -8,12 +8,27 @@
       <span> Dashboard </span>
     </a>
   </li>
-  <li>
-    <a href="/events">
-      <i data-feather="calendar"></i>
-      <span> Events </span>
-    </a>
-  </li>
+
+  {{-- System manager menu --}}
+  @hasrole("gestor do sistema")
+    <li>
+      <a href="{{ route("managers.list") }}">
+        <i data-feather="user"></i>
+        <span> Gestores </span>
+      </a>
+    </li>
+  @endhasrole
+
+  {{-- Institution manager menu --}}
+  @hasrole("")
+    <li>
+      <a href="/events">
+        <i data-feather="calendar"></i>
+        <span> Events </span>
+      </a>
+    </li>
+  @endhasrole
+
   <li>
     <a href="/participants">
       <i data-feather="user"></i>

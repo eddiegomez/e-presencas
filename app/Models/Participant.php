@@ -20,6 +20,8 @@ class Participant extends Model
     "phone_number"
   ];
 
+  public $timestamps = true;
+
   // Get Events function
   public function events(): BelongsToMany
   {

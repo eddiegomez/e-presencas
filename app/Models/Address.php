@@ -15,4 +15,6 @@ class Address extends Model
     "name",
     "url"
   ];
+
+  public $timestamps = true;
 }

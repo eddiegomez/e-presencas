@@ -24,6 +24,8 @@ class Event extends Model
     'end_time'
   ];
 
+  public $timestamps = true;
+  
   // Get Participants Function
   public function participants(): BelongsToMany
   {

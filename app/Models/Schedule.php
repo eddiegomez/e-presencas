@@ -24,6 +24,8 @@ class Schedule extends Model
     "event_id"
   ];
 
+  public $timestamps = true;
+
   // Get Event 
   public function events(): BelongsToMany
   {

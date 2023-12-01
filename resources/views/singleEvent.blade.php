@@ -252,8 +252,8 @@
                       @if (!$participant->hasEvent($event->id))
                         <option value="{{ $participant->id }}">{{ $participant->name }}</option>
                       @endif
-  @endforeach
-</select>
+                  @endforeach
+                </select>
 @error("participant")
   <span class="invalid-feedback" role="alert"> <strong> {{ $message }}</strong></span>
 @enderror

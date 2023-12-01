@@ -20,6 +20,8 @@ class Organization extends Model
     "website"
   ];
 
+  public $timestamps = true;
+
   //Get all users related to this organization
   public function Users(): HasMany
   {

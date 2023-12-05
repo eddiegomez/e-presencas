@@ -12,7 +12,7 @@
   {{-- System manager menu --}}
   @hasrole("gestor do sistema")
     <li>
-      <a href="{{ route("managers.list") }}">
+      <a href="{{ route("organizations.list") }}">
         <i data-feather="layers"></i>
         <span> Organizations </span>
       </a>

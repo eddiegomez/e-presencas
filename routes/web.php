@@ -3,6 +3,7 @@
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\ManagerController;
+use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\ProtocolosController;
 use App\Models\Participant;
@@ -32,6 +33,14 @@ Route::middleware(['auth', 'web'])->group(function () {
   Route::post('/manager/create', [ManagerController::class, 'store'])->name('manager.store');
   Route::post('/manager/update', [ManagerController::class, 'update'])->name('manager.update');
   Route::post('/manager/destroy', [ManagerController::class, 'destroy'])->name('manager.destroy');
+
+  // OrganizationController Routes
+  Route::get('/organizations', [OrganizationController::class, 'index'])->name('organizations.list');
+  Route::post('/organization/store', [OrganizationController::class, 'store'])->name('organization.store');
+  Route::post('/organization/update', [OrganizationController::class, 'update'])->name('organization.update');
+  Route::post('/organization/destroy', [OrganizationController::class, 'destroy'])->name('organization.destroy');
+
+
 
   // Get all events Controller
   Route::get('/events', [EventController::class, 'index'])->name('events');

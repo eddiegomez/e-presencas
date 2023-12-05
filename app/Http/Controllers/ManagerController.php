@@ -18,12 +18,7 @@ class ManagerController extends Controller
    */
   public function index(Request $request)
   {
-    $search = $request->search;
-
-    $gestores = User::role('gestor')->when($search, function ($query) use ($search) {
-      $query->where('name', 'like', '%' . $search . '%');
-    })->get();
-
+    $gestores = User::role('gestor')->paginate(12);
     $organizations = Organization::all();
 
     return view('managers.list', compact('gestores', 'organizations'));

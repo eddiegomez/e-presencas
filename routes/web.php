@@ -30,6 +30,7 @@ Route::middleware(['auth', 'web'])->group(function () {
   // ManagerController Routes
   Route::get('/managers', [ManagerController::class, 'index'])->name('managers.list');
   Route::post('/manager/create', [ManagerController::class, 'store'])->name('manager.store');
+  Route::post('/manager/update', [ManagerController::class, 'update'])->name('manager.update');
 
   // Get all events Controller
   Route::get('/events', [EventController::class, 'index'])->name('events');

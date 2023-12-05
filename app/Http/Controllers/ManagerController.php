@@ -29,9 +29,6 @@ class ManagerController extends Controller
     return view('managers.list', compact('gestores', 'organizations'));
   }
 
-
-
-
   /**
    * Store a newly created resource in storage.
    *
@@ -71,38 +68,46 @@ class ManagerController extends Controller
     return redirect()->back()->with('success', 'Gestor adicionado com successo!');
   }
 
-  /**
-   * Display the specified resource.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function show($id)
-  {
-    //
-  }
 
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function edit($id)
-  {
-    //
-  }
 
   /**
    * Update the specified resource in storage.
    *
    * @param  \Illuminate\Http\Request  $request
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
+   * @return \Illuminate\Http\RedirectResponse
    */
-  public function update(Request $request, $id)
+  public function update(Request $request)
   {
-    //
+    try {
+      $validator = Validator::make($request->all(), [
+        'id' => ['required', 'integer'],
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'email'],
+        'phone' => ['required', 'numeric'],
+        'organization' => ['required', 'integer']
+      ]);
+
+      if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+    } catch (\Throwable $th) {
+      throw $th;
+    }
+
+    $data = $request->all();
+    $manager = User::find($data['id']);
+
+    if ($manager->getRoleNames()[0] !== 'gestor') {
+      return redirect()->back()->with('warning', 'The user cannot be deleted.');
+    }
+
+    $manager->name = $data['name'];
+    $manager->email = $data['email'];
+    $manager->phone = $data['phone'];
+    $manager->organization_id = $data['organization'];
+    $manager->update();
+
+    return redirect()->back()->with('success', 'Gestor foi actualizado com sucesso!');
   }
 
   /**

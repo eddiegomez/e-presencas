@@ -31,6 +31,7 @@ Route::middleware(['auth', 'web'])->group(function () {
   Route::get('/managers', [ManagerController::class, 'index'])->name('managers.list');
   Route::post('/manager/create', [ManagerController::class, 'store'])->name('manager.store');
   Route::post('/manager/update', [ManagerController::class, 'update'])->name('manager.update');
+  Route::post('/manager/destroy', [ManagerController::class, 'destroy'])->name('manager.destroy');
 
   // Get all events Controller
   Route::get('/events', [EventController::class, 'index'])->name('events');

@@ -60,7 +60,7 @@
       </div>
 
       @if (!$gestores->isEmpty())
-        <div class="list w-100">
+        <div class="list w-100 d-flex">
           @foreach ($gestores as $gestor)
             <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
               <div
@@ -290,7 +290,7 @@
           </div>
           {{-- Modal Footer --}}
           <div class="modal-footer">
-            <form action="{{ route("manager.store") }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route("manager.destroy") }}" method="POST" enctype="multipart/form-data">
               @csrf
               <input type="hidden" name="id" id="managerId">
               <div class="modal-footer">

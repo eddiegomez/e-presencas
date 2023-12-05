@@ -41,7 +41,7 @@ class ManagerController extends Controller
       $validator = Validator::make($request->all(), [
         'name' => ['required', 'max:255', 'string'],
         'email' => ['required', 'max:255', 'email'],
-        'phone' => ['required', 'max:9', 'min:8', 'string'],
+        'phone' => ['required', 'max:9', 'min:9', 'string'],
         'organization' => ['required', 'integer']
       ]);
 
@@ -113,11 +113,33 @@ class ManagerController extends Controller
   /**
    * Remove the specified resource from storage.
    *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
+   * @return \Illuminate\Http\RedirectResponse
    */
-  public function destroy($id)
+  public function destroy(Request $request)
   {
-    //
+    try {
+      $validator = Validator::make($request->all(), [
+        'id' => ['required', 'integer'],
+      ]);
+
+      if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+    } catch (\Throwable $th) {
+      throw $th;
+    }
+
+    $data = $request->all();
+    $manager = User::find($data['id']);
+
+
+    // Check if ID corresponds to a manager
+    if ($manager->getRoleNames()[0] !== 'gestor') {
+      return redirect()->back()->with('warning', 'The user cannot be deleted.');
+    }
+    // Delete the Manager
+    $manager->delete();
+
+    return redirect()->back()->with('success', 'The manager has been deleted successfully.');
   }
 }

@@ -13,6 +13,13 @@
   @hasrole("gestor do sistema")
     <li>
       <a href="{{ route("managers.list") }}">
+        <i data-feather="layers"></i>
+        <span> Organizations </span>
+      </a>
+    </li>
+
+    <li>
+      <a href="{{ route("managers.list") }}">
         <i data-feather="user"></i>
         <span> Gestores </span>
       </a>

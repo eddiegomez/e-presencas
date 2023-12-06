@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Organization;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 
 class OrganizationController extends Controller
 {
@@ -77,7 +78,18 @@ class OrganizationController extends Controller
     }
   }
 
+  /**
+   * Show a specific resource from the Controller
+   * @param int $id
+   * @return View
+   */
 
+  public function show($id)
+  {
+    $organization = Organization::find($id);
+
+    return view('organization.single', compact('organization'));
+  }
 
   /**
    * Update the specified resource in storage.

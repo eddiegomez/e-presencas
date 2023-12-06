@@ -36,6 +36,7 @@ Route::middleware(['auth', 'web'])->group(function () {
 
   // OrganizationController Routes
   Route::get('/organizations', [OrganizationController::class, 'index'])->name('organizations.list');
+  Route::get('/organization/{id}', [OrganizationController::class, 'show'])->name('organization.show');
   Route::post('/organization/store', [OrganizationController::class, 'store'])->name('organization.store');
   Route::post('/organization/update', [OrganizationController::class, 'update'])->name('organization.update');
   Route::post('/organization/destroy', [OrganizationController::class, 'destroy'])->name('organization.destroy');

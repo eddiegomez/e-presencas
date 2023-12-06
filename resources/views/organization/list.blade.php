@@ -85,7 +85,7 @@
                 class="p-3 shadow rounded-lg border border-light bg-white d-flex justify-content-between align-items-center">
                 <div>
                   <h4 class="text-dark" style="cursor: pointer;"
-                    onClick='detailsModal("{{ $organization->name }}",@json($organization->email), @json($organization->phone), @json($organization->location))'>
+                    onClick='detailsModal({{ $organization->id }},"{{ $organization->name }}",@json($organization->email), @json($organization->phone), @json($organization->location), @json($organization->website))'>
                     {{ $organization->name }}</h4>
                   <span class="text-muted">{{ $organization->email }}</span>
                 </div>
@@ -318,10 +318,16 @@
               <span class="text-muted">Location</span>
               <span class="text-dark font-weight-bold" id="dLocation"></span>
             </div>
+            {{-- Website --}}
+            <div class="d-flex justify-content-between mb-2 font-size-14">
+              <span class="text-muted">Website</span>
+              <a href="" class="text-dark font-weight-bold" id="dWebsite" target="_blank">Ver Website</a>
+            </div>
           </div>
           {{-- Modal Footer --}}
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary mx-auto w-50" data-dismiss="modal">Fechar</button>
+            <a href="" class="btn btn-secondary mx-auto w-50" id="seeMore" target="_blank">Ver mais
+              detalhes</a>
           </div>
         </div>
 
@@ -358,11 +364,13 @@
     </div>
 
     <script>
-      function detailsModal(name, email, phone, location) {
+      function detailsModal(id, name, email, phone, location, website) {
         document.getElementById("organizationDetailsModalLabel").innerHTML = name;
         document.getElementById("dEmail").innerHTML = email;
         document.getElementById("dPhone").innerHTML = phone;
         document.getElementById("dLocation").innerHTML = location;
+        document.getElementById("dWebsite").href = website;
+        document.getElementById("seeMore").href = `{{ route("organization.show", $organization->id) }}`;
         $("#organizationDetailsModal").modal('show');
       }
 

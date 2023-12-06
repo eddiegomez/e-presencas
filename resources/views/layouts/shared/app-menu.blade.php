@@ -36,13 +36,13 @@
     </li>
   @endhasrole
 
-  <li>
-    <a href="/participants">
-      <i data-feather="user"></i>
-      <span> Participants </span>
-    </a>
-  </li>
   @if (Auth::user()->user_role == 1)
+    <li>
+      <a href="/participants">
+        <i data-feather="user"></i>
+        <span> Participants </span>
+      </a>
+    </li>
     <li>
       <a href="/protocolos">
         <i data-feather="user"></i>

@@ -307,6 +307,11 @@
               <span class="text-muted">Organization</span>
               <span class="text-dark font-weight-bold" id="dOrganization"></span>
             </div>
+            {{-- Organization --}}
+            <div class="d-flex justify-content-between mb-2 font-size-14">
+              <span class="text-muted">Organization</span>
+              <span class="text-dark font-weight-bold" id="dOrganization"></span>
+            </div>
           </div>
           {{-- Modal Footer --}}
           <div class="modal-footer">

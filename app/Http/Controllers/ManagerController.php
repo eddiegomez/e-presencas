@@ -77,8 +77,6 @@ class ManagerController extends Controller
     return redirect()->back()->with('success', 'Gestor adicionado com successo!');
   }
 
-
-
   /**
    * Update the specified resource in storage.
    *
@@ -157,4 +155,6 @@ class ManagerController extends Controller
 
     return redirect()->back()->with('success', 'The manager has been deleted successfully.');
   }
+
+  
 }

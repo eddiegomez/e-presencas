@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Organization;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
@@ -87,8 +88,11 @@ class OrganizationController extends Controller
   public function show($id)
   {
     $organization = Organization::find($id);
+    $managers = User::where('organization_id', $organization->id)->whereHas('roles', function ($query) {
+      $query->where('name', 'gestor');
+    })->get();
 
-    return view('organization.single', compact('organization'));
+    return view('organization.single', compact('organization', 'managers'));
   }
 
   /**

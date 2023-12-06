@@ -15,10 +15,25 @@ class OrganizationController extends Controller
    */
   public function index()
   {
-    $organizations = Organization::all();
+    $organizations = Organization::paginate(12);
 
     return response(view('organization.list', compact('organizations')));
   }
+
+  protected $customMessages = [
+    'name.required' => 'O campo nome é obrigatório.',
+    'name.max' => 'O campo nome deve ter no máximo 200 caracteres',
+    'name.regex' => 'O campo nome deve nao pode conter numeros.',
+    'email.required' => 'O campo email é obrigatório.',
+    'email.email' => 'O campo email não foi preenchido devidamente.',
+    'phone.required' => 'O campo número de telefone é obrigatório.',
+    'phone.numeric' => 'O campo número deve ser númerico.',
+    'phone.digits' => 'O campo número deve ter exactamente 9 caracteres.',
+    'location.required' => 'O campo location é obrigatório.',
+    'location.max' => 'O campo location deve ter no máximo 255 caracteres.',
+    'website.required' => 'O campo website é obrigatório.',
+    'website.url' => 'O campo website deve ser uma url.',
+  ];
 
   /**
    * Store a newly created resource in storage.
@@ -30,15 +45,16 @@ class OrganizationController extends Controller
   {
     try {
       $validator = Validator::make($request->all(), [
-        'name' => ['required', 'string'],
+        'name' => ['required', 'string', 'max:200', 'regex:/^[^\d]+$/'],
         'email' => ['required', 'email'],
-        'phone' => ['required', 'string', 'min:9', 'max:9'],
-        'location' => ['required', 'string'],
-        'website' => ['required', 'string']
-      ]);
+        'phone' => ['required', 'numeric', 'digits:9'],
+        'location' => ['required', 'string', 'max:255'],
+        'website' => ['required', 'url']
+      ], $this->customMessages);
+
 
       if ($validator->fails()) {
-        return redirect()->back()->with('Warning', 'Algo de errado nao esta certo!');
+        return redirect()->back()->withErrors($validator)->withInput();
       }
     } catch (\Throwable $th) {
       throw $th;
@@ -71,18 +87,20 @@ class OrganizationController extends Controller
    */
   public function update(Request $request)
   {
+
     try {
+
       $validator = Validator::make($request->all(), [
         'id' => ['required', 'integer'],
-        'name' => ['required', 'string'],
+        'name' => ['required', 'string', 'max:200', 'regex:/^[^\d]+$/'],
         'email' => ['required', 'email'],
-        'phone' => ['required', 'string', 'min:9', 'max:9'],
-        'location' => ['required', 'string'],
-        'website' => ['required', 'string']
-      ]);
+        'phone' => ['required', 'numeric', 'digits:9'],
+        'location' => ['required', 'string', 'max:255'],
+        'website' => ['required', 'url']
+      ], $this->customMessages += ['id' => 'Algo esta errado com o ID']);
 
       if ($validator->fails()) {
-        return redirect()->back()->with('Warning', 'Algo de errado nao esta certo!');
+        return redirect()->back()->withErrors($validator)->withInput();
       }
     } catch (\Throwable $th) {
       throw $th;

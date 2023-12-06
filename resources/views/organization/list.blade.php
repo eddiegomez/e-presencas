@@ -6,6 +6,24 @@
 @endsection
 
 @section("breadcrumb")
+  @if (session("success"))
+    <div class="alert alert-success text-center font-bold">
+      {{ session("success") }}
+    </div>
+  @endif
+
+  @if (session("warning"))
+    <div class="alert alert-warning text-center font-bold">
+      {{ session("warning") }}
+    </div>
+  @endif
+
+  @if (session("error"))
+    <div class="alert alert-warning text-center font-bold">
+      {{ session("error") }}
+    </div>
+  @endif
+
   <div class="row page-title align-items-center">
     <div class="col-sm-4 col-xl-6">
       <h4 class="mb-1 mt-0">Instituição</h4>
@@ -26,7 +44,7 @@
 @hasrole("gestor do sistema")
   @section("content")
     <div class="row">
-      <div class="col-4 mb-4">
+      <div class="col-lg-4 col-md-6 col-12 mb-4">
         <form id="searchForm">
           <div class="input-group">
             <input type="text" class="form-control search-input mr-2" placeholder="Porcurar pelo nome">
@@ -37,7 +55,7 @@
         </form>
       </div>
 
-      <div class="col-md-4 col-12  mb-4">
+      <div class="col-lg-4 col-md-6 col-12  mb-4">
         <form id="searchForm">
           <div class="input-group">
             <input type="text" class="form-control search-input mr-2" placeholder="Procurar pela organizacao">
@@ -48,7 +66,7 @@
         </form>
       </div>
 
-      <div class="col-4 mb-4">
+      <div class="col-lg-4 col-md-6 col-12 mb-4">
         <form id="searchForm">
           <div class="input-group">
             <input type="text" class="form-control search-input mr-2" placeholder="Procurar pelo email">
@@ -62,7 +80,7 @@
       @if (!$organizations->isEmpty())
         <div class="list w-100 d-flex">
           @foreach ($organizations as $organization)
-            <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
+            <div class=" col-sm-6 col-12 col-lg-4 col-xl-3">
               <div
                 class="p-3 shadow rounded-lg border border-light bg-white d-flex justify-content-between align-items-center">
                 <div>
@@ -116,15 +134,22 @@
               {{-- Name --}}
               <div class="form-group">
                 <label for="name" class="col-lg-8 col-form-label">Nome</label>
-                <input type="text" class="form-control" name="name" id="name"
+                <input type="text" class="form-control" name="name" id="name" value="{{ old("name") }}"
                   placeholder="Example: instituicao das piadas" autocomplete="off">
+                @error("name")
+                  <span class="text-danger">{{ $message }}</span>
+                @enderror
+
               </div>
 
               {{-- Email --}}
               <div class="form-group">
                 <label for="email" class="col-lg-8 col-form-label">Email</label>
-                <input type="email" name="email" id="email" class="form-control"
-                  placeholder="info@instituicao.gov.mz" autocomplete="off">
+                <input type="email" name="email" id="email" class="form-control" value="{{ old("email") }}"
+                  placeholder="info@instituicao.gov.mz" autocomplete="off" required>
+                @error("email")
+                  <span class="text-danger">{{ $message }}</span>
+                @enderror
               </div>
 
               {{-- Phone Number --}}
@@ -134,22 +159,33 @@
                   <div class="input-group-prepend">
                     <div class="input-group-text">+258</div>
                   </div>
-                  <input type="text" class="form-control" id="phone" name="phone" placeholder="84 000 0000">
+                  <input type="text" class="form-control" id="phone" name="phone" placeholder="84 000 0000"
+                    autocomplete="off" value="{{ old("phone") }}">
                 </div>
+                @error("phone")
+                  <span class="text-danger">{{ $message }}</span>
+                @enderror
               </div>
 
               {{-- Location --}}
               <div class="form-group">
                 <label for="location" class="col-lg-8 col-form-label">Location</label>
                 <input type="text" class="form-control" name="location" id="location"
-                  placeholder="Example: Av Vladimir Lenine esquina com 24 de Julho" autocomplete="off">
+                  value="{{ old("location") }}" placeholder="Example: Av Vladimir Lenine esquina com 24 de Julho"
+                  autocomplete="off" required>
+                @error("location")
+                  <span class="text-danger">{{ $message }}</span>
+                @enderror
               </div>
 
               {{-- Website --}}
               <div class="form-group">
                 <label for="website" class="col-lg-8 col-form-label">Website</label>
-                <input type="text" class="form-control" name="website" id="website"
-                  placeholder="Example: Av Vladimir Lenine esquina com 24 de Julho" autocomplete="off">
+                <input type="text" class="form-control" name="website" id="website" value="{{ old("website") }}"
+                  placeholder="Example: www.google.com" autocomplete="off" required>
+                @error("website")
+                  <span class="text-danger">{{ $message }}</span>
+                @enderror
               </div>
 
               <div class="modal-footer">
@@ -183,20 +219,29 @@
 
               {{-- ID do manager --}}
               <input type="hidden" name="id" id="EorganizationId">
+              @error("id")
+                <span class="text-danger">{{ $message }}</span>
+              @enderror
 
               {{-- Name --}}
               <div class="form-group">
                 <label for="name" class="col-lg-8 col-form-label">Nome</label>
                 <input type="text" class="form-control" name="name" id="Ename" placeholder="Example: INAGE"
-                  autocomplete="off">
+                  autocomplete="off" required>
               </div>
+              @error("name")
+                <span class="text-danger">{{ $message }}</span>
+              @enderror
 
               {{-- Email --}}
               <div class="form-group">
                 <label for="email" class="col-lg-8 col-form-label">Email</label>
                 <input type="email" name="email" id="Eemail" class="form-control"
-                  placeholder="inage@inage.gov.mz" autocomplete="off">
+                  placeholder="inage@inage.gov.mz" autocomplete="off" required>
               </div>
+              @error("email")
+                <span class="text-danger">{{ $message }}</span>
+              @enderror
 
               {{-- Phone Number --}}
               <div class="form-group">
@@ -208,20 +253,29 @@
                   <input type="text" class="form-control" id="Ephone" name="phone" placeholder="84 000 0000">
                 </div>
               </div>
+              @error("phone")
+                <span class="text-danger">{{ $message }}</span>
+              @enderror
 
               {{-- Location --}}
               <div class="form-group">
                 <label for="location" class="col-lg-8 col-form-label">Location</label>
                 <input type="text" class="form-control" name="location" id="Elocation"
-                  placeholder="Example: Av Vladimir Lenine esquina com 24 de Julho" autocomplete="off">
+                  placeholder="Example: Av Vladimir Lenine esquina com 24 de Julho" autocomplete="off" required>
               </div>
+              @error("location")
+                <span class="text-danger">{{ $message }}</span>
+              @enderror
 
               {{-- Website --}}
               <div class="form-group">
                 <label for="location" class="col-lg-8 col-form-label">Website</label>
                 <input type="text" class="form-control" name="website" id="Ewebsite"
-                  placeholder="Example: Av Vladimir Lenine esquina com 24 de Julho" autocomplete="off">
+                  placeholder="Example: www.google.com" autocomplete="off" required>
               </div>
+              @error("website")
+                <span class="text-danger">{{ $message }}</span>
+              @enderror
 
               <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
@@ -317,7 +371,7 @@
         document.getElementById("EorganizationId").value = id;
         document.getElementById("Ename").value = name;
         document.getElementById("Eemail").value = email;
-        document.getElementById("Ephone").value = phone;
+        document.getElementById("Ephone").value = phone.slice(4);
         document.getElementById("Elocation").value = location;
         document.getElementById("Ewebsite").value = website;
         $("#editOrganizationModal").modal('show');

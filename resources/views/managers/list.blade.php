@@ -134,15 +134,21 @@
               <div class="form-group">
                 <label for="name" class="col-lg-8 col-form-label">Nome</label>
                 <input type="text" class="form-control" name="name" id="name" placeholder="Example: John Doe"
-                  autocomplete="off">
+                  autocomplete="off" value="{{ old("name") }}" required>
               </div>
+              @error("name")
+                <span class="text-danger">{{ $message }}</span>
+              @enderror
 
               {{-- Email --}}
               <div class="form-group">
                 <label for="email" class="col-lg-8 col-form-label">Email</label>
                 <input type="email" name="email" id="email" class="form-control" placeholder="john.doe@gmail.com"
-                  autocomplete="off">
+                  autocomplete="off" value="{{ old("email") }}" required>
               </div>
+              @error("email")
+                <span class="text-danger">{{ $message }}</span>
+              @enderror
 
               {{-- Phone Number --}}
               <div class="form-group">
@@ -151,23 +157,29 @@
                   <div class="input-group-prepend">
                     <div class="input-group-text">+258</div>
                   </div>
-                  <input type="text" class="form-control" id="phone" name="phone" placeholder="84 000 0000">
+                  <input type="text" class="form-control" id="phone" name="phone" placeholder="84 000 0000"
+                    value="{{ old("phone") }}" required>
                 </div>
               </div>
+              @error("phone")
+                <span class="text-danger">{{ $message }}</span>
+              @enderror
 
               {{-- Organizacao --}}
               <div class="form-group">
                 <label for="organization" class="col-lg-8 col-form-label">{{ __("Instituição") }}</label>
-                <select type="text" name="organization" id="organization" class="form-control"
-                  placeholder="john.doe@gmail.com" autocomplete="off">
-                  <option value="" disabled selected>Escolha uma Instituicao</option>
+                <select type="text" name="organization" id="organization" class="form-control" required
+                  placeholder="john.doe@gmail.com" autocomplete="off" value="{{ old("organization") }}">
+                  <option disabled selected>Escolha uma Instituicao</option>
                   @foreach ($organizations as $organization)
                     <option value="{{ $organization->id }}">{{ $organization->name }} ({{ $organization->location }})
                     </option>
                   @endforeach
-
                 </select>
               </div>
+              @error("organization")
+                <span class="text-danger">{{ $message }}</span>
+              @enderror
 
               <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
@@ -200,6 +212,9 @@
 
               {{-- ID do manager --}}
               <input type="hidden" name="id" id="EmanagerId">
+              @error("id")
+                <span class="text-danger">{{ $message }}</span>
+              @enderror
 
               {{-- Name --}}
               <div class="form-group">
@@ -207,6 +222,9 @@
                 <input type="text" class="form-control" name="name" id="Ename"
                   placeholder="Example: John Doe" autocomplete="off">
               </div>
+              @error("name")
+                <span class="text-danger">{{ $message }}</span>
+              @enderror
 
               {{-- Email --}}
               <div class="form-group">
@@ -214,6 +232,9 @@
                 <input type="email" name="email" id="Eemail" class="form-control"
                   placeholder="john.doe@gmail.com" autocomplete="off">
               </div>
+              @error("email")
+                <span class="text-danger">{{ $message }}</span>
+              @enderror
 
               {{-- Phone Number --}}
               <div class="form-group">
@@ -225,6 +246,9 @@
                   <input type="text" class="form-control" id="Ephone" name="phone" placeholder="84 000 0000">
                 </div>
               </div>
+              @error("phone")
+                <span class="text-danger">{{ $message }}</span>
+              @enderror
 
               {{-- Organizacao --}}
               <div class="form-group">
@@ -236,9 +260,11 @@
                     <option value="{{ $organization->id }}">{{ $organization->name }} ({{ $organization->location }})
                     </option>
                   @endforeach
-
                 </select>
               </div>
+              @error("organization")
+                <span class="text-danger">{{ $message }}</span>
+              @enderror
 
               <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>

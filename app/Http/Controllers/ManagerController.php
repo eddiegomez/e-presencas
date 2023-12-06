@@ -11,6 +11,20 @@ use Illuminate\View\View;
 
 class ManagerController extends Controller
 {
+  protected $customMessages = [
+    'name.required' => 'O campo nome é obrigatório.',
+    'name.max' => 'O campo nome deve ter no máximo 200 caracteres',
+    'name.regex' => 'O campo nome deve nao pode conter numeros.',
+    'email.required' => 'O campo email é obrigatório.',
+    'email.email' => 'O campo email não foi preenchido devidamente.',
+    'phone.required' => 'O campo número de telefone é obrigatório.',
+    'phone.numeric' => 'O campo número deve ser númerico.',
+    'phone.digits' => 'O campo número deve ter exactamente 9 caracteres.',
+    'organization.required' => 'O campo instituição é obrigatório.',
+    'organization.integer' => 'O campo instituição foi mal informado.',
+    'organization.exists' => 'Não encontramos a instituição que nos informou.',
+  ];
+
   /**
    * Display a listing of the resource.
    *
@@ -34,11 +48,11 @@ class ManagerController extends Controller
   {
     try {
       $validator = Validator::make($request->all(), [
-        'name' => ['required', 'max:255', 'string'],
+        'name' => ['required', 'max:255', 'string', 'regex:/^[^\d]+$/'],
         'email' => ['required', 'max:255', 'email'],
-        'phone' => ['required', 'max:9', 'min:9', 'string'],
-        'organization' => ['required', 'integer']
-      ]);
+        'phone' => ['required', 'digits:9', 'string'],
+        'organization' => ['required', 'integer', 'exists:organization,id']
+      ], $this->customMessages);
 
       if ($validator->fails()) {
         return redirect()->back()->withErrors($validator)->withInput();
@@ -73,14 +87,20 @@ class ManagerController extends Controller
    */
   public function update(Request $request)
   {
+    $editMessages = [
+      'id.exists' => 'Gestor inexistente!',
+      'id.integer' => 'ID invalido.',
+      'id.required' => 'ID é obrigatório.'
+    ];
+
     try {
       $validator = Validator::make($request->all(), [
-        'id' => ['required', 'integer'],
-        'name' => ['required', 'string', 'max:255'],
-        'email' => ['required', 'email'],
-        'phone' => ['required', 'numeric'],
-        'organization' => ['required', 'integer']
-      ]);
+        'id' => ['required', 'integer', 'exists:users,id'],
+        'name' => ['required', 'max:255', 'string', 'regex:/^[^\d]+$/'],
+        'email' => ['required', 'max:255', 'email'],
+        'phone' => ['required', 'digits:9', 'string'],
+        'organization' => ['required', 'integer', 'exists:organization,id']
+      ], $this->customMessages += $editMessages);
 
       if ($validator->fails()) {
         return redirect()->back()->withErrors($validator)->withInput();

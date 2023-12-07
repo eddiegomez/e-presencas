@@ -60,7 +60,9 @@
 
         <p class="d-flex justify-content-between text-muted">
           <span>Phone:</span>
-          <span class="text-dark font-weight-bold">{{ $organization->phone }}</span>
+          <span class="text-dark font-weight-bold">{{ mb_substr($organization->phone, 0, 4) }}
+            {{ substr($organization->phone, 4, 2) }}
+            {{ substr($organization->phone, 6, 3) }} {{ substr($organization->phone, 9, 4) }}</span>
         </p>
 
         <p class="d-flex justify-content-between text-muted">
@@ -105,7 +107,8 @@
                       <td>{{ $index + 1 }}</td>
                       <td>{{ $manager->name }}</td>
                       <td>{{ $manager->email }}</td>
-                      <td>{{ $manager->phone }}</td>
+                      <td>{{ mb_substr($manager->phone, 0, 4) }} {{ substr($manager->phone, 4, 2) }}
+                        {{ substr($manager->phone, 6, 3) }} {{ substr($manager->phone, 9, 4) }}</td>
                     </tr>
                   @endforeach
                 </tbody>
@@ -168,13 +171,7 @@
 
                 {{-- Organizacao --}}
                 <div class="form-group">
-                  <label for="organization" class="col-lg-8 col-form-label">{{ __("Instituição") }}</label>
-                  <select type="text" name="organization" id="organization" class="form-control" required disabled
-                    placeholder="john.doe@gmail.com" autocomplete="off" value="{{ old("organization") }}">
-                    <option disabled selected value="{{ $organization->id }}">{{ $organization->name }}
-                      ({{ $organization->location }})
-                    </option>
-                  </select>
+                  <input type="hidden" name="organization" value="{{ $organization->id }}">
                 </div>
                 @error("organization")
                   <span class="text-danger">{{ $message }}</span>

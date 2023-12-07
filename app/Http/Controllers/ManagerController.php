@@ -65,10 +65,17 @@ class ManagerController extends Controller
     $gestor = new User();
     $organization = Organization::find($data['organization']);
 
+    if (User::where('phone', "+258" . $data['phone'])->exists()) {
+      return redirect()->back()->with('warning', 'Este numero de celular ja foi registado!')->withInput();
+    }
+
+    if (User::where('email', $data['email'])->exists()) {
+      return redirect()->back()->with('warning', 'Este email ja foi registado!')->withInput();
+    }
 
     $gestor->name = $data['name'];
     $gestor->email = $data['email'];
-    $gestor->phone = $data['phone'];
+    $gestor->phone = '+258' . $data['phone'];
     $gestor->organization_id = $data['organization'];
     $gestor->password = Hash::make("Gestor@" . $organization->name);
     $gestor->save();
@@ -155,6 +162,4 @@ class ManagerController extends Controller
 
     return redirect()->back()->with('success', 'The manager has been deleted successfully.');
   }
-
-  
 }

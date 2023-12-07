@@ -92,7 +92,7 @@
             <div class="media p-3">
               <div class="media-body">
                 <span class="text-muted text-uppercase font-size-12 font-weight-bold">Eventos</span>
-                <h2 class="mb-0">{{ $events->count() }}</h2>
+                <h2 class="mb-0">{{ $events }}</h2>
               </div>
             </div>
           </div>
@@ -105,7 +105,7 @@
             <div class="media p-3">
               <div class="media-body">
                 <span class="text-muted text-uppercase font-size-12 font-weight-bold">Participantes</span>
-                <h2 class="mb-0">{{ $participants->count() }}</h2>
+                <h2 class="mb-0">{{ $participants }}</h2>
               </div>
             </div>
           </div>
@@ -133,7 +133,7 @@
             <div class="media p-3">
               <div class="media-body">
                 <span class="text-muted text-uppercase font-size-12 font-weight-bold">Convites entregues</span>
-                <h2 class="mb-0">{{ $invites->count() }}</h2>
+                <h2 class="mb-0">{{ $invites }}</h2>
               </div>
             </div>
           </div>
@@ -163,8 +163,8 @@
                     <th scope="col">Status</th>
                   </tr>
                 </thead>
-                <tbody>
-                  @foreach ($events as $event)
+                {{-- <tbody> --}}
+                {{-- @foreach ($events as $event)
                     @foreach ($event->participants as $participant)
                       <tr>
                         <td>{{ $participant->id }}</td>
@@ -187,7 +187,7 @@
                       </tr>
                     @endforeach
                   @endforeach
-                </tbody>
+                </tbody> --}}
               </table>
             </div> <!-- end table-responsive-->
           </div> <!-- end card-body-->

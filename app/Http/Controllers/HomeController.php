@@ -33,8 +33,9 @@ class HomeController extends Controller
     $events = Event::all()->count();
     $participants = Participant::all()->count();
     $organizations = Organization::all()->count();
+    $invites = Invites::all()->count();
     $users = User::all()->count();
 
-    return view('dashboard', compact('events', 'participants', 'organizations', 'users'));
+    return view('dashboard', compact('events', 'participants', 'organizations', 'users', 'invites'));
   }
 }

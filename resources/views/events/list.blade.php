@@ -47,7 +47,9 @@
   <div class="row">
     @foreach ($events as $event)
       <div class="col-md-6 col-xl-3">
-        <a href="/event/{{ $event->id }}" class="card position-relative">
+        <a class="card position-relative"
+          onClick='EventDetailsModal("{{ $event->name }}", @json($event->start_date), @json($event->end_date), @json($event->start_time), @json($event->end_time), @json($event->banner_url))'
+          style="cursor:pointer">
           <div class="card-body p-0 z-10">
             <div class="media p-3">
               <div class="media-body">
@@ -183,7 +185,77 @@
     </div>
   </div>
 
+  {{-- Event Details Modal --}}
+  <div id="EventDetailsModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="EventDetailsModalLabel"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+          {{-- Dates --}}
+          <div class="d-flex justify-content-between mb-2">
+            {{-- Start date --}}
+            <div>
+              <span>Data de inicio:</span>
+              <span class="text-dark font-weight-bold" id="startDate"></span>
+            </div>
+            {{-- End date --}}
+            <div>
+              <span>Data de fim:</span>
+              <span class="text-dark font-weight-bold" id="endDate"></span>
+            </div>
+          </div>
+
+          {{-- Hours --}}
+          <div class="d-flex justify-content-between mb-2">
+            {{-- Start time --}}
+            <div>
+              <span>Hora de inicio:</span>
+              <span class="text-dark font-weight-bold" id="startTime"></span>
+            </div>
+            {{-- End time --}}
+            <div>
+              <span>Hora de fim:</span>
+              <span class="text-dark font-weight-bold" id="endTime"></span>
+            </div>
+          </div>
+
+          {{-- Hours --}}
+          <div class="d-flex justify-content-between mb-2">
+            {{-- Location --}}
+            <div>
+              <span>Local: </span>
+              <span class="text-dark font-weight-bold" id="Location"></span>
+            </div>
+            {{-- End time --}}
+            <div>
+              <a href="" target="_blank"class="text-dark font-weight-bold" id="Banner">Banner</a>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <a href="#" class="btn btn-secondary w-100">Ver detalhes</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <script>
+    function EventDetailsModal(name, startDate, endDate, startTime, endTime, banner) {
+      document.getElementById('EventDetailsModalLabel').innerHTML = name;
+      document.getElementById('startDate').innerHTML = startDate;
+      document.getElementById('endDate').innerHTML = endDate;
+      document.getElementById('startTime').innerHTML = startTime;
+      document.getElementById('endTime').innerHTML = endTime;
+      document.getElementById('Banner').href = '{{ asset("storage/" . $event->banner_url) }}';
+      $('#EventDetailsModal').modal('show');
+    }
+
     function checkLocationField() {
       var select = document.getElementById('address');
       var selectedLocation = select.value;

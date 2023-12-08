@@ -21,21 +21,22 @@ class Event extends Model
     'start_date',
     'end_date',
     'start_time',
-    'end_time'
+    'end_time',
+    'organization_id'
   ];
 
   public $timestamps = true;
-  
+
   // Get Participants Function
   public function participants(): BelongsToMany
   {
-    return $this->belongsToMany(Participant::class, 'participant_event')->withPivot('qr_url', 'status');
+    return $this->belongsToMany(Participant::class, 'invites')->withPivot('qr_url', 'status');
   }
 
   // Check if it has participant by ID
   public function hasParticipant($participant): HasOneThrough
   {
-    return $this->hasOneThrough(Participant::class, 'participant_event');
+    return $this->hasOneThrough(Participant::class, 'invites');
   }
 
   // Get Schedules Function

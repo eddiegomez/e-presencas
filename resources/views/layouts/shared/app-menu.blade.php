@@ -27,16 +27,13 @@
   @endhasrole
 
   {{-- Institution manager menu --}}
-  @hasrole("")
+  @hasrole("gestor")
     <li>
       <a href="/events">
         <i data-feather="calendar"></i>
         <span> Events </span>
       </a>
     </li>
-  @endhasrole
-
-  @if (Auth::user()->user_role == 1)
     <li>
       <a href="/participants">
         <i data-feather="user"></i>
@@ -49,7 +46,7 @@
         <span> Protocolos </span>
       </a>
     </li>
-  @endif
+  @endhasrole
   {{-- <li>
         <a href="/schedule">
             <i data-feather="layers"></i>

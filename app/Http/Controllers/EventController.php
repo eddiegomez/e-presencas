@@ -3,13 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Address;
-use App\Models\Event_Has_Address;
+use App\Models\Event_Address;
 use App\Models\Invites;
 use App\Models\Schedule;
 use App\Notifications\sendInvite;
 use App\Models\Event;
 use App\Models\Participant;
-use App\Models\Participant_Has_Event;
 use App\Models\ParticipantType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -116,7 +115,7 @@ class EventController extends Controller
     $event->organization_id = Auth::user()->organization_id;
     $event->save();
 
-    $event_address = new Event_Has_Address();
+    $event_address = new Event_Address();
     $event_address->event_id = $event->id;
     $event_address->address_id = $address->id;
     $event_address->save();

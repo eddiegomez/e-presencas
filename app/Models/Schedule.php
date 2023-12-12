@@ -10,7 +10,7 @@ class Schedule extends Model
 {
   use HasFactory;
 
-  protected $table = 'schedules';
+  protected $table = 'schedule';
 
   /**
    * The attributes that are mass assignable.

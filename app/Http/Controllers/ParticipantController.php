@@ -9,6 +9,20 @@ use Illuminate\Support\Facades\Validator;
 
 class ParticipantController extends Controller
 {
+
+  public $customValidatorMessages = [
+    "name.required" => "O participante deve ter um nome.",
+    "name.string" => "O nome do participante deve ser um texto.",
+    "name.regex" => "O nome do participante nao pode conter numeros",
+    "email.required" => "O paricipante deve ter um email",
+    "email.email" => "O email do inserido não é valido.",
+    "degree.string" => "O grau deve ser um texto",
+    "phone.required" => "O participante deve ter um número de telefone.",
+    "phone.numeric" => "O numero de telefone deve não pode conter letras.",
+    "description.required" => "O participante deve ser descrevido.",
+    "description.string" => "A descrição deve ser um texto"
+  ];
+
   /**
    * Display a listing of the resource.
    *
@@ -22,30 +36,21 @@ class ParticipantController extends Controller
   }
 
   /**
-   * Show the form for creating a new resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function create()
-  {
-    //
-  }
-
-  /**
    * Store a newly created resource in storage.
    *
    * @param  \Illuminate\Http\Request  $request
-   * @return \Illuminate\Http\Response
+   * @return \Illuminate\Http\RedirectResponse
    */
   public function store(Request $request)
   {
     try {
       $validator = Validator::make($request->all(), [
-        'name' => ['required', 'string'],
+        'name' => ['required', 'string', 'regex:/^[^\d]+$/'],
         'email' => ['required', 'email'],
+        'degree' => ['required', 'string'],
         'phone_number' => ['required', 'numeric'],
         'description' => ['required', 'string']
-      ]);
+      ], $this->customValidatorMessages);
 
       // dd($validator);
 
@@ -53,12 +58,10 @@ class ParticipantController extends Controller
         return redirect()->back()->withErrors($validator)->withInput();
       }
     } catch (\Throwable $th) {
-      // dd($th);
       throw $th;
     }
 
     $data = $request->all();
-    // dd($data);
 
     $participant = new Participant();
 
@@ -66,6 +69,7 @@ class ParticipantController extends Controller
     $participant->email = $data['email'];
     $participant->description = $data['description'];
     $participant->phone_number = $data['phone_number'];
+    $participant->degree = $data['degree'];
     $participant->save();
 
     return redirect()->back()->with('message', 'O ' . $participant->name . 'foi criado!');

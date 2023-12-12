@@ -44,17 +44,13 @@ Route::middleware(['auth', 'web'])->group(function () {
 
 
   // Get all events Controller
-  Route::get('/events', [EventController::class, 'index'])->name('events');
-
+  Route::get('/events', [EventController::class, 'index'])->name('event.list');
   // Create a new event Controller
   Route::post('/event', [EventController::class, 'store'])->name('event.store');
-
   // Get a single event Controller
-  Route::get('/event/{id}', [EventController::class, 'show'])->name('event');
-
+  Route::get('/event/{id}', [EventController::class, 'show'])->name('event.show');
   // Edit Event Controller
   Route::post('/event/{id}', [EventController::class, 'update'])->name('event.update');
-
   // Delete Event Controller
   Route::post('/event/delete/{id}', [EventController::class, 'destroy'])->name('event.destroy');
 

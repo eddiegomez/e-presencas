@@ -48,7 +48,7 @@
     @foreach ($events as $event)
       <div class="col-md-6 col-xl-3">
         <a class="card position-relative"
-          onClick='EventDetailsModal("{{ $event->name }}", @json($event->start_date), @json($event->end_date), @json($event->banner_url), @json($event->addresses[0]->name))'
+          onClick='EventDetailsModal({{ $event->id }} , "{{ $event->name }}", @json($event->start_date), @json($event->end_date), @json($event->banner_url), @json($event->addresses[0]->name))'
           style="cursor:pointer">
           <div class="card-body p-0 z-10">
             <div class="media p-3">
@@ -238,7 +238,7 @@
 
         </div>
         <div class="modal-footer">
-          <a href="#" class="btn btn-secondary w-100">Ver detalhes</a>
+          <a href="#" class="btn btn-secondary w-100" id="showEvent">Ver detalhes</a>
         </div>
       </div>
 
@@ -246,7 +246,7 @@
   </div>
 
   <script>
-    function EventDetailsModal(name, startDate, endDate, banner, location) {
+    function EventDetailsModal(id, name, startDate, endDate, banner, location) {
       document.getElementById('EventDetailsModalLabel').innerHTML = name;
       document.getElementById('startDate').innerHTML = startDate;
       document.getElementById('endDate').innerHTML = endDate;
@@ -254,6 +254,7 @@
       document.getElementById('endTime').innerHTML = '{{ date("H:i", strtotime($event->end_time)) }}';
       document.getElementById('Location').innerHTML = location;
       document.getElementById('Banner').href = '{{ asset("storage/" . $event->banner_url) }}';
+      document.getElementById('showEvent').href = '{{ route("event.show", $event->id) }}';
       $('#EventDetailsModal').modal('show');
     }
 
@@ -268,8 +269,6 @@
         newLocationFields.style.display = 'none';
       }
     };
-
-
 
     document.getElementById('address').addEventListener('change', checkLocationField);
   </script>

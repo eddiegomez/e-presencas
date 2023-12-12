@@ -29,7 +29,7 @@
   {{-- Institution manager menu --}}
   @hasrole("gestor")
     <li>
-      <a href="/events">
+      <a href='{{ route("event.list") }}'>
         <i data-feather="calendar"></i>
         <span> Events </span>
       </a>

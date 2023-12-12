@@ -14,7 +14,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View as View;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Http\Controllers\ParticipantController;
 
 class EventController extends Controller
 {
@@ -127,15 +129,15 @@ class EventController extends Controller
    * Display the specified resource.
    *
    * @param  int  $id
-   * @return \Illuminate\Http\Response
+   * @return View
    */
   public function show($id)
   {
-    $user = Auth::user();
     $event = Event::find($id);
+    $addresses = Address::all();
     $participants = Participant::all();
     $participant_type = ParticipantType::all();
-    return response(view('singleEvent', compact('event', 'participants', 'participant_type')),);
+    return view('events.single', compact('event', 'participants', 'participant_type', 'addresses'));
   }
 
   /**
@@ -182,7 +184,6 @@ class EventController extends Controller
     if ($event) {
       Event::destroy($id);
     }
-
     return redirect()->route('events');
   }
 
@@ -192,9 +193,10 @@ class EventController extends Controller
 
     try {
       $validator = Validator::make($request->all(), [
-        'participant' => ['required', 'numeric'],
+        'participant' => ['required'],
         'type' => ['required', 'numeric']
       ]);
+
       if ($validator->fails()) {
         return redirect()->back()->withErrors($validator)->withInput();
       }
@@ -204,14 +206,46 @@ class EventController extends Controller
 
 
     $data = $request->all();
-    $qrCodeName = base64_encode($id . $data['participant']);
+
+    if ($data['participant'] == 'new') {
+      try {
+        $validator2 = Validator::make($request->all(), [
+          'name' => ['required', 'string', 'regex:/^[^\d]+$/'],
+          'email' => ['required', 'email'],
+          'degree' => ['required', 'string'],
+          'phone_number' => ['required', 'numeric'],
+          'description' => ['required', 'string']
+        ]);
+
+        if ($validator2->fails()) {
+          return redirect()->back()->withErrors($validator2)->withInput();
+        }
+      } catch (\Throwable $th) {
+        throw $th;
+      }
+
+      $data = $request->all();
+
+      $participant = new Participant();
+
+      $participant->name = $data['name'];
+      $participant->email = $data['email'];
+      $participant->description = $data['description'];
+      $participant->phone_number = $data['phone_number'];
+      $participant->degree = $data['degree'];
+      $participant->save();
+    } else {
+      $participant = Participant::find($data['particpant']);
+    }
+
+
+    $qrCodeName = base64_encode($id . $participant->id);
 
     $participant_event = new Invites();
-    $participant_event->participant_id = $data['participant'];
+    $participant_event->participant_id = $participant->id;
     $participant_event->event_id = $id;
     $participant_event->participant_type_id = $data['type'];
     $participant_event->qr_url = $qrCodeName;
-    $participant = Participant::find($participant_event->participant_id);
     $participantEmail = $participant->email;
     // Mail::to($participantEmail)->send(new sendInvite);
 
@@ -233,18 +267,25 @@ class EventController extends Controller
 
   public function createSchedule(Request $request, $id)
   {
-    try {
+    $validateScheduleMessages = [
+      'name.required' => 'O programa deve ter um nome.',
+      'name.string' => 'O nome do programa deve ser texto',
+      'date.required' => 'O programa deve ter uma data.',
+      'date.date' => 'A data do programa deve ser do tipo data.',
+      'schedule.required' => 'O programa deve ter um pdf.',
+      'schedule.mimetypes' => 'O programa deve ter uma extensao pdf.'
+    ];
 
-      // dd($request);
-      $this->validate(request(), [
+    try {
+      $validator = Validator::make($request->all(), [
         'name' => ['required', 'string'],
         'date' => ['required', 'date'],
         'schedule' => ['required', 'mimetypes:application/pdf'],
-      ]);
+      ], $validateScheduleMessages);
 
-      // if ($validator->fails()) {
-      //   return redirect()->back()->withErrors($validator)->withInput();
-      // }
+      if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
     } catch (\Throwable $th) {
       throw $th;
     }
@@ -267,7 +308,6 @@ class EventController extends Controller
 
       return redirect()->back()->with('Success', 'Schedule created sucessfully');
     }
-
 
     return redirect()->back()->with('error', 'Something went wrong!');
   }

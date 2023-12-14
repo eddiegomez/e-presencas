@@ -22,7 +22,6 @@ class ParticipantController extends Controller
     "description.required" => "O participante deve ser descrevido.",
     "description.string" => "A descrição deve ser um texto"
   ];
-
   /**
    * Display a listing of the resource.
    *

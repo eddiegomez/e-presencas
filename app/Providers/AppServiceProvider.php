@@ -2,27 +2,21 @@
 
 namespace App\Providers;
 
+use App\Services\InviteService;
 use Illuminate\Support\ServiceProvider;
+use App\Services\ParticipantService;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
-    }
+  public function register()
+  {
+    $this->app->bind(ParticipantService::class, function () {
+      return new ParticipantService();
+    });
 
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        //
-    }
+    $this->app->bind(InviteService::class, function ($app) {
+      $participantService = $app->make(ParticipantService::class);
+      return new InviteService($participantService);
+    });
+  }
 }

@@ -432,12 +432,13 @@
         </div>
         {{-- Modal Body --}}
         <div class="modal-body">
-          <form action="{{ route("inviteParticipant", $event->id) }}" method="POST" enctype="multipart/form-data">
+          <form action="{{ route("inviteParticipant", ["id" => $event->id]) }}" method="POST"
+            enctype="multipart/form-data">
             @csrf
             <div class="form-group">
               <label for="participant">Nome do Participante</label>
-              <select class="form-control inline_directive custom-select" name="participant" id="participant">
-                <option selected hidden>Selecione um participante</option>
+              <select class="form-control inline_directive custom-select" name="participant" id="participant" required>
+                <option selected hidden value="">Selecione um participante</option>
                 @foreach ($participants as $participant)
                   @if (!$participant->hasEvent($event->id))
                     <option value="{{ $participant->id }}">{{ $participant->name }}</option>
@@ -507,7 +508,7 @@
             <div class="form-group">
               <label for="participant">Tipo de Participante</label>
               <select class="form-control @error("type") is-invalid @enderror custom-select" name="type"
-                id="type">
+                id="type" required>
                 <option selected hidden value="">Escolha um tipo para o participante</option>
                 @foreach ($participant_type as $type)
                   <option value="{{ $type->id }}">{{ $type->name }}</option>

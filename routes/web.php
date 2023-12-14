@@ -111,7 +111,7 @@ Route::middleware(['auth', 'web'])->group(function () {
   // Create a new Invite controller
   Route::post(
     '/inviteParticipant/{id}',
-    [EventController::class, 'inviteParticipant']
+    [InviteController::class, 'store']
   )->name('inviteParticipant');
 
   // Delete a new Invite controller

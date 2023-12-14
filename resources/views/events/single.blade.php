@@ -561,7 +561,8 @@
         {{-- Modal Body --}}
         <div class="modal-body">
           <p class="my-1"><a href="" id="participantInfo">Mudar informações do participante!</a></p>
-          <form action="{{ route("inviteParticipant", ["id" => $event->id]) }}" method="POST">
+          <form action="{{ route("inviteParticipant", ["id" => $event->id]) }}" method="POST"
+            id="updateParticipantForm">
             @csrf
             <div class="form-group">
               <label for="participant">Tipo de Participante</label>
@@ -611,6 +612,10 @@
 
   <script>
     function editParticipantModal(id, name, type) {
+      var form = document.getElementById('updateParticipantForm');
+
+      form.action = `{{ route("invite.update", ["eventId" => $event->id, "participantId" => $participant->id]) }}`;
+
       document.getElementById('EditParticipantModalLabel').innerHTML = "Editar o tipo do participante " + name;
       document.getElementById('participantInfo').href = '{{ route("participant.show", $participant->id) }}';
       document.getElementById('Etype').value = type;

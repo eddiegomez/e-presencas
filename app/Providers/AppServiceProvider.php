@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\EventService;
 use App\Services\InviteService;
 use App\Services\NotificationService;
 use Illuminate\Support\ServiceProvider;
@@ -15,9 +16,14 @@ class AppServiceProvider extends ServiceProvider
       return new ParticipantService();
     });
 
+    $this->app->bind(EventService::class, function () {
+      return new EventService();
+    });
+
     $this->app->bind(InviteService::class, function ($app) {
       $participantService = $app->make(ParticipantService::class);
-      return new InviteService($participantService);
+      $eventService = $app->make(EventService::class);
+      return new InviteService($participantService, $eventService);
     });
 
     $this->app->bind(NotificationService::class, function () {

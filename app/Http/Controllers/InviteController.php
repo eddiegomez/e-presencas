@@ -163,6 +163,37 @@ class InviteController extends Controller
     return response(view('confirmPresence', compact('successMessage', 'event', 'participant', 'encryptedevent', 'encryptedparticipant'))->with('success', 'A sua presenca foi confirmada no evento ' . $event->name));
   }
 
+  /**
+   * Update the participant type
+   *
+   * @param $eventId
+   * @param $participantId
+   * @param Request $request
+   * 
+   * @return RedirectResponse 
+   */
+
+  public function update(int $eventId, int $participantId, Request $request)
+  {
+    try {
+      $validator = Validator::make($request->all(), [
+        'type' => ['required', 'integer']
+      ]);
+
+      if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+      $this->inviteService->updateParticipant($eventId, $participantId, $request->type);
+
+      return redirect()->back()->with('success', 'O participante foi actualizado com sucesso!');
+    } catch (Exception $e) {
+      $errorMessage = $e->getMessage();
+
+      return redirect()->back()->with('error', $errorMessage);
+    }
+  }
+
 
 
   /**

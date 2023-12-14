@@ -3,16 +3,19 @@
 namespace App\Services;
 
 use App\Models\Invites;
+use App\Models\Participant;
 use Exception;
 
 class InviteService
 {
 
   protected $participantService;
+  protected $eventService;
 
-  public function __construct(ParticipantService $participantService)
+  public function __construct(ParticipantService $participantService, EventService $eventService)
   {
     $this->participantService = $participantService;
+    $this->$eventService = $eventService;
   }
 
   /**
@@ -37,6 +40,11 @@ class InviteService
 
   /**
    * The function that creates the Invite
+   * @param int $participantId
+   * @param int $eventId
+   * @param int $participant_type_id
+   * @param string $qr_url
+   * 
    * @return Invites
    */
 
@@ -65,5 +73,45 @@ class InviteService
         'qr_url' => $qr_url
       ]
     );
+  }
+
+  /**
+   * Get Invite by the composite key
+   * @param int $eventId
+   * @param int $participantId
+   * 
+   * @return Invites
+   */
+  public function getInviteByCompositeKey(int $eventId, int $participantId)
+  {
+    $invite = Invites::where('event_id', $eventId)->where('participant_id', $participantId)->first();
+
+    if (!$invite) {
+      throw new Exception('Não encontramos o convite referenciado!');
+    }
+
+    return $invite;
+  }
+
+
+  /**
+   * The function responsible for updating the participant type
+   * @param int $eventId
+   * @param int $participantId
+   * @param int $participantType 
+   * 
+   * @return Participant
+   */
+
+  public function updateParticipant(int $eventId, int $participantId, int $participantType)
+  {
+    $participant = $this->participantService->getParticipantById($participantId);
+    $event = $this->eventService->getEventById($eventId);
+    $invite = $this->getInviteByCompositeKey($eventId, $participantId);
+
+    $invite->participant_type_id = $participantType;
+    $updatedInvite = $invite->update();
+
+    return $participant;
   }
 }

@@ -205,7 +205,20 @@
                       alt="">
                   </td>
                   <td>{{ $participant->name }}</td>
-                  <td>{{ $participant->description }}</td>
+                  <td>
+                    @switch($participant->pivot->participant_type_id)
+                      @case(1)
+                        Convidado
+                      @break
+
+                      @case(2)
+                        Orador
+                      @break
+
+                      @default
+                        {{ null }}
+                    @endswitch
+                  </td>
                   <td>{{ $participant->email }}</td>
                   <td>{{ $participant->phone_number }}</td>
                   <td>

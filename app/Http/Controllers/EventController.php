@@ -137,6 +137,7 @@ class EventController extends Controller
     $addresses = Address::all();
     $participants = Participant::all();
     $participant_type = ParticipantType::all();
+
     return view('events.single', compact('event', 'participants', 'participant_type', 'addresses'));
   }
 

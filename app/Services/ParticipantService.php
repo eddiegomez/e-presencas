@@ -59,15 +59,15 @@ class ParticipantService
   /**
    * Check if participant exists by ID
    * @param int $id
-   * @return boolean
+   * @return boolean|Participant
    */
 
-  public function checkParticipantById(int $id)
+  public function getParticipantById(int $id)
   {
-    $participantExists = Participant::find($id);
+    $participant = Participant::find($id);
 
-    if ($participantExists) {
-      return true;
+    if ($participant) {
+      return $participant;
     }
 
     return false;

@@ -19,7 +19,6 @@ class sendInvite extends Notification
    */
   public $eventId;
   public $participantId;
-
   public $qr_url;
 
   public function __construct($eventId, $participantId, $qr_url)

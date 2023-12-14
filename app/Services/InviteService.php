@@ -47,7 +47,7 @@ class InviteService
     string $qr_url
   ) {
 
-    $participantExists = $this->participantService->checkParticipantById($participantId);
+    $participantExists = $this->participantService->getParticipantById($participantId);
     if (!$participantExists) {
       throw new Exception('O participante que tentou convidar não existe.');
     }

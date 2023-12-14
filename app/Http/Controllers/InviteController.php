@@ -7,6 +7,7 @@ use App\Models\Invites;
 use App\Models\Participant;
 use App\Notifications\sendInvite;
 use App\Services\InviteService;
+use App\Services\NotificationService;
 use App\Services\ParticipantService;
 use Exception;
 use Illuminate\Http\RedirectResponse;
@@ -24,10 +25,13 @@ class InviteController extends Controller
   protected $participantService;
   protected $inviteService;
 
-  public function __construct(ParticipantService $participantService, InviteService $inviteService)
+  protected $notificationService;
+
+  public function __construct(ParticipantService $participantService, InviteService $inviteService, NotificationService $notificationService)
   {
     $this->participantService = $participantService;
     $this->inviteService = $inviteService;
+    $this->notificationService = $notificationService;
   }
 
   /**
@@ -75,37 +79,36 @@ class InviteController extends Controller
             }
           }
 
-          $qrCodeName = base64_encode($id . $participant->id);
-          $alreadyInvited = $this->inviteService->checkIfInviteExists($id, 2);
+          $qrCode = $this->generateQrcode($id, $participant->id);
 
-          $invite = new Invites();
-          $invite->participant_id = $participant->id;
-          $invite->event_id = $id;
-          $invite->participant_type_id = $data['type'];
-          $invite->qr_url = $qrCodeName;
-          $participantEmail = $participant->email;
-
-          $generateCodeResponse = $this->generateQrcode($invite->qr_url, $invite);
-
-          if ($generateCodeResponse == 0) {
-            return redirect()->back()->with('error', 'Algo de errado nao esta certo!');
-          } else {
-            Notification::route('mail', $participantEmail)->notify(new sendInvite(
-              $invite->event_id,
-              $invite->participant_id,
-              $invite->qr_url
-            ));
-
-            $invite->save();
-            return redirect()->back()->with('Success', 'O participante ' . $invite->name . ' Foi convidado');
+          if (!$qrCode) {
+            return redirect()->back()->with('error', 'Tente convidar o participante novamente.')->withInput();
           }
+
+          $sendInviteNotification = new sendInvite(
+            $id,
+            $participant->id,
+            $qrCode
+          );
+
+          $sendEmail = $this->notificationService->sendEmail($participant['email'], $sendInviteNotification);
+
+          if (!$sendEmail) {
+            return redirect()->back()->with('error', 'Ocorreu algum um erro no envio do convite via email, tente novamente.')->withInput();
+          }
+
+          // Notification::route('mail', $participant->email)->notify($sendInviteNotification);
+
+          $invite = $this->inviteService->createInvite($data['participant'], $id, $data['type'], $qrCode);
+          return redirect()->back()->with('success', 'O participante foi convidado com sucesso!');
         } catch (Exception $e) {
           $errorMessage = $e->getMessage();
-          dd($errorMessage);
 
           return redirect()->back()->with('error', $errorMessage);
         }
       }
+
+      $participant = $this->participantService->getParticipantById($data['participant']);
 
       $qrCode = $this->generateQrcode($id, $data['participant']);
 
@@ -113,8 +116,19 @@ class InviteController extends Controller
         return redirect()->back()->with('error', 'Tente convidar o participante novamente.')->withInput();
       }
 
-      
-      $invite = $this->inviteService->createInvite($data['participant'], $id, $data['participant_type_id'], $qrCode);
+      $sendInviteNotification = new sendInvite(
+        $id,
+        $data['participant'],
+        $qrCode
+      );
+
+      $sendEmail = $this->notificationService->sendEmail($participant->email, $sendInviteNotification);
+
+      if (!$sendEmail) {
+        return redirect()->back()->with('error', 'Ocorreu algum um erro no envio do convite via email, tente novamente.')->withInput();
+      }
+
+      $invite = $this->inviteService->createInvite($data['participant'], $id, $data['type'], $qrCode);
 
       return redirect()->back()->with('success', 'O participante foi convidado com sucesso!');
     } catch (Exception $e) {

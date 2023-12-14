@@ -221,10 +221,15 @@
                   </td>
                   <td>{{ $participant->email }}</td>
                   <td>{{ $participant->phone_number }}</td>
-                  <td>
-                    <a class="btn btn-danger p-2 participant_modal"
-                      href="{{ route("invite.destroy", ["eventid" => $event->id, "participantid" => $participant->id]) }}">
-                      <i class='uil uil-trash-alt'></i> Remover
+                  <td class="text-right">
+                    <a class="btn btn-secondary p-1" href="" data-toggle="modal"
+                      onclick='editParticipantModal({{ $participant->id }}, @json($participant->name), @json($participant->pivot->participant_type_id))'>
+                      <i class='uil uil-edit-alt'></i>
+                    </a>
+
+                    <a class="btn btn-danger p-1" data-toggle="modal" href=""
+                      onclick='deleteParticipantModal({{ $participant->id }}, @json($participant->name))'>
+                      <i class='uil uil-trash-alt'></i>
                     </a>
                   </td>
                 </tr>
@@ -543,7 +548,82 @@
     </div>
   </div>
 
+  {{-- Update Participant Type --}}
+  <div id="EditParticipantModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      {{-- Modal Content --}}
+      <div class="modal-content">
+        {{-- Modal Header --}}
+        <div class="modal-header">
+          <h5 class="modal-title text-capitalize" id="EditParticipantModalLabel"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+        </div>
+        {{-- Modal Body --}}
+        <div class="modal-body">
+          <p class="my-1"><a href="" id="participantInfo">Mudar informações do participante!</a></p>
+          <form action="{{ route("inviteParticipant", ["id" => $event->id]) }}" method="POST">
+            @csrf
+            <div class="form-group">
+              <label for="participant">Tipo de Participante</label>
+              <select class="form-control @error("type") is-invalid @enderror custom-select" name="type"
+                id="Etype" required>
+                @foreach ($participant_type as $type)
+                  <option value="{{ $type->id }}">{{ $type->name }}</option>
+                @endforeach
+              </select>
+              @error("type")
+                <p class="text-danger">{{ $message }}</p>
+              @enderror
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-success">Submeter</button>
+
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="DeleteParticipantModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="DeleteParticipantModalLabel"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>Tem certeza que pretende eliminar este participante da lista dos convidados?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <form id="deleteEventForm" method="POST" action='{{ route("event.destroy", $event->id) }}'>
+            @csrf
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   <script>
+    function editParticipantModal(id, name, type) {
+      document.getElementById('EditParticipantModalLabel').innerHTML = "Editar o tipo do participante " + name;
+      document.getElementById('participantInfo').href = '{{ route("participant.show", $participant->id) }}';
+      document.getElementById('Etype').value = type;
+      $('#EditParticipantModal').modal('show');
+    }
+
+    // Function that triggers the deletion of a participant modal
+    function deleteParticipantModal(id, name) {
+      document.getElementById('DeleteParticipantModalLabel').innerHTML = 'Desconvidar ' + name;
+      $('#DeleteParticipantModal').modal('show');
+    }
+
+
     function checkLocationField() {
       var select = document.getElementById('address');
       var selectedLocation = select.value;

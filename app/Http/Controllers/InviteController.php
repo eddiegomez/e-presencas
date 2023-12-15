@@ -194,22 +194,15 @@ class InviteController extends Controller
     }
   }
 
-
-
   /**
-   * Remove the specified resource from storage.
+   * Remove the specified Invite from storage.
    *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
+   * @param  int  $eventId
+   * @param int $participatId
+   * @return \Illuminate\Http\RedirectResponse
    */
-  public function delete(Request $request, $eventId, $participantId)
+  public function delete(Request $request, int $eventId, int $participantId)
   {
-    $user = Auth::user();
-    $event = Event::find($eventId);
-    $participant = Participant::find($participantId);
-    $invite = Invites::where([['event_id', $eventId], ['participant_id', $participantId]])->first();
-
-    return response(view("delete", compact('user', 'event', 'invite', 'participant')));
   }
   public function destroy(Request $request)
   {

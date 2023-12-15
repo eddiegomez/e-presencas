@@ -15,7 +15,7 @@ class InviteService
   public function __construct(ParticipantService $participantService, EventService $eventService)
   {
     $this->participantService = $participantService;
-    $this->$eventService = $eventService;
+    $this->eventService = $eventService;
   }
 
   /**
@@ -103,15 +103,34 @@ class InviteService
    * @return Participant
    */
 
-  public function updateParticipant(int $eventId, int $participantId, int $participantType)
+  public function updateParticipant(int $eventId, int $participantId, int $participantType): Participant
   {
     $participant = $this->participantService->getParticipantById($participantId);
     $event = $this->eventService->getEventById($eventId);
     $invite = $this->getInviteByCompositeKey($eventId, $participantId);
 
-    $invite->participant_type_id = $participantType;
-    $updatedInvite = $invite->update();
+    if ($invite) {
+      $updateInvite = Invites::where('event_id', $eventId)->where('participant_id', $participantId)->update(['participant_type_id' => $participantType]);
+      return $participant;
+    } else {
+      throw new Exception('Wuaaaaaaaaaaaaaaa');
+    }
+  }
 
-    return $participant;
+  /**
+   * Delete the Invite
+   * @param int $eventId
+   * @param int $participantId
+   * 
+   */
+
+  public function deleteInvite(int $eventId, int $participantId): Invites
+  {
+    $invite = $this->getInviteByCompositeKey($eventId, $participantId);
+    if ($invite) {
+      throw new Exception("O convite nao existe");
+    }
+
+    return Invites::where('event_id', $eventId)->where('participant_id', $participantId)->delete();
   }
 }

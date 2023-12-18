@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View as View;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Controllers\ParticipantController;
+use Illuminate\Http\RedirectResponse;
 
 class EventController extends Controller
 {
@@ -146,9 +147,9 @@ class EventController extends Controller
    *
    * @param  \Illuminate\Http\Request  $request
    * @param  int  $id
-   * @return \Illuminate\Http\Response
+   * @return RedirectResponse
    */
-  public function update(Request $request, $id)
+  public function update(Request $request, $id): RedirectResponse
   {
     try {
       $this->validate(request(), [
@@ -170,7 +171,7 @@ class EventController extends Controller
 
     $event->update($data);
 
-    return redirect()->route('events');
+    return redirect()->back()->with('success', 'O evento foi editado com sucesso!');
   }
 
   /**

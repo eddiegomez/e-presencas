@@ -3,12 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Participant;
+use App\Services\ParticipantService;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class ParticipantController extends Controller
 {
+
+  protected $participantService;
+
+  public function __construct(ParticipantService $participantService)
+  {
+    $this->participantService = $participantService;
+  }
 
   public $customValidatorMessages = [
     "name.required" => "O participante deve ter um nome.",
@@ -29,9 +38,8 @@ class ParticipantController extends Controller
    */
   public function index()
   {
-    $user = Auth::user();
     $participants = Participant::all();
-    return response(view("participants", compact("user", "participants")));
+    return response(view("participants.list", compact("participants")));
   }
 
   /**
@@ -47,31 +55,29 @@ class ParticipantController extends Controller
         'name' => ['required', 'string', 'regex:/^[^\d]+$/'],
         'email' => ['required', 'email'],
         'degree' => ['required', 'string'],
-        'phone_number' => ['required', 'numeric'],
+        'phone' => ['required', 'numeric',  'digits:9'],
         'description' => ['required', 'string']
       ], $this->customValidatorMessages);
-
-      // dd($validator);
 
       if ($validator->fails()) {
         return redirect()->back()->withErrors($validator)->withInput();
       }
-    } catch (\Throwable $th) {
-      throw $th;
+
+      $data = $request->all();
+      $participant = $this->participantService->createParticipant(
+        $data['name'],
+        $data['email'],
+        $data['description'],
+        $data['phone'],
+        $data['degree']
+      );
+
+      return redirect()->back()->with('success', 'O ' . $participant->name . 'foi criado!');
+    } catch (Exception $e) {
+      $errorMessage = $e->getMessage();
+
+      return redirect()->back()->with('error', $errorMessage)->withInput();
     }
-
-    $data = $request->all();
-
-    $participant = new Participant();
-
-    $participant->name = $data['name'];
-    $participant->email = $data['email'];
-    $participant->description = $data['description'];
-    $participant->phone_number = $data['phone_number'];
-    $participant->degree = $data['degree'];
-    $participant->save();
-
-    return redirect()->back()->with('message', 'O ' . $participant->name . 'foi criado!');
   }
 
   /**
@@ -88,22 +94,13 @@ class ParticipantController extends Controller
     return response(view('singleParticipant', compact('user', 'participant')));
   }
 
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function edit(Request $request, $id)
-  {
-  }
 
   /**
    * Update the specified resource in storage.
    *
    * @param  \Illuminate\Http\Request  $request
    * @param  int  $id
-   * @return \Illuminate\Http\Response
+   * @return \Illuminate\Http\RedirectResponse
    */
   public function update(Request $request, $id)
   {
@@ -119,7 +116,7 @@ class ParticipantController extends Controller
         return redirect()->back()->withErrors($validator)->withInput();
       }
     } catch (\Throwable $e) {
-      throw $e;
+      return redirect()->back()->with('error', 'OK');
     }
 
     $participant = Participant::find($id);
@@ -137,7 +134,7 @@ class ParticipantController extends Controller
    * Remove the specified resource from storage.
    *
    * @param  int  $id
-   * @return \Illuminate\Http\Response
+   * @return \Illuminate\Http\RedirectResponse
    */
   public function destroy($id)
   {

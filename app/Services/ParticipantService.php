@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Participant;
+use Exception;
 use Illuminate\Support\Facades\Request;
 
 class ParticipantService
@@ -11,24 +12,34 @@ class ParticipantService
   /**
    * A service for the creation of participants
    * 
-   * @param $data
-   * @return Participant|boolean
+   * @param $name
+   * @param $email
+   * @param $description
+   * @param $phoneNumber
+   * @param $degree
+   *  
+   * @return Participant
    */
-  public function createParticipant($data)
-  {
-    $ParticipantExists = $this->checkParticipantByEmailOrPhoneNumber($data);
+  public function createParticipant(
+    string $name,
+    string $email,
+    string $description,
+    string $phoneNumber,
+    string $degree
+  ) {
+    $ParticipantExists = $this->checkParticipantByEmailOrPhoneNumber($email, $phoneNumber);
 
     if ($ParticipantExists) {
-      return false;
+      throw new Exception("Participante com este email ou numero de telefone ja existe.");
     }
 
     $participant = new Participant();
 
-    $participant->name = $data['name'];
-    $participant->email = $data['email'];
-    $participant->description = $data['description'];
-    $participant->phone_number = $data['phone_number'];
-    $participant->degree = $data['degree'];
+    $participant->name = $name;
+    $participant->email = $email;
+    $participant->description = $description;
+    $participant->phone_number = $phoneNumber;
+    $participant->degree = $degree;
     $participant->save();
 
     return $participant;
@@ -40,13 +51,14 @@ class ParticipantService
   /**
    * Checking if participant already exists by the Email or Phone Number
    *  
-   * @param $data
+   * @param $email
+   * @param $phoneNumber
    * @return boolean
    */
-  public function checkParticipantByEmailOrPhoneNumber($data)
+  public function checkParticipantByEmailOrPhoneNumber(string $email, string $phoneNumber)
   {
-    $participant = Participant::where('email', $data['email'])
-      ->orWhere('phone_number', $data['phone_number'])
+    $participant = Participant::where('email', $email)
+      ->orWhere('phone_number', $phoneNumber)
       ->first();
 
     if ($participant) {

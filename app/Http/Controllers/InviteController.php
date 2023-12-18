@@ -69,11 +69,17 @@ class InviteController extends Controller
             return redirect()->back()->withErrors($validator2)->withInput();
           }
 
-          $exists = $this->participantService->checkParticipantByEmailOrPhoneNumber($data);
+          $exists = $this->participantService->checkParticipantByEmailOrPhoneNumber($data['email'], $data['phone_number']);
           if ($exists) {
             $participant = Participant::where('email', $data['email'])->orWhere('phone_number', $data['phone_number'])->first();
           } else {
-            $participant = $this->participantService->createParticipant($data);
+            $participant = $this->participantService->createParticipant(
+              $data['name'],
+              $data['email'],
+              $data['description'],
+              $data['phone_number'],
+              $data['degree']
+            );
             if (!$participant) {
               return redirect()->back()->with('warning', 'Algo correu mal no acto de criacao do participante.');
             }

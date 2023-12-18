@@ -274,7 +274,7 @@
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
         </div>
         <div class="modal-body">
-          <form action='{{ route("event.update", $event->id) }}' method="POST">
+          <form action='{{ route("event.update", $event->id) }}' method="POST" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
               <label for="name">Nome do seu evento</label>
@@ -326,7 +326,7 @@
             <div class="form-group mb-3">
               <label for="banner">Escolha o banner</label>
               <div class="col-lg-10">
-                <input type="file" accept="image/*" class="form-control" id="banner" name="banner" required
+                <input type="file" accept="image/*" class="form-control" id="banner" name="banner"
                   value="{{ old("banner") }}">
               </div>
               @error("banner")

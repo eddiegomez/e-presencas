@@ -450,9 +450,10 @@
         </div>
         {{-- Modal Body --}}
         <div class="modal-body">
-          <form action="{{ route("inviteParticipant", ["id" => $event->id]) }}" method="POST"
-            enctype="multipart/form-data">
+          <form action="{{ route("invite.store") }}" method="POST" enctype="multipart/form-data">
             @csrf
+            <input type="hidden" name="id" value="{{ $event->id }}">
+
             <div class="form-group">
               <label for="participant">Nome do Participante</label>
               <select class="form-control inline_directive custom-select" name="participant" id="participant" required>

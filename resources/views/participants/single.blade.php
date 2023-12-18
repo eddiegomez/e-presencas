@@ -28,7 +28,7 @@
     <div class="col-sm-4 col-xl-6">
       <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
         <ol class="breadcrumb fs-1">
-          <h4 class="breadcrumb-item text-muted fs-4"><a href="{{ route("organizations.list") }}"
+          <h4 class="breadcrumb-item text-muted fs-4"><a href="{{ route("participant.index") }}"
               class="text-muted">Participante</a></h4>
           <h4 class="breadcrumb-item active text-dark text-capitalize" aria-current="page">{{ $participant->name }}</h4>
         </ol>
@@ -40,10 +40,10 @@
           <i class='uil uil-edit-alt mr-1'></i>
           Editar Participante
         </button>
-        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteParticipantModal">
+        {{-- <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteParticipantModal">
           <i class='uil uil-trash-alt mr-1'></i>
           Remover Participante
-        </button>
+        </button> --}}
       </div>
     </div>
   </div>

@@ -103,6 +103,14 @@ class ParticipantService
     return $participant;
   }
 
+  /**
+   * Check if the participant update data is unque
+   * @param string $email
+   * @param string $phoneNumber
+   * @param int $id
+   * @throws Exception
+   * @return void
+   */
   protected function checkUniqueness(string $email, string $phoneNumber, int $id)
   {
     // Perform the uniqueness check
@@ -119,5 +127,22 @@ class ParticipantService
     if ($existingParticipant) {
       throw new Exception('Este email ou número de celular já esta em uso!');
     }
+  }
+
+  /**
+   * Delete an existing participant
+   * @param int $id
+   * @throws \Exception
+   * @return mixed
+   */
+  public function delete(int $id)
+  {
+    $participant = Participant::find($id);
+
+    if (!$participant) {
+      throw new Exception('O participante nao existe na nossa base de dados!');
+    }
+
+    return $participant->delete();
   }
 }

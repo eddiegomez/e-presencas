@@ -120,7 +120,7 @@ class ParticipantController extends Controller
       $data = $request->only(['name', 'description', 'phone_number', 'degree', 'email']);
 
       $this->participantService->update($data, $id);
-      
+
       return redirect()->back()->with('success', 'Participante foi editado com sucesso!');
     } catch (Exception $e) {
       $errorMessage = $e->getMessage();
@@ -134,14 +134,15 @@ class ParticipantController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\RedirectResponse
    */
-  public function destroy($id)
+  public function destroy(int $id)
   {
-    $participant = Participant::find($id);
+    try {
+      $this->participantService->delete($id);
+      return redirect()->route('participant.index')->with('success', 'Participante eliminado com sucesso!');
+    } catch (Exception $e) {
+      $errorMessage = $e->getMessage();
 
-    if ($participant) {
-      $participant->delete();
-      return redirect()->route('participant.index')->with('success', 'Participante de nome ' . $participant->name . 'foi apagado!');
+      return redirect()->back()->with('error', $errorMessage);
     }
-    return redirect()->back()->with('error', 'Esse participante nao existe!');
   }
 }

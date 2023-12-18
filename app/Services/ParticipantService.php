@@ -84,4 +84,40 @@ class ParticipantService
 
     return false;
   }
+
+  /**
+   * Update participant information in database
+   * @param array|mixed $data
+   * @param int $id
+   * 
+   */
+
+  public function update(array $data, int $id)
+  {
+    $participant = $this->getParticipantById($id);
+
+    $this->checkUniqueness($data['email'], $data['phone_number'], $id);
+
+    $participant->update($data);
+
+    return $participant;
+  }
+
+  protected function checkUniqueness(string $email, string $phoneNumber, int $id)
+  {
+    // Perform the uniqueness check
+    $existingParticipant = Participant::where(function ($query) use ($email, $phoneNumber, $id) {
+      $query->where(function ($query) use ($email, $phoneNumber) {
+        $query->where('email', $email)
+          ->orWhere('phone_number', $phoneNumber);
+      })
+        ->when($id, function ($query) use ($id) {
+          $query->where('id', '!=', $id);
+        });
+    })->first();
+
+    if ($existingParticipant) {
+      throw new Exception('Este email ou número de celular já esta em uso!');
+    }
+  }
 }

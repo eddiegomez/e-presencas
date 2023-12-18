@@ -182,7 +182,7 @@
                 </td>
 
                 <td>
-                  <a href="{{ route("event", $event->id) }}" class="text-body text-capitalize">
+                  <a href="{{ route("event.show", $event->id) }}" class="text-body text-capitalize">
                     {{ $event->name }}
                   </a>
                 </td>

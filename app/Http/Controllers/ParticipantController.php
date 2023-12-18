@@ -91,7 +91,7 @@ class ParticipantController extends Controller
     $user = Auth::user();
     $participant = Participant::find($id);
 
-    return response(view('singleParticipant', compact('user', 'participant')));
+    return response(view('participants.single', compact('user', 'participant')));
   }
 
 
@@ -102,32 +102,30 @@ class ParticipantController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\RedirectResponse
    */
-  public function update(Request $request, $id)
+  public function update(Request $request, int $id)
   {
     try {
       $validator = Validator::make($request->all(), [
         "name" => ["required", "string"],
         "description" => ["required", "string"],
         "phone_number" => ["required", "numeric"],
+        "degree" => ["required", "string"],
         "email" => ["required", "email"],
-      ]);
+      ], $this->customValidatorMessages);
 
       if ($validator->fails()) {
         return redirect()->back()->withErrors($validator)->withInput();
       }
-    } catch (\Throwable $e) {
-      return redirect()->back()->with('error', 'OK');
+
+      $data = $request->only(['name', 'description', 'phone_number', 'degree', 'email']);
+
+      $this->participantService->update($data, $id);
+      
+      return redirect()->back()->with('success', 'Participante foi editado com sucesso!');
+    } catch (Exception $e) {
+      $errorMessage = $e->getMessage();
+      return redirect()->back()->with('error', $errorMessage);
     }
-
-    $participant = Participant::find($id);
-    $participant->name = $request->name;
-    $participant->description = $request->description;
-    $participant->phone_number = $request->phone_number;
-    $participant->email = $request->email;
-
-    $participant->update();
-
-    return redirect()->back()->with('success', 'Participante foi editado com sucesso!');
   }
 
   /**

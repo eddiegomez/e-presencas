@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Notifications\EmailVerification;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -20,8 +21,7 @@ class ProtocolosController extends Controller
   public function index()
   {
     $user = Auth::user();
-    $protocolos = User::where('user_role', 2)->get();
-
+    $protocolos = User::role('protocolo')->get();
     return response(view('Protocolos.index', compact('user', 'protocolos')));
   }
 
@@ -38,31 +38,31 @@ class ProtocolosController extends Controller
       $validator = Validator::make($request->all(), [
         'name' => ['required', 'string'],
         'email' => ['required', 'string'],
+        'phone' => ['required', 'numeric', 'digits:9']
       ]);
 
       if ($validator->fails()) {
         return redirect()->back()->withErrors($validator)->withInput();
       }
-    } catch (\Throwable $th) {
-      throw $th;
+
+      $data = $request->all();
+
+      $protocolo = new User();
+      $protocolo->name = $data["name"];
+      $protocolo->email = $data["email"];
+      $protocolo->save();
+
+      Notification::route('mail', $protocolo->email)->notify(new EmailVerification(
+        $protocolo->id,
+        $protocolo->email,
+        $protocolo->name
+      ));
+    } catch (Exception $e) {
+      $errorMessage = $e->getMessage();
+
+      return redirect()->back()->with('error', $errorMessage);
     }
 
-    $data = $request->all();
-    $password = "MoreN37#123";
-    $role = 2;
-
-    $protocolo = new User();
-
-    $protocolo->name = $data["name"];
-    $protocolo->email = $data["email"];
-    $protocolo->password = Hash::make($password);
-    $protocolo->user_role = $role;
-    $protocolo->save();
-    Notification::route('mail', $protocolo->email)->notify(new EmailVerification(
-      $protocolo->id,
-      $protocolo->email,
-      $protocolo->name
-    ));
 
     return redirect()->back()->with('success', 'Protocolo criado com Sucesso!');
   }

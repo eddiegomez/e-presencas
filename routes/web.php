@@ -118,20 +118,14 @@ Route::middleware(['auth', 'web'])->group(function () {
   Route::post('/inviteParticipant', [InviteController::class, 'store'])->name('invite.store');
 
 
-  Route::delete(
-    '/removerParticipante',
-    [InviteController::class, 'removerParticipante']
-  )->name('removerParticipante');
+  // Get all staff members Controller
+  Route::get('/protocolos', [ProtocolosController::class, 'index'])->name('protocolos.index');
 
 
   Route::middleware(
     'isAdmin'
   )->group(function () {
-    // Get all staff members Controller
-    Route::get(
-      '/protocolos',
-      [ProtocolosController::class, 'index']
-    )->name('protocolos.index');
+
 
     // Create a new staff member Controller
     Route::post(

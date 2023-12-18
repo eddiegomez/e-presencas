@@ -20,6 +20,7 @@ class RoleSeeder extends Seeder
 
     // Create Roles
     // Role::create(['name' => 'gestor do sistema']);
-    Role::create(['name' => 'gestor']);
+    // Role::create(['name' => 'gestor']);
+    Role::create(['name' => 'protocolo']);
   }
 }

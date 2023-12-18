@@ -41,10 +41,11 @@ class InviteController extends Controller
    * @param int $id
    * @return \Illuminate\Http\RedirectResponse
    */
-  public function store(Request $request, int $id)
+  public function store(Request $request)
   {
     try {
       $validator = Validator::make($request->all(), [
+        'id' => ['required', 'integer'],
         'participant' => ['required'],
         'type' => ['required', 'numeric']
       ]);
@@ -85,14 +86,14 @@ class InviteController extends Controller
             }
           }
 
-          $qrCode = $this->generateQrcode($id, $participant->id);
+          $qrCode = $this->generateQrcode($data['id'], $participant->id);
 
           if (!$qrCode) {
             return redirect()->back()->with('error', 'Tente convidar o participante novamente.')->withInput();
           }
 
           $sendInviteNotification = new sendInvite(
-            $id,
+            $data['id'],
             $participant->id,
             $qrCode
           );
@@ -105,7 +106,7 @@ class InviteController extends Controller
 
           // Notification::route('mail', $participant->email)->notify($sendInviteNotification);
 
-          $invite = $this->inviteService->createInvite($data['participant'], $id, $data['type'], $qrCode);
+          $invite = $this->inviteService->createInvite($data['participant'], $data['id'], $data['type'], $qrCode);
           return redirect()->back()->with('success', 'O participante foi convidado com sucesso!');
         } catch (Exception $e) {
           $errorMessage = $e->getMessage();
@@ -116,14 +117,14 @@ class InviteController extends Controller
 
       $participant = $this->participantService->getParticipantById($data['participant']);
 
-      $qrCode = $this->generateQrcode($id, $data['participant']);
+      $qrCode = $this->generateQrcode($data['id'], $data['participant']);
 
       if (!$qrCode) {
         return redirect()->back()->with('error', 'Tente convidar o participante novamente.')->withInput();
       }
 
       $sendInviteNotification = new sendInvite(
-        $id,
+        $data['id'],
         $data['participant'],
         $qrCode
       );
@@ -134,7 +135,7 @@ class InviteController extends Controller
         return redirect()->back()->with('error', 'Ocorreu algum um erro no envio do convite via email, tente novamente.')->withInput();
       }
 
-      $invite = $this->inviteService->createInvite($data['participant'], $id, $data['type'], $qrCode);
+      $invite = $this->inviteService->createInvite($data['participant'], $data['id'], $data['type'], $qrCode);
 
       return redirect()->back()->with('success', 'O participante foi convidado com sucesso!');
     } catch (Exception $e) {

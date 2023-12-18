@@ -105,8 +105,7 @@
 
             <div class="col-sm-8 col-xl-6 mb-3 p-0">
               <div class="float-sm-right mt-3 mt-sm-0">
-                <button type="button" class="btn btn-outline-secondary" data-toggle="modal"
-                  data-target="#addParticipantModal">
+                <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#addEventsModal">
                   <i class='uil uil-plus mr-1'></i>Adicionar Evento
                 </button>
               </div>
@@ -165,10 +164,14 @@
                     </span>
                   </td>
                   <td class="text-right">
-                    <a class="btn btn-danger p-2 participant_modal text-white" href="#"
-                      onclick='showDeleteModal({{ $participant->id }},@json($participant->name), {{ $event->id }},@json($event->name))'>
-                      <i class='uil uil-trash-alt'></i>
-                    </a>
+                    @if ($event->organization_id == $user->organization_id)
+                      <a class="btn btn-danger p-2 participant_modal text-white" href="#"
+                        onclick='showDeleteModal({{ $participant->id }},@json($participant->name), {{ $event->id }},@json($event->name))'>
+                        <i class='uil uil-trash-alt'></i>
+                      </a>
+                    @else
+                      <span class="badge py-1 font-size-13 badge-soft-warning">---</span>
+                    @endif
                   </td>
                 <tr>
               @endforeach
@@ -273,6 +276,68 @@
             <p>Tem certeza que pretende apagar este participante?</p>
             <form action="{{ route("participant.destroy", $participant->id) }}" method="POST">
               @csrf
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{-- Add Events Modal --}}
+    <div id="addEventsModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        {{-- Modal Content --}}
+        <div class="modal-content">
+          {{-- Modal Header --}}
+          <div class="modal-header">
+            <h5 class="modal-title" id="addEventsModalLabel">
+              Convidar o {{ $participant->name }} para um evento
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+          </div>
+
+          {{-- Modal Body --}}
+          <div class="modal-body">
+            <form action="{{ route("participant.destroy", $participant->id) }}" method="POST">
+              @csrf
+
+              <div class="form-group">
+                <label for="participant">Nome do Participante</label>
+                <select class="form-control inline_directive custom-select" name="id" id="id" required>
+                  <option selected hidden value="">Selecione um evento</option>
+                  @foreach ($events as $event)
+                    @if (!$participant->hasEvent($event->id))
+                      <option value="{{ $event->id }}">{{ $event->name }}</option>
+                    @endif
+                  @endforeach
+                </select>
+                @error("participant")
+                  <span class="text-danger">{{ $message }}</span>
+                @enderror
+
+                <p class="mt-4">
+                  <a href="{{ route("event.list") }}">Crie um evento</a>
+                </p>
+
+                <div class="form-group">
+                  <label for="participant">Tipo de Participante</label>
+                  <select class="form-control @error("type") is-invalid @enderror custom-select" name="type"
+                    id="type" required>
+                    <option selected hidden value="">Escolha um tipo para o participante</option>
+                    @foreach ($participant_type as $type)
+                      <option value="{{ $type->id }}">{{ $type->name }}</option>
+                    @endforeach
+                  </select>
+                  @error("type")
+                    <p class="text-danger">{{ $message }}</p>
+                  @enderror
+                </div>
+
+                <input type="hidden" name="participant" value="{{ $participant->id }}">
+              </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 <button type="submit" class="btn btn-danger">Eliminar</button>

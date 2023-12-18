@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Event;
 use App\Models\Participant;
+use App\Models\ParticipantType;
 use App\Services\ParticipantService;
 use Exception;
 use Illuminate\Http\Request;
@@ -39,6 +41,7 @@ class ParticipantController extends Controller
   public function index()
   {
     $participants = Participant::all();
+
     return response(view("participants.list", compact("participants")));
   }
 
@@ -90,8 +93,9 @@ class ParticipantController extends Controller
   {
     $user = Auth::user();
     $participant = Participant::find($id);
-
-    return response(view('participants.single', compact('user', 'participant')));
+    $events = Event::where('organization_id', $user->organization_id)->get();
+    $participant_type = ParticipantType::all();
+    return response(view('participants.single', compact('user', 'participant', 'events', 'participant_type')));
   }
 
 

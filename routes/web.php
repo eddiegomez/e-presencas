@@ -108,14 +108,15 @@ Route::middleware(['auth', 'web'])->group(function () {
   )->name('confirmEntranceUpdate');
 
 
+  // Delete a new Invite controller
+  Route::post('/invite/destroy', [InviteController::class, 'destroy'])->name('invite.delete');
+
   //Update participant type
-  Route::post('invite/{eventId}/{participantId}', [InviteController::class, 'update'])->name('invite.update');
+  Route::post('/invite/update/{eventId}', [InviteController::class, 'update'])->name('invite.update');
 
   // Create a new Invite controller
   Route::post('/inviteParticipant/{id}', [InviteController::class, 'store'])->name('inviteParticipant');
 
-  // Delete a new Invite controller
-  Route::post('/invite/destroy', [InviteController::class, 'destroy'])->name('invite.destroy');
 
   Route::delete(
     '/removerParticipante',

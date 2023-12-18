@@ -158,7 +158,7 @@ class InviteController extends Controller
     $event = Event::find($eventId);
     $participant = Participant::find($participantId);
 
-    // dd(session());
+
 
     return response(view('confirmPresence', compact('successMessage', 'event', 'participant', 'encryptedevent', 'encryptedparticipant'))->with('success', 'A sua presenca foi confirmada no evento ' . $event->name));
   }
@@ -166,17 +166,18 @@ class InviteController extends Controller
   /**
    * Update the participant type
    *
-   * @param $eventId
-   * @param $participantId
+   * @param int $eventId
+   * @param int $participantId
    * @param Request $request
    * 
    * @return RedirectResponse 
    */
 
-  public function update(int $eventId, int $participantId, Request $request)
+  public function update(int $eventId, Request $request)
   {
     try {
       $validator = Validator::make($request->all(), [
+        'participant' => ['required', 'integer'],
         'type' => ['required', 'integer']
       ]);
 
@@ -184,7 +185,7 @@ class InviteController extends Controller
         return redirect()->back()->withErrors($validator)->withInput();
       }
 
-      $this->inviteService->updateParticipant($eventId, $participantId, $request->type);
+      $this->inviteService->updateParticipant($eventId, $request->participant, $request->type);
 
       return redirect()->back()->with('success', 'O participante foi actualizado com sucesso!');
     } catch (Exception $e) {
@@ -196,40 +197,58 @@ class InviteController extends Controller
 
   /**
    * Remove the specified Invite from storage.
-   *
-   * @param  int  $eventId
-   * @param int $participatId
+   * @param Request $request 
    * @return \Illuminate\Http\RedirectResponse
    */
-  public function delete(Request $request, int $eventId, int $participantId)
-  {
-  }
   public function destroy(Request $request)
   {
     try {
       $validator = Validator::make($request->all(), [
-        "event" => ['required', 'numeric'],
-        "participant" => ['required', 'numeric'],
+        'event' => ['required', 'numeric'],
+        'participant' => ['required', 'numeric']
       ]);
 
+
       if ($validator->fails()) {
-        return redirect()->back()->with('error', 'Something went wrong!');
+        return redirect()->back()->with('error', 'Algo ocorreu mal na validação dos campos, tente novamente!');
       }
+
+      $this->inviteService->deleteInvite($request->event, $request->participant);
+
+      return redirect()->back()->with('success', 'O participante foi eliminado da lista dos convidados com sucesso!');
     } catch (Exception $e) {
-      throw $e;
+      $errorMessage = $e->getMessage();
+
+      return redirect()->back()->with('error', $errorMessage);
     }
-
-    $data = $request->all();
-    $invite = Invites::where([['event_id', $data['event']], ['participant_id', $data['participant']]])->first();
-
-
-    if (!$invite) {
-      return redirect()->back()->with('error', 'Esse participante naoa faz parte da lista do evento.');
-    }
-
-    Invites::where([['event_id', $data['event']], ['participant_id', $data['participant']]])->delete();
-    return redirect(route('event', $data['event']))->with('success', 'O participante foi removido com sucesso!');
   }
+
+  // public function destroy(Request $request)
+  // {
+  //   try {
+  //     $validator = Validator::make($request->all(), [
+  //       "event" => ['required', 'numeric'],
+  //       "participant" => ['required', 'numeric'],
+  //     ]);
+
+  //     if ($validator->fails()) {
+  //       return redirect()->back()->with('error', 'Something went wrong!');
+  //     }
+  //   } catch (Exception $e) {
+  //     throw $e;
+  //   }
+
+  //   $data = $request->all();
+  //   $invite = Invites::where([['event_id', $data['event']], ['participant_id', $data['participant']]])->first();
+
+
+  //   if (!$invite) {
+  //     return redirect()->back()->with('error', 'Esse participante naoa faz parte da lista do evento.');
+  //   }
+
+  //   Invites::where([['event_id', $data['event']], ['participant_id', $data['participant']]])->delete();
+  //   return redirect(route('event', $data['event']))->with('success', 'O participante foi removido com sucesso!');
+  // }
 
   public function confirmEntrance($encryptedevent, $encryptedparticipant)
   {

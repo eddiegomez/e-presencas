@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Invites extends Model
 {
-  use HasFactory, SoftDeletes;
+  use HasFactory;
 
   /**
    * The primary key columns for the model.

@@ -111,6 +111,7 @@ class InviteService
 
     if ($invite) {
       $updateInvite = Invites::where('event_id', $eventId)->where('participant_id', $participantId)->update(['participant_type_id' => $participantType]);
+      // dd($updateInvite);
       return $participant;
     } else {
       throw new Exception('Wuaaaaaaaaaaaaaaa');
@@ -124,10 +125,10 @@ class InviteService
    * 
    */
 
-  public function deleteInvite(int $eventId, int $participantId): Invites
+  public function deleteInvite(int $eventId, int $participantId): int
   {
     $invite = $this->getInviteByCompositeKey($eventId, $participantId);
-    if ($invite) {
+    if (!$invite) {
       throw new Exception("O convite nao existe");
     }
 

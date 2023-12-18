@@ -561,9 +561,10 @@
         {{-- Modal Body --}}
         <div class="modal-body">
           <p class="my-1"><a href="" id="participantInfo">Mudar informações do participante!</a></p>
-          <form action="{{ route("inviteParticipant", ["id" => $event->id]) }}" method="POST"
+          <form action="{{ route("invite.update", ["eventId" => $event->id]) }}" method="POST"
             id="updateParticipantForm">
             @csrf
+            <input type="hidden" name="participant" id="Eparticipant">
             <div class="form-group">
               <label for="participant">Tipo de Participante</label>
               <select class="form-control @error("type") is-invalid @enderror custom-select" name="type"
@@ -588,6 +589,7 @@
     </div>
   </div>
 
+  {{-- Delete Participant from invited list --}}
   <div id="DeleteParticipantModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -600,8 +602,10 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-          <form id="deleteEventForm" method="POST" action='{{ route("event.destroy", $event->id) }}'>
+          <form id="deleteEventForm" method="POST" action='{{ route("invite.delete") }}'>
             @csrf
+            <input type="hidden" name="event" id="event" value="{{ $event->id }}">
+            <input type="hidden" name="participant" id="Dparticipant">
             <button type="submit" class="btn btn-danger">Eliminar</button>
           </form>
         </div>
@@ -612,19 +616,18 @@
 
   <script>
     function editParticipantModal(id, name, type) {
-      var form = document.getElementById('updateParticipantForm');
-
-      form.action = `{{ route("invite.update", ["eventId" => $event->id, "participantId" => $participant->id]) }}`;
-
       document.getElementById('EditParticipantModalLabel').innerHTML = "Editar o tipo do participante " + name;
       document.getElementById('participantInfo').href = '{{ route("participant.show", $participant->id) }}';
       document.getElementById('Etype').value = type;
+      document.getElementById('Eparticipant').value = id;
       $('#EditParticipantModal').modal('show');
     }
 
     // Function that triggers the deletion of a participant modal
     function deleteParticipantModal(id, name) {
       document.getElementById('DeleteParticipantModalLabel').innerHTML = 'Desconvidar ' + name;
+      document.getElementById('Dparticipant').value = id;
+
       $('#DeleteParticipantModal').modal('show');
     }
 

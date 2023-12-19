@@ -60,7 +60,7 @@
                     <th scope="col">#</th>
                     <th scope="col">Nome</th>
                     <th scope="col">Email</th>
-                    <th scope="col">Status</th>
+                    <th scope="col">Status da Conta</th>
                     <th scope="col" class="text-right">Action</th>
                   </tr>
                 </thead>
@@ -83,7 +83,8 @@
                       </td>
 
                       <td class="text-right">
-                        <a href="#" class="btn btn-primary">
+                        <a href="#" class="btn btn-primary"
+                          onclick='editModal({{ $protocolo->id }}, @json($protocolo->name), @json($protocolo->email), @json($protocolo->phone))''>
                           <i class='uil uil-pen font-size-11'></i>
                         </a>
                         <a href="#" class="btn btn-danger">
@@ -161,5 +162,81 @@
         </div> {{-- End Modal Content --}}
       </div> {{-- End Modal Dialog --}}
     </div> {{-- End Modal Content --}}
+
+    {{-- Details Staff Modal --}}
+    <div id="editStaffModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          {{-- Modal header --}}
+          <div class="modal-header">
+            <h5 class="modal-title text-capitalize" id="createStaffModallLabel">Dados do protocolo</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+          </div>
+
+          {{-- Modal body --}}
+          <div class="modal-body">
+            <form action="{{ route("protocolo.store") }}" method="POST">
+              @csrf
+
+              {{-- ID Input --}}
+              <input type="hidden" name="id" id="editId">
+
+              {{-- Name Input --}}
+              <div class="form-group">
+                <label for="name">Nome</label>
+                <input type="text" class="form-control" id="Ename" name="name" aria-describedby="emailHelp"
+                  placeholder="Exemplo: Martinha">
+                @error("name")
+                  <span class="text-danger">{{ $message }}</span>
+                @enderror
+              </div>
+
+              {{-- Email Input --}}
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="Eemail" name="email"
+                  placeholder="Exemplo: John.doe@inage.gov.mz">
+                @error("email")
+                  <span class="text-danger">{{ $message }}</span>
+                @enderror
+              </div>
+
+              {{-- Phone Number --}}
+              <div class="form-group">
+                <label for="phone">Numero de Telefone</label>
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">+258</div>
+                  </div>
+                  <input type="text" class="form-control" id="Ephone" name="phone" placeholder="84 000 0000"
+                    autocomplete="off" value="{{ old("phone") }}">
+                </div>
+                @error("phone")
+                  <span class="text-danger">{{ $message }}</span>
+                @enderror
+              </div>
+
+              {{-- Modal footer --}}
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary" type="submit">Criar Protocolo</button>
+              </div>
+            </form> {{-- End form --}}
+          </div> {{-- End Modal body --}}
+        </div> {{-- End Modal Content --}}
+      </div> {{-- End Modal Dialog --}}
+    </div>
+
+    <script>
+      function editModal(id, name, email, phone) {
+        document.getElementById('editId').value = id;
+        document.getElementById('Ename').value = name;
+        document.getElementById('Eemail').value = email;
+        document.getElementById('Ephone').value = phone;
+
+        $("#editStaffModal").modal("show");
+      }
+    </script>
   @endsection
 @endhasrole

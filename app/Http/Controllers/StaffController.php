@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Notifications\EmailVerification;
+use App\Services\StaffService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,8 +12,16 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 
-class ProtocolosController extends Controller
+class StaffController extends Controller
 {
+
+  protected $staffService;
+
+  public function __construct(StaffService $staffService)
+  {
+    $this->staffService = $staffService;
+  }
+
   /**
    * Display a listing of the resource.
    *
@@ -45,26 +54,21 @@ class ProtocolosController extends Controller
         return redirect()->back()->withErrors($validator)->withInput();
       }
 
-      $data = $request->all();
+      $organization = auth()->user()->organization_id;
 
-      $protocolo = new User();
-      $protocolo->name = $data["name"];
-      $protocolo->email = $data["email"];
-      $protocolo->save();
+      $protocolo = $this->staffService->create(
+        $request->name,
+        $request->email,
+        $request->phone,
+        $organization
+      );
 
-      Notification::route('mail', $protocolo->email)->notify(new EmailVerification(
-        $protocolo->id,
-        $protocolo->email,
-        $protocolo->name
-      ));
+      return redirect()->back()->with('success', 'O protocolo de nome ' . $protocolo->name . ' foi adicionado com sucesso!');
     } catch (Exception $e) {
       $errorMessage = $e->getMessage();
 
       return redirect()->back()->with('error', $errorMessage);
     }
-
-
-    return redirect()->back()->with('success', 'Protocolo criado com Sucesso!');
   }
 
   /**
@@ -129,16 +133,21 @@ class ProtocolosController extends Controller
   {
     try {
       $validator = Validator::make($request->all(), [
-        "Eid" => ["required", "numeric"],
+        "editId" => ["required", "numeric"],
         "Ename" => ["required", "string"],
-        "Eemail" => ["required", "email"]
+        "Eemail" => ["required", "email"],
+        "Ephone" => ["required", "numeric"]
       ]);
 
       if ($validator->fails()) {
         return redirect()->back()->withErrors($validator)->withInput();
       }
-    } catch (\Throwable $th) {
-      throw $th;
+
+      
+    } catch (Exception $e) {
+      $errorMessage = $e->getMessage();
+
+      return redirect()->back()->with('error', $errorMessage);
     }
 
     $data = $request->all();

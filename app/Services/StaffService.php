@@ -16,7 +16,7 @@ class StaffService
     string $name,
     string $email,
     string $phone,
-    int $organization
+    int $organization_id
   ) {
     $staffExists = User::where('email', $email)->orWhere('phone', $phone)->first();
 
@@ -24,7 +24,7 @@ class StaffService
       throw new Exception('Um usuario registado com o mesmo email ou numero de telefone!');
     }
 
-    $organization = Organization::find($organization);
+    $organization = Organization::find($organization_id);
 
     if (!$organization) {
       throw new Exception('Não encontramos a organização a qual se refere!');
@@ -35,12 +35,17 @@ class StaffService
     $staff->email = $email;
     $staff->phone = $phone;
     $staff->password = Hash::make($organization->name . '@1234');
+    $staff->organization_id = $organization_id;
     $staff->save();
+
+    $staff->assignRole('protocolo');
 
     Notification::route('mail', $staff->email)->notify(new EmailVerification(
       $staff->id,
       $staff->email,
       $staff->name
     ));
+
+    return $staff;
   }
 }

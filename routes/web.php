@@ -5,7 +5,7 @@ use App\Http\Controllers\InviteController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ParticipantController;
-use App\Http\Controllers\ProtocolosController;
+use App\Http\Controllers\StaffController;
 use App\Models\Participant;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -119,41 +119,36 @@ Route::middleware(['auth', 'web'])->group(function () {
 
 
   // Get all staff members Controller
-  Route::get('/protocolos', [ProtocolosController::class, 'index'])->name('protocolos.index');
-
+  Route::get('/protocolos', [StaffController::class, 'index'])->name('protocolos.index');
+  // Create a new staff member Controller
+  Route::post('/protocolo/create', [StaffController::class, 'store'])->name('protocolo.store');
+  // Update a certain staff member
+  Route::post('/protocolo/edit', [StaffController::class, 'update'])->name('protocolo.edit');
 
   Route::middleware(
     'isAdmin'
   )->group(function () {
 
 
-    // Create a new staff member Controller
-    Route::post(
-      '/protocolo/create',
-      [ProtocolosController::class, 'store']
-    )->name('protocolo.store');
+
 
     // Delete a Staff Member Controller
     Route::delete(
       '/protocolo/delete',
-      [ProtocolosController::class, 'destroy']
+      [StaffController::class, 'destroy']
     )->name('protocolo.delete');
 
-    Route::post(
-      '/protocolo/edit',
-      [ProtocolosController::class, 'update']
-    )->name('protocolo.edit');
   });
 });
 // Confirmar registro de protocolo!
 Route::get(
   '/protocolo/{encryptedId}/confirmation/',
-  [ProtocolosController::class, 'emailConfirmation']
+  [StaffController::class, 'emailConfirmation']
 )->name('protocolo.confirmation');
 
 Route::post(
   '/protocolo/{encryptedId}/confirmation',
-  [ProtocolosController::class, 'confirmRegister']
+  [StaffController::class, 'confirmRegister']
 )->name('protocolo.confirmRegister');
 
 

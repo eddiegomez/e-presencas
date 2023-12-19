@@ -7,6 +7,7 @@ use App\Services\InviteService;
 use App\Services\NotificationService;
 use Illuminate\Support\ServiceProvider;
 use App\Services\ParticipantService;
+use App\Services\StaffService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,6 +29,10 @@ class AppServiceProvider extends ServiceProvider
 
     $this->app->bind(NotificationService::class, function () {
       return new NotificationService();
+    });
+
+    $this->app->bind(StaffService::class, function () {
+      return new StaffService();
     });
   }
 }

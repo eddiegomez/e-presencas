@@ -60,6 +60,7 @@
                     <th scope="col">#</th>
                     <th scope="col">Nome</th>
                     <th scope="col">Email</th>
+                    <th scope="col">Telefone</th>
                     <th scope="col">Status da Conta</th>
                     <th scope="col" class="text-right">Action</th>
                   </tr>
@@ -70,6 +71,9 @@
                       <td>{{ $loop->index + 1 }}</td>
                       <td>{{ $protocolo->name }}</td>
                       <td>{{ $protocolo->email }}</td>
+                      <td>+258 {{ mb_substr($protocolo->phone, 0, 2) }}
+                        {{ substr($protocolo->phone, 2, 3) }}
+                        {{ substr($protocolo->phone, 5, 4) }} {{ substr($protocolo->phone, 9, 4) }}</td>
                       <td>
                         @if (!$protocolo->email_verified_at)
                           <span class="badge py-1 badge-soft-warning">
@@ -87,7 +91,8 @@
                           onclick='editModal({{ $protocolo->id }}, @json($protocolo->name), @json($protocolo->email), @json($protocolo->phone))''>
                           <i class='uil uil-pen font-size-11'></i>
                         </a>
-                        <a href="#" class="btn btn-danger">
+                        <a href="#" class="btn btn-danger"
+                          onclick='deleteStaff({{ $protocolo->id }}, @json($protocolo->name))'>
                           <i class='uil uil-trash-alt font-size-11'></i>
                         </a>
                       </td>
@@ -114,7 +119,7 @@
 
           {{-- Modal body --}}
           <div class="modal-body">
-            <form action="{{ route("protocolo.store") }}" method="POST">
+            <form action="{{ route("staff.store") }}" method="POST">
               @csrf
 
               {{-- Name Input --}}
@@ -155,7 +160,7 @@
               {{-- Modal footer --}}
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary" type="submit">Criar Protocolo</button>
+                <button type="submit" class="btn btn-primary" type="submit">Editar Protocolo</button>
               </div>
             </form> {{-- End form --}}
           </div> {{-- End Modal body --}}
@@ -176,7 +181,7 @@
 
           {{-- Modal body --}}
           <div class="modal-body">
-            <form action="{{ route("protocolo.store") }}" method="POST">
+            <form action="{{ route("staff.update") }}" method="POST">
               @csrf
 
               {{-- ID Input --}}
@@ -228,6 +233,33 @@
       </div> {{-- End Modal Dialog --}}
     </div>
 
+    {{-- Delete Event Modal --}}
+    <div id="deleteStaffModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="user">Remover o <strong id="sName"></strong> dos protocolos?
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+          </div>
+          <div class="modal-body">
+
+            <p>Tem certeza que pretende remover o participante <strong id="rmName"></strong>?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <form id="removeParticipant" method="POST" action="{{ route("staff.delete") }}">
+              <input type="hidden" name="_method" value="Delete">
+              <input type="hidden" name="_token" value="{{ csrf_token() }}">
+              <input type="hidden" id="deleteId" name="id" />
+
+              <button type="submit" class="btn btn-danger">Confirmar remoção</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script>
       function editModal(id, name, email, phone) {
         document.getElementById('editId').value = id;
@@ -236,6 +268,13 @@
         document.getElementById('Ephone').value = phone;
 
         $("#editStaffModal").modal("show");
+      }
+
+      function deleteStaff(id, name) {
+        document.getElementById('deleteId').value = id;
+        document.getElementById('sName').innerHTML = name;
+        document.getElementById('rmName').innerHTML = name
+        $("#deleteStaffModal").modal("show");
       }
     </script>
   @endsection

@@ -121,25 +121,14 @@ Route::middleware(['auth', 'web'])->group(function () {
   // Get all staff members Controller
   Route::get('/protocolos', [StaffController::class, 'index'])->name('protocolos.index');
   // Create a new staff member Controller
-  Route::post('/protocolo/create', [StaffController::class, 'store'])->name('protocolo.store');
+  Route::post('/protocolo/create', [StaffController::class, 'store'])->name('staff.store');
   // Update a certain staff member
-  Route::post('/protocolo/edit', [StaffController::class, 'update'])->name('protocolo.edit');
+  Route::post('/protocolo/edit', [StaffController::class, 'update'])->name('staff.update');
 
-  Route::middleware(
-    'isAdmin'
-  )->group(function () {
-
-
-
-
-    // Delete a Staff Member Controller
-    Route::delete(
-      '/protocolo/delete',
-      [StaffController::class, 'destroy']
-    )->name('protocolo.delete');
-
-  });
+  // Delete a Staff Member Controller
+  Route::delete('/protocolo/delete', [StaffController::class, 'destroy'])->name('staff.delete');
 });
+
 // Confirmar registro de protocolo!
 Route::get(
   '/protocolo/{encryptedId}/confirmation/',

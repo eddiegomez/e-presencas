@@ -31,7 +31,7 @@ class StaffController extends Controller
   {
     $user = Auth::user();
     $protocolos = User::role('protocolo')->get();
-    return response(view('Protocolos.index', compact('user', 'protocolos')));
+    return response(view('staff.index', compact('user', 'protocolos')));
   }
 
 
@@ -79,10 +79,11 @@ class StaffController extends Controller
    */
   public function emailConfirmation($encryptedId)
   {
+    Auth::logout();
     $id = base64_decode($encryptedId);
     $user = User::find($id);
 
-    return response(view('Protocolos.emailConfirmation', compact('user')));
+    return response(view('staff.emailConfirmation', compact('user')));
   }
 
 
@@ -98,28 +99,21 @@ class StaffController extends Controller
     try {
       $validator = Validator::make($request->all(), [
         'defaultPassword' => ['required', 'string'],
-        'password' => ['required', 'string', 'min:8'],
+        'password' => ['required', 'string', 'min:8', 'confirmed'],
       ]);
 
       if ($validator->fails()) {
         return redirect()->back()->withErrors($validator)->withInput();
       }
-    } catch (\Throwable $th) {
-      throw $th;
-    }
 
-    $id = base64_decode($encryptedId);
-    $user = User::find($id);
-
-    if (Hash::check($request->defaultPassword, $user->password)) {
-      $user->password = Hash::make($request->password);
-      $user->email_verified_at = date('Y-m-d H:i:s');
-      $user->save();
+      $this->staffService->confirmRegistration($encryptedId, $request->defaultPassword, $request->password);
 
       return redirect()->route('login');
-    }
+    } catch (Exception $e) {
+      $errorMessage = $e->getMessage();
 
-    return redirect()->back()->with('error', 'Default password is incorrect');
+      return redirect()->back()->with('error', $errorMessage);
+    }
   }
 
   /**

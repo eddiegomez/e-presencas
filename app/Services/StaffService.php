@@ -6,13 +6,12 @@ use App\Models\Organization;
 use App\Models\User;
 use App\Notifications\EmailVerification;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 
 class StaffService
 {
-
-
   /**
    * Get a user by Id
    * @param int $id
@@ -48,19 +47,20 @@ class StaffService
   ) {
     $staffExists = User::withTrashed()->where('email', $email)->orWhere('phone', $phone)->first();
 
+    $organization = Organization::find($organization_id);
+
     if ($staffExists) {
       if ($staffExists->trashed()) {
         $staffExists->name = $name;
         $staffExists->email = $email;
         $staffExists->phone = $phone;
+        $staffExists->password = Hash::make($organization->name . '@1234');
         $staffExists->restore();
         return $staffExists;
       } else {
-        throw new Exception('Um usuario registado com o mesmo email ou numero de telefone!');
+        throw new Exception('Um usuario registado com o mesmo email ou número de telefone!');
       }
     }
-
-    $organization = Organization::find($organization_id);
 
     if (!$organization) {
       throw new Exception('Não encontramos a organização a qual se refere!');
@@ -118,5 +118,37 @@ class StaffService
 
 
     return $staff->delete();
+  }
+
+  /**
+   * Confirm the staff registration
+   * @param string $encryptedId
+   * @param string $defaultPassword
+   * @param string $newPassword
+   * @throws \Exception
+   * @return User
+   */
+  public function confirmRegistration(
+    string $encryptedId,
+    string $defaultPassword,
+    string $newPassword
+  ) {
+
+    $id = base64_decode($encryptedId);
+    $staff = $this->getUserById($id);
+
+    if ($staff->hasVerifiedEmail()) {
+      throw new Exception('O email já foi verificado.');
+    }
+
+    if (Hash::check($defaultPassword, $staff->password)) {
+      $staff->password = Hash::make($newPassword);
+      $staff->markEmailAsVerified();
+      $staff->save();
+
+      return $staff;
+    }
+
+    throw new Exception('O password predefindo não está correcto!');
   }
 }

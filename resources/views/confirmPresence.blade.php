@@ -20,7 +20,7 @@
           </div>
           <div class="d-flex justify-content-between mt-2">
             <span class="font-weight-bolder font-size-16">Localizacao</span>
-            <span class="font-weight-medium font-size-16">{{ $event->Address[0]->name }}</span>
+            <span class="font-weight-medium font-size-16">{{ $event->addresses[0]->name }}</span>
           </div>
           <div class="d-flex justify-content-between mt-2">
             <span class="font-weight-bolder font-size-16">Hora de Inicio</span>

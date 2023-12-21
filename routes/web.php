@@ -142,6 +142,6 @@ Route::post(
 
 
 // Confirm Presence Controller
-Route::get('/confirm/presence/{encryptedevent}/{encryptedparticipant}', [InviteController::class, 'show'])->name('confirmPresenceShow');
+Route::get('/confirm/presence/{encryptedevent}/{encryptedparticipant}', [InviteController::class, 'confirmPresence'])->name('invite.confirmPresence');
 
 Auth::routes();

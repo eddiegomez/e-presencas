@@ -48,12 +48,11 @@ class sendInvite extends Notification
   public function toMail($notifiable)
   {
 
+    $eventId = $this->eventId;
+    $participantId = $this->participantId;
     $image_path = $this->qr_url;
-    // dd($this->qr_url);
     return (new MailMessage)
-      ->line('The introduction to the notification.')
-      ->action('Notification Action', route('confirmPresenceShow', ["encryptedevent" => base64_encode($this->eventId), "encryptedparticipant" => base64_encode($this->participantId)]))
-      ->view('emails.qrcode', compact('image_path'))
+      ->view('emails.qrcode', compact('image_path', 'eventId', 'participantId'))
       ->line('Thank you for using our application!');
   }
 

@@ -196,9 +196,22 @@
     </div>
   @endhasrole
 
-  <!-- row -->
-
-  <!-- end row -->
+  @hasrole("protocolo")
+    <div class="row">
+      <div class="col-md-6 col-xl-3">
+        <div class="card">
+          <div class="card-body p-0">
+            <div class="media p-3">
+              <div class="media-body">
+                <span class="text-muted text-uppercase font-size-12 font-weight-bold">Eventos</span>
+                <h2 class="mb-0">{{ $events }}</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  @endhasrole
 @endsection
 
 @section("script")

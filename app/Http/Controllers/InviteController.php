@@ -152,7 +152,7 @@ class InviteController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function show($encryptedevent, $encryptedparticipant)
+  public function confirmPresence($encryptedevent, $encryptedparticipant)
   {
     $eventId = base64_decode($encryptedevent);
     $participantId = base64_decode($encryptedparticipant);
@@ -259,7 +259,6 @@ class InviteController extends Controller
 
   public function confirmEntrance($encryptedevent, $encryptedparticipant)
   {
-    $user = Auth::user();
     $eventId = base64_decode($encryptedevent);
     $participantId = base64_decode($encryptedparticipant);
     $event = Event::find($eventId);
@@ -267,7 +266,7 @@ class InviteController extends Controller
     $invite = Invites::where([['event_id', $eventId], ['participant_id', $participantId]])->first();
 
 
-    return response(view('confirmEntrance', compact('user', 'event', 'encryptedevent', 'encryptedparticipant', 'participant', 'invite')));
+    return response(view('confirmEntrance', compact('event', 'encryptedevent', 'encryptedparticipant', 'participant', 'invite')));
   }
 
   public function confirmEntrancePost($encryptedevent, $encryptedparticipant)
@@ -293,7 +292,7 @@ class InviteController extends Controller
     $name = $encodedEvent . $encodedParticipant;
 
     $qrCode = QrCode::format('svg')->size(100)->generate(route(
-      'confirmPresenceShow',
+      'invite.confirmPresence',
       ['encryptedevent' => $encodedEvent, 'encryptedparticipant' => $encodedParticipant]
     ));
     $qrCodePath = storage_path('app/public/qrcodes/' . $name . '.svg');

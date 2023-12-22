@@ -60,52 +60,31 @@ Route::middleware(['auth', 'web'])->group(function () {
   // Participants Controllers
 
   // Get all participants controller
-  Route::get(
-    '/participants',
-    [ParticipantController::class, 'index']
-  )->name('participant.index');
+  Route::get('/participants', [ParticipantController::class, 'index'])->name('participant.index');
 
 
   // Create a new Participant Controller
-  Route::post(
-    '/participant/create',
-    [ParticipantController::class, 'store']
-  )->name('participant.store');
+  Route::post('/participant/create', [ParticipantController::class, 'store'])->name('participant.store');
 
   // Get a single Participant Controller
-  Route::get('/participant/{id}', [
-    ParticipantController::class,
-    'show'
-  ])->name('participant.show');
+  Route::get('/participant/{id}', [ParticipantController::class, 'show'])->name('participant.show');
 
 
   // Edit a Participant Controller
-  Route::post(
-    '/participant/{id}/edit',
-    [ParticipantController::class, 'update']
-  )->name('participant.update');
+  Route::post('/participant/{id}/edit', [ParticipantController::class, 'update'])->name('participant.update');
 
   // Delete a participant Controller
-  Route::post(
-    '/participant/{id}/delete',
-    [ParticipantController::class, 'destroy']
-  )->name('participant.destroy');
+  Route::post('/participant/{id}/delete', [ParticipantController::class, 'destroy'])->name('participant.destroy');
 
 
   // Invite Controllers
 
   // Confirmar Entrada Controllers
-  Route::get(
-    '/confirm/entrance/{encryptedevent}/{encryptedparticipant}',
-    [InviteController::class, 'confirmEntrance']
-  )->name('participant.entrance');
+  Route::get('/confirm/entrance/{encryptedevent}/{encryptedparticipant}', [InviteController::class, 'confirmEntrance'])->name('participant.entrance');
 
 
   // 
-  Route::post(
-    'confirm/entrance/{encryptedevent}/{encryptedparticipant}',
-    [InviteController::class, 'confirmEntrancePost']
-  )->name('confirmEntranceUpdate');
+  Route::post('confirm/entrance/{encryptedevent}/{encryptedparticipant}', [InviteController::class, 'confirmEntrancePost'])->name('confirmEntranceUpdate');
 
 
   // Delete a new Invite controller
@@ -130,15 +109,9 @@ Route::middleware(['auth', 'web'])->group(function () {
 });
 
 // Confirmar registro de protocolo!
-Route::get(
-  '/protocolo/{encryptedId}/confirmation/',
-  [StaffController::class, 'emailConfirmation']
-)->name('protocolo.confirmation');
+Route::get('/protocolo/{encryptedId}/confirmation/', [StaffController::class, 'emailConfirmation'])->name('protocolo.confirmation');
 
-Route::post(
-  '/protocolo/{encryptedId}/confirmation',
-  [StaffController::class, 'confirmRegister']
-)->name('protocolo.confirmRegister');
+Route::post('/protocolo/{encryptedId}/confirmation', [StaffController::class, 'confirmRegister'])->name('protocolo.confirmRegister');
 
 
 // Confirm Presence Controller

@@ -230,33 +230,6 @@ class InviteController extends Controller
     }
   }
 
-  // public function destroy(Request $request)
-  // {
-  //   try {
-  //     $validator = Validator::make($request->all(), [
-  //       "event" => ['required', 'numeric'],
-  //       "participant" => ['required', 'numeric'],
-  //     ]);
-
-  //     if ($validator->fails()) {
-  //       return redirect()->back()->with('error', 'Something went wrong!');
-  //     }
-  //   } catch (Exception $e) {
-  //     throw $e;
-  //   }
-
-  //   $data = $request->all();
-  //   $invite = Invites::where([['event_id', $data['event']], ['participant_id', $data['participant']]])->first();
-
-
-  //   if (!$invite) {
-  //     return redirect()->back()->with('error', 'Esse participante naoa faz parte da lista do evento.');
-  //   }
-
-  //   Invites::where([['event_id', $data['event']], ['participant_id', $data['participant']]])->delete();
-  //   return redirect(route('event', $data['event']))->with('success', 'O participante foi removido com sucesso!');
-  // }
-
   public function confirmEntrance($encryptedevent, $encryptedparticipant)
   {
     $eventId = base64_decode($encryptedevent);

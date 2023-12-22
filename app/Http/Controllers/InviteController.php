@@ -242,19 +242,11 @@ class InviteController extends Controller
     return response(view('confirmEntrance', compact('event', 'encryptedevent', 'encryptedparticipant', 'participant', 'invite')));
   }
 
-  public function confirmEntrancePost($encryptedevent, $encryptedparticipant)
+  public function confirmEntrancePost($encryptedEvent, $encryptedParticipant)
   {
-    $eventId = base64_decode($encryptedevent);
-    $participantId = base64_decode($encryptedparticipant);
+    $updatedInvite = $this->inviteService->confirmEntrance($encryptedEvent, $encryptedParticipant);
 
-    $event = Event::where("id", $eventId)->first();
-
-
-    $rs = Invites::where([['event_id', $eventId], ['participant_id', $participantId]])
-      ->update(['status' => 'Presente']);
-
-
-    return redirect()->back()->with('success', 'A presenca do participante foi actualizada com sucesso!');
+    return redirect()->route("event.show", $updatedInvite->event_id)->with('success', 'A presenca do participante foi actualizada com sucesso!');
   }
 
 

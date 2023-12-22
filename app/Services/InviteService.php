@@ -134,4 +134,16 @@ class InviteService
 
     return Invites::where('event_id', $eventId)->where('participant_id', $participantId)->delete();
   }
+
+  public function confirmEntrance($encryptedEventId, $encryptedParticipantId)
+  {
+    $eventId = base64_decode($encryptedEventId);
+    $participantId = base64_decode($encryptedParticipantId);
+
+    Invites::where('event_id', $eventId)->where('participant_id', $participantId)->update(['status' => 'presente']);
+
+    $invite = $this->getInviteByCompositeKey($eventId, $participantId);
+
+    return $invite;
+  }
 }

@@ -236,13 +236,16 @@ class InviteController extends Controller
     return redirect()->route("event.show", $updatedInvite->event_id)->with('success', 'A presenca do participante foi actualizada com sucesso!');
   }
 
-  public function rejectInvite(string $encodedEvent, string $encodedParticipant){
+  public function rejectInvite(string $encodedEvent, string $encodedParticipant)
+  {
     try {
       $invite = $this->inviteService->rejectInvite($encodedEvent, $encodedParticipant);
 
-      return 
+      return view('rejectInvite', compact('invite'))->with('warning', 'Rejeitou o convitr com sucesso!');
     } catch (Exception $e) {
-      
+      $errorMessage = $e->getMessage();
+
+      return;
     }
   }
 
@@ -265,28 +268,4 @@ class InviteController extends Controller
     }
     return $name;
   }
-
-  // public function confirmPresence($encryptedevent, $encryptedparticipant)
-  // {
-  //   // return redirect()->route('event', 1)->with('message', 'IT WORKS!');
-  //   $eventId = base64_decode($encryptedevent);
-  //   $participantId = base64_decode($encryptedparticipant);
-
-
-  //   $invite = Invites::where(["event_id" => $eventId, "participant_id" => $participantId])->first();
-  //   $event = Event::find($eventId);
-  //   // dd($event->name);
-
-  //   $updateStatus = DB::table('participant_event')
-  //     ->where('event_id', $eventId)
-  //     ->where('participant_id', $participantId)
-  //     ->update([
-  //       'status' => 'Confirmada',
-  //       'updated_at' => now()
-  //     ]);
-
-  //   // dd($updateStatus);
-
-  //   return redirect()->route('confirmPresenceShow', ['encryptedevent' => $encryptedevent, 'encryptedparticipant' => $encryptedparticipant])->with('success', 'A sua presenca foi confirmada no evento ' . $event->name);
-  // }
 }

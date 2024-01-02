@@ -146,28 +146,17 @@ class InviteController extends Controller
   }
 
 
-  /**
-   * Display the specified resource.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
   public function confirmPresence($encryptedevent, $encryptedparticipant)
   {
-    $eventId = base64_decode($encryptedevent);
-    $participantId = base64_decode($encryptedparticipant);
-    $rs = Invites::where([['event_id', $eventId], ['participant_id', $participantId]])
-      ->update(['status' => 'Confirmada']);
+    try {
+      $invite = $this->inviteService->confirmPresence($encryptedevent, $encryptedparticipant);
 
-    $successMessage = session('success');
+      return view('confirmPresence', compact('invite'))->with('success', 'A sua presenca foi confirmada no evento ' . $invite->event->name);
+    } catch (Exception $e) {
+      $errorMessage = $e->getMessage();
 
-
-    $event = Event::find($eventId);
-    $participant = Participant::find($participantId);
-
-
-
-    return response(view('confirmPresence', compact('successMessage', 'event', 'participant', 'encryptedevent', 'encryptedparticipant'))->with('success', 'A sua presenca foi confirmada no evento ' . $event->name));
+      return redirect()->back()->with('error', $errorMessage);
+    }
   }
 
   /**
@@ -234,10 +223,8 @@ class InviteController extends Controller
   {
     $eventId = base64_decode($encryptedevent);
     $participantId = base64_decode($encryptedparticipant);
-    $event = Event::find($eventId);
-    $participant = Participant::find($participantId);
-    $invite = Invites::where([['event_id', $eventId], ['participant_id', $participantId]])->first();
 
+    $invite = $this->inviteService->getInviteByCompositeKey($eventId, $participantId);
 
     return response(view('confirmEntrance', compact('event', 'encryptedevent', 'encryptedparticipant', 'participant', 'invite')));
   }

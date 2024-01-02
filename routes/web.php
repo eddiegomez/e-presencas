@@ -82,8 +82,6 @@ Route::middleware(['auth', 'web'])->group(function () {
   // Confirmar Entrada Controllers
   Route::get('/confirm/entrance/{encryptedevent}/{encryptedparticipant}', [InviteController::class, 'confirmEntrance'])->name('participant.entrance');
 
-
-  // 
   Route::post('confirm/entrance/{encryptedevent}/{encryptedparticipant}', [InviteController::class, 'confirmEntrancePost'])->name('confirmEntranceUpdate');
 
 

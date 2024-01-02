@@ -146,10 +146,10 @@ class InviteController extends Controller
   }
 
 
-  public function confirmPresence($encryptedevent, $encryptedparticipant)
+  public function acceptInvite($encryptedevent, $encryptedparticipant)
   {
     try {
-      $invite = $this->inviteService->confirmPresence($encryptedevent, $encryptedparticipant);
+      $invite = $this->inviteService->acceptInvite($encryptedevent, $encryptedparticipant);
 
       return view('confirmPresence', compact('invite'))->with('success', 'A sua presenca foi confirmada no evento ' . $invite->event->name);
     } catch (Exception $e) {
@@ -234,6 +234,16 @@ class InviteController extends Controller
     $updatedInvite = $this->inviteService->confirmEntrance($encryptedEvent, $encryptedParticipant);
 
     return redirect()->route("event.show", $updatedInvite->event_id)->with('success', 'A presenca do participante foi actualizada com sucesso!');
+  }
+
+  public function rejectInvite(string $encodedEvent, string $encodedParticipant){
+    try {
+      $invite = $this->inviteService->rejectInvite($encodedEvent, $encodedParticipant);
+
+      return 
+    } catch (Exception $e) {
+      
+    }
   }
 
 

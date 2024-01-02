@@ -72,9 +72,9 @@ class StaffController extends Controller
   }
 
   /**
-   * Display the specified resource.
+   * Confirm staff member email
    *
-   * @param  int  $id
+   * @param  string  $encryptedId
    * @return \Illuminate\Http\Response
    */
   public function emailConfirmation($encryptedId)
@@ -93,9 +93,8 @@ class StaffController extends Controller
    * @param string $encryptedId
    * @return \Illuminate\Http\RedirectResponse
    */
-  public function confirmRegister(Request $request, String $encryptedId)
+  public function emailConfirmationPost(Request $request, String $encryptedId)
   {
-    // dd($request->all());
     try {
       $validator = Validator::make($request->all(), [
         'defaultPassword' => ['required', 'string'],
@@ -120,7 +119,6 @@ class StaffController extends Controller
    * Update the specified resource in storage.
    *
    * @param  \Illuminate\Http\Request  $request
-   * @param  int  $id
    * @return \Illuminate\Http\RedirectResponse
    */
   public function update(Request $request)

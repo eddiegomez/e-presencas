@@ -29,9 +29,18 @@ class Participant extends Model
     return $this->belongsToMany(Event::class, 'invites')->withPivot('qr_url', 'status', 'participant_type_id');
   }
 
-  //Check if it has single event by Id
+  /**
+   * Check if participant has Event
+   * @param int $event
+   * @return mixed
+   */
   public function hasEvent($event)
   {
     return $this->events->contains('id', $event);
+  }
+
+  public function hasRelationWithOrganization($organization_id)
+  {
+    return $this->events->contains('organization_id', $organization_id);
   }
 }

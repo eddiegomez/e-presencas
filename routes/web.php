@@ -105,6 +105,6 @@ Route::post('/protocolo/{encryptedId}/confirmation', [StaffController::class, 'e
 
 
 // Confirm Presence Controller
-Route::get('/confirm/presence/{encryptedevent}/{encryptedparticipant}', [InviteController::class, 'acceptInvite'])->name('invite.acceptInvite');
+Route::get('/invite/accept/{encryptedevent}/{encryptedparticipant}', [InviteController::class, 'acceptInvite'])->name('invite.acceptInvite');
 
 Auth::routes();

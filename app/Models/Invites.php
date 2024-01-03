@@ -35,7 +35,7 @@ class Invites extends Model
 
   public $timestamps = true;
 
-  public function event($event): HasOne
+  public function event(): HasOne
   {
     return $this->hasOne(Event::class, 'id', 'event_id');
   }

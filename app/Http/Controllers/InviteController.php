@@ -146,6 +146,7 @@ class InviteController extends Controller
   }
 
 
+
   public function acceptInvite($encryptedevent, $encryptedparticipant)
   {
     try {
@@ -154,8 +155,8 @@ class InviteController extends Controller
       return view('confirmPresence', compact('invite'))->with('success', 'A sua presenca foi confirmada no evento ' . $invite->event->name);
     } catch (Exception $e) {
       $errorMessage = $e->getMessage();
-
-      return redirect()->back()->with('error', $errorMessage);
+      // dd(session()->all());
+      return view('error.404', ['error' => $errorMessage]);
     }
   }
 
@@ -221,19 +222,31 @@ class InviteController extends Controller
 
   public function confirmEntrance($encryptedevent, $encryptedparticipant)
   {
-    $eventId = base64_decode($encryptedevent);
-    $participantId = base64_decode($encryptedparticipant);
+    try {
 
-    $invite = $this->inviteService->getInviteByCompositeKey($eventId, $participantId);
+      $eventId = base64_decode($encryptedevent);
+      $participantId = base64_decode($encryptedparticipant);
 
-    return response(view('confirmEntrance', compact('event', 'encryptedevent', 'encryptedparticipant', 'participant', 'invite')));
+      $invite = $this->inviteService->getInviteByCompositeKey($eventId, $participantId);
+
+      return view('confirmEntrance', compact('event', 'encryptedevent', 'encryptedparticipant', 'participant', 'invite'));
+    } catch (Exception $e) {
+      $errorMessage = $e->getMessage();
+
+      return view('error.404', ['error' => $errorMessage]);
+    }
   }
 
   public function confirmEntrancePost($encryptedEvent, $encryptedParticipant)
   {
-    $updatedInvite = $this->inviteService->confirmEntrance($encryptedEvent, $encryptedParticipant);
+    try {
+      $updatedInvite = $this->inviteService->confirmEntrance($encryptedEvent, $encryptedParticipant);
+      return redirect()->route("event.show", $updatedInvite->event_id)->with('success', 'A presenca do participante foi actualizada com sucesso!');
+    } catch (Exception $e) {
+      $errorMessage = $e->getMessage();
 
-    return redirect()->route("event.show", $updatedInvite->event_id)->with('success', 'A presenca do participante foi actualizada com sucesso!');
+      return view('error.404', ['error' => $errorMessage]);
+    }
   }
 
   public function rejectInvite(string $encodedEvent, string $encodedParticipant)
@@ -245,7 +258,7 @@ class InviteController extends Controller
     } catch (Exception $e) {
       $errorMessage = $e->getMessage();
 
-      return;
+      return view('error.404', ['error' => $errorMessage]);
     }
   }
 

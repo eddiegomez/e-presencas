@@ -82,7 +82,7 @@ class InviteService
    * 
    * @return Invites
    */
-  public function getInviteByCompositeKey(int $eventId, int $participantId)
+  public function getInviteByCompositeKey(string $eventId, string $participantId)
   {
     $invite = Invites::where('event_id', $eventId)->where('participant_id', $participantId)->first();
 
@@ -145,6 +145,7 @@ class InviteService
   {
     $eventId = base64_decode($encryptedEventId);
     $participantId = base64_decode($encryptedParticipantId);
+
 
     $invite = $this->getInviteByCompositeKey($eventId, $participantId);
 

@@ -456,8 +456,8 @@
 
             <div class="form-group">
               <label for="participant">Nome do Participante</label>
-              <select class="form-control inline_directive custom-select" name="participant" id="participant" required>
-                <option selected hidden value="">Selecione um participante</option>
+              <select class="form-control inline_directive participants-selector" name="participant" id="participant"
+                data-plugin="custom-select" required onchange="checkParticipantField()">
                 @foreach ($participants as $participant)
                   @if (!$participant->hasEvent($event->id))
                     <option value="{{ $participant->id }}">{{ $participant->name }}</option>
@@ -616,6 +616,13 @@
 
 
   <script>
+    $(document).ready(function() {
+      $('[data-plugin="custom-select"]').select2({
+        placeholder: "Selecione os participantes",
+      });
+    });
+
+
     function editParticipantModal(id, name, type) {
       document.getElementById('EditParticipantModalLabel').innerHTML = "Editar o tipo do participante " + name;
       document.getElementById('participantInfo').href = '{{ route("participant.show", $participant->id) }}';
@@ -657,7 +664,5 @@
         newLocationFields.style.display = 'none';
       }
     };
-
-    document.getElementById('participant').addEventListener('change', checkParticipantField);
   </script>
 @endsection

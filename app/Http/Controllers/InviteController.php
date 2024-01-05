@@ -43,6 +43,7 @@ class InviteController extends Controller
    */
   public function store(Request $request)
   {
+    dd($request);
     try {
       $validator = Validator::make($request->all(), [
         'id' => ['required', 'integer'],
@@ -270,7 +271,7 @@ class InviteController extends Controller
     $name = $encodedEvent . $encodedParticipant;
 
     $qrCode = QrCode::format('svg')->size(100)->generate(route(
-      'invite.confirmPresence',
+      'invite.acceptInvite',
       ['encryptedevent' => $encodedEvent, 'encryptedparticipant' => $encodedParticipant]
     ));
     $qrCodePath = storage_path('app/public/qrcodes/' . $name . '.svg');

@@ -46,26 +46,28 @@
   @section("content")
     <div class="row">
       @foreach ($participants as $participant)
-        <div class="col-md-6 col-xl-3 col-12">
-          <a href="{{ route("participant.show", $participant->id) }}" class="card">
-            <div class="card-body p-0">
-              <div class="media p-3">
-                <div class="media-body">
-                  <span class="text-muted text-uppercase font-size-12 font-weight-bold">
-                    {{ $participant->degree }}
-                  </span>
-                  <h2 class="mb-0">{{ $participant->name }}</h2>
-                </div>
-                <div class="align-self-center">
-                  <div id="today-revenue-chart" class="apex-charts"></div>
-                  <span class="text-success font-weight-bold font-size-18">
-                    {{ $participant->events->count() }}
-                  </span>
+        @if ($participant->hasRelationWithOrganization(auth()->user()->organization_id))
+          <div class="col-md-6 col-xl-3 col-12">
+            <a href="{{ route("participant.show", $participant->id) }}" class="card">
+              <div class="card-body p-0">
+                <div class="media p-3">
+                  <div class="media-body">
+                    <span class="text-muted text-uppercase font-size-12 font-weight-bold">
+                      {{ $participant->degree }}
+                    </span>
+                    <h2 class="mb-0">{{ $participant->name }}</h2>
+                  </div>
+                  <div class="align-self-center">
+                    <div id="today-revenue-chart" class="apex-charts"></div>
+                    <span class="text-success font-weight-bold font-size-18">
+                      {{ $participant->events->count() }}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </a>
-        </div>
+            </a>
+          </div>
+        @endif
       @endforeach
     </div>
 

@@ -653,7 +653,7 @@
     };
     document.getElementById('address').addEventListener('change', checkLocationField);
 
-    function checkParticipantField() {
+    function checkParticipantField() {  
       var select = document.getElementById('participant');
       var selectedLocation = select.value;
       var newLocationFields = document.getElementById('newParticipantFields');

@@ -152,20 +152,20 @@
                 @enderror
               </div>
 
-              {{-- Phone Number --}}
-              <div class="form-group">
-                <label for="phone" class="col-lg-8 col-form-label">Numero de Telefone</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text">+258</div>
+                {{-- Phone Number --}}
+                <div class="form-group">
+                  <label for="phone" class="col-lg-8 col-form-label">Numero de Telefone</label>
+                  <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text">+258</div>
+                    </div>
+                    <input type="text" class="form-control" id="phone" name="phone" placeholder="84 000 0000"
+                      autocomplete="off" value="{{ old("phone") }}">
                   </div>
-                  <input type="text" class="form-control" id="phone" name="phone" placeholder="84 000 0000"
-                    autocomplete="off" value="{{ old("phone") }}">
+                  @error("phone")
+                    <span class="text-danger">{{ $message }}</span>
+                  @enderror
                 </div>
-                @error("phone")
-                  <span class="text-danger">{{ $message }}</span>
-                @enderror
-              </div>
 
               {{-- Location --}}
               <div class="form-group">

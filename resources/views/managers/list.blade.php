@@ -375,60 +375,6 @@
         document.getElementById("managerId").value = managerId;
         $("#deleteManagerModal").modal("show");
       }
-
-      $(document).ready(function() {
-        // Initial data
-        let managers = @json($gestores);
-
-        // Function filter managers based on search input
-        function filterManagers(searchTerm) {
-          return managers.filter(managers => manager.name.toLowerCase().includes(searchTerm.toLowerCase()));
-        }
-
-        // Fuction to update displayed managers
-        function updateCards(filteredManagers) {
-          const ManagersContainer = $('#gestoresContainer');
-          ManagersContainer.empty();
-
-          filteredManagers.forEach(manager => {
-            ManagersContainer.append(`
-              <div class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                <div
-                  class="p-3 shadow rounded-lg border border-light bg-white d-flex justify-content-between align-items-center">
-                  <div>
-                    <h4 class="text-dark" style="cursor: pointer;"
-                      onClick='detailsModal("{{ $gestor->name }}",@json($gestor->email), @json($gestor->phone), @json($gestor->organization->name))'>
-                      {{ $gestor->name }}</h4>
-                    <span class="text-muted">{{ $gestor->organization->name }}</span>
-                  </div>
-                  <div>
-                    <button type="button" class="btn btn-info font-size-11 p-1"
-                      onClick='editModal({{ $gestor->id }},"{{ $gestor->name }}",@json($gestor->email), @json($gestor->phone), @json($gestor->organization->id))'>
-                      <i class="uil uil-edit-alt"></i>
-                    </button>
-
-                    <button type="button" class="btn btn-danger font-size-11 p-1"
-                      onClick='deleteModal("{{ $gestor->name }}", @json($gestor->id))'>
-                      <i class="uil uil-trash"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            `);
-          });
-
-          // Handle search input changes 
-          $('#searchInput').on('change', function() {
-            const searchTerm = $('#searchInput').val();
-            const filteredManagers = filterManagers(searchTerm);
-            const paginatedManagers = filteredManagers.slice(0, 12);
-
-            console.log(searchTerm);
-
-            updateCards(paginatedManagers);
-          });
-        }
-      });
     </script>
 
     {{-- <script>

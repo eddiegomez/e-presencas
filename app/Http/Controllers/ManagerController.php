@@ -34,6 +34,7 @@ class ManagerController extends Controller
   {
     $gestores = User::role('gestor')->paginate(12);
     $organizations = Organization::all();
+    // dd($gestores->isEmpty());
 
     return view('managers.list', compact('gestores', 'organizations'));
   }

@@ -458,6 +458,7 @@
               <label for="participant">Nome do Participante</label>
               <select class="form-control inline_directive participants-selector" name="participant" id="participant"
                 data-plugin="custom-select" required onchange="checkParticipantField()">
+                <option value="">Selecione um participante</option>
                 @foreach ($participants as $participant)
                   @if (!$participant->hasEvent($event->id))
                     <option value="{{ $participant->id }}">{{ $participant->name }}</option>

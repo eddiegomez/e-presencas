@@ -15,9 +15,9 @@ class CreateEventAddressTable extends Migration
   {
     Schema::create('event_address', function (Blueprint $table) {
       $table->primary(['event_id', 'address_id']);
-      $table->foreignId('event_id')->constrained();
+      $table->foreignId('event_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
       $table->unsignedBigInteger('address_id');
-      $table->foreign('address_id')->references('id')->on('address');
+      $table->foreign('address_id')->references('id')->on('address')->cascadeOnDelete()->cascadeOnUpdate();
       $table->timestamps();
       $table->softDeletes();
     });

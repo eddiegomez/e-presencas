@@ -223,7 +223,7 @@
                   <td>{{ $participant->phone_number }}</td>
                   <td class="text-right">
                     <a class="btn btn-secondary p-1" href="" data-toggle="modal"
-                      onclick='editParticipantModal({{ $participant->id }}, @json($participant->name), @json($participant->pivot->participant_type_id))'>
+                      onclick='editParticipantModal({{ $participant->id }}, @json($participant->name), @json($participant->pivot->participant_type_id), "{{ route("participant.show", $participant->id) }}")'>
                       <i class='uil uil-edit-alt'></i>
                     </a>
 
@@ -623,9 +623,9 @@
     });
 
 
-    function editParticipantModal(id, name, type) {
+    function editParticipantModal(id, name, type, participantInfoUrl) {
       document.getElementById('EditParticipantModalLabel').innerHTML = "Editar o tipo do participante " + name;
-      document.getElementById('participantInfo').href = '{{ route("participant.show", $participant->id) }}';
+      document.getElementById('participantInfo').href = participantInfoUrl;
       document.getElementById('Etype').value = type;
       document.getElementById('Eparticipant').value = id;
       $('#EditParticipantModal').modal('show');
@@ -653,7 +653,7 @@
     };
     document.getElementById('address').addEventListener('change', checkLocationField);
 
-    function checkParticipantField() {  
+    function checkParticipantField() {
       var select = document.getElementById('participant');
       var selectedLocation = select.value;
       var newLocationFields = document.getElementById('newParticipantFields');

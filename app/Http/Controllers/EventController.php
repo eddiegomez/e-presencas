@@ -191,7 +191,7 @@ class EventController extends Controller
     if ($event) {
       Event::destroy($id);
     }
-    return redirect()->route('events');
+    return redirect()->route('event.list');
   }
 
 

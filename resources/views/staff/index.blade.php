@@ -160,7 +160,7 @@
               {{-- Modal footer --}}
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary" type="submit">Editar Protocolo</button>
+                <button type="submit" class="btn btn-primary" type="submit">Criar Protocolo</button>
               </div>
             </form> {{-- End form --}}
           </div> {{-- End Modal body --}}
@@ -168,7 +168,7 @@
       </div> {{-- End Modal Dialog --}}
     </div> {{-- End Modal Content --}}
 
-    {{-- Details Staff Modal --}}
+    {{-- Edit Staff Modal --}}
     <div id="editStaffModal" class="modal fade" role="dialog">
       <div class="modal-dialog">
         <!-- Modal content-->
@@ -225,7 +225,7 @@
               {{-- Modal footer --}}
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary" type="submit">Criar Protocolo</button>
+                <button type="submit" class="btn btn-primary" type="submit">Editar Protocolo</button>
               </div>
             </form> {{-- End form --}}
           </div> {{-- End Modal body --}}
@@ -233,7 +233,7 @@
       </div> {{-- End Modal Dialog --}}
     </div>
 
-    {{-- Delete Event Modal --}}
+    {{-- Delete Staff Modal --}}
     <div id="deleteStaffModal" class="modal fade" role="dialog">
       <div class="modal-dialog">
         <div class="modal-content">

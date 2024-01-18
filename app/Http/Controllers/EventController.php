@@ -42,7 +42,6 @@ class EventController extends Controller
     'start_time.date_format' => 'A hora de ínicio deve ter formato de hora.',
     'end_time.required' => 'A hora de fim é obrigatória.',
     'end_time.date_format' => 'A hora de fim deve ter formato de hora.',
-    'end_time.after' => 'A hora de fim deve ser maior que a hora de inicio.'
   ];
 
   /**
@@ -77,7 +76,7 @@ class EventController extends Controller
         'start_date' => ['required', 'date', 'date_format:Y-m-d', 'after_or_equal:today'],
         'end_date' => ['required', 'date', 'date_format:Y-m-d', 'after_or_equal:start_date'],
         'start_time' => ['required', 'date_format:H:i'],
-        'end_time' => ['required', 'date_format:H:i', 'after:start_time'],
+        'end_time' => ['required', 'date_format:H:i',],
       ], $this->InputCustomMessages);
     } catch (\Throwable $e) {
       throw $e;
@@ -103,6 +102,8 @@ class EventController extends Controller
       $address->name = $data['newLocation'];
       $address->url = $data['url'];
       $address->save();
+    } else {
+      $address = $data['address'];
     }
 
 
@@ -120,7 +121,11 @@ class EventController extends Controller
 
     $event_address = new Event_Address();
     $event_address->event_id = $event->id;
-    $event_address->address_id = $address->id;
+    if ($data['address'] === 'new') {
+      $event_address->address_id = $address->id;
+    } else {
+      $event_address->address_id = $address;
+    }
     $event_address->save();
 
     return redirect()->back()->with('success', 'O evento foi criado com sucesso!');
@@ -186,7 +191,7 @@ class EventController extends Controller
     if ($event) {
       Event::destroy($id);
     }
-    return redirect()->route('events');
+    return redirect()->route('event.list');
   }
 
 

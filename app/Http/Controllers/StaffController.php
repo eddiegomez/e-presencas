@@ -146,7 +146,7 @@ class StaffController extends Controller
     } catch (Exception $e) {
       $errorMessage = $e->getMessage();
 
-      return redirect()->back()->with('error', $errorMessage);
+      return redirect()->back()->with('error', 'Houve algum erro durante a actualização de dados tente novamente!');
     }
   }
 

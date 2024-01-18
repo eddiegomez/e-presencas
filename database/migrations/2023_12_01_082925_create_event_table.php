@@ -22,7 +22,7 @@ class CreateEventTable extends Migration
       $table->time('start_time');
       $table->time('end_time');
       $table->unsignedBigInteger('organization_id');
-      $table->foreign('organization_id')->references('id')->on('organization');
+      $table->foreign('organization_id')->references('id')->on('organization')->cascadeOnDelete();
       $table->timestamps();
       $table->softDeletes();
     });

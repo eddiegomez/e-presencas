@@ -43,7 +43,6 @@ class InviteController extends Controller
    */
   public function store(Request $request)
   {
-    dd($request);
     try {
       $validator = Validator::make($request->all(), [
         'id' => ['required', 'integer'],
@@ -106,8 +105,7 @@ class InviteController extends Controller
           }
 
           // Notification::route('mail', $participant->email)->notify($sendInviteNotification);
-
-          $invite = $this->inviteService->createInvite($data['participant'], $data['id'], $data['type'], $qrCode);
+          $invite = $this->inviteService->createInvite($participant->id, $data['id'], $data['type'], $qrCode);
           return redirect()->back()->with('success', 'O participante foi convidado com sucesso!');
         } catch (Exception $e) {
           $errorMessage = $e->getMessage();

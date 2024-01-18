@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ChangeDescriptionToText extends Migration
+class UpdateCollumnParticipantDescriptionToText extends Migration
 {
   /**
    * Run the migrations.
@@ -18,10 +18,15 @@ class ChangeDescriptionToText extends Migration
     });
   }
 
+  /**
+   * Reverse the migrations.
+   *
+   * @return void
+   */
   public function down()
   {
     Schema::table('participants', function (Blueprint $table) {
-      $table->string('description')->change();
+      //
     });
   }
 }

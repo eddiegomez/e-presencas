@@ -48,7 +48,7 @@
     @foreach ($events as $event)
       <div class="col-md-6 col-xl-3">
         <a class="card position-relative"
-          onClick='EventDetailsModal({{ $event->id }} , "{{ $event->name }}", @json($event->start_date), @json($event->end_date), @json($event->banner_url), @json($event->addresses[0]->name))'
+          onClick='EventDetailsModal({{ $event->id }} , "{{ $event->name }}", @json($event->start_date), @json($event->end_date), "{{ date("H:i", strtotime($event->start_time)) }}", "{{ date("H:i", strtotime($event->end_time)) }}", @json($event->banner_url), @json($event->addresses[0]->name), "{{ route("event.show", $event->id) }}")'
           style="cursor:pointer">
           <div class="card-body p-0 z-10">
             <div class="media p-3">
@@ -246,15 +246,15 @@
   </div>
 
   <script>
-    function EventDetailsModal(id, name, startDate, endDate, banner, location) {
+    function EventDetailsModal(id, name, startDate, endDate, startTime, endTime, banner, location, detailUrl) {
       document.getElementById('EventDetailsModalLabel').innerHTML = name;
       document.getElementById('startDate').innerHTML = startDate;
       document.getElementById('endDate').innerHTML = endDate;
-      document.getElementById('startTime').innerHTML = '{{ date("H:i", strtotime($event->start_time)) }}';
-      document.getElementById('endTime').innerHTML = '{{ date("H:i", strtotime($event->end_time)) }}';
+      document.getElementById('startTime').innerHTML = startTime;
+      document.getElementById('endTime').innerHTML = endTime;
       document.getElementById('Location').innerHTML = location;
-      document.getElementById('Banner').href = '{{ asset("storage/" . $event->banner_url) }}';
-      document.getElementById('showEvent').href = '{{ route("event.show", $event->id) }}';
+      document.getElementById('Banner').href = '{{ asset("storage/") }}' + banner;
+      document.getElementById('showEvent').href = detailUrl;
       $('#EventDetailsModal').modal('show');
     }
 

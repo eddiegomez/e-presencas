@@ -223,7 +223,7 @@
                   <td>{{ $participant->phone_number }}</td>
                   <td class="text-right">
                     <a class="btn btn-secondary p-1" href="" data-toggle="modal"
-                      onclick='editParticipantModal({{ $participant->id }}, @json($participant->name), @json($participant->pivot->participant_type_id))'>
+                      onclick='editParticipantModal({{ $participant->id }}, @json($participant->name), @json($participant->pivot->participant_type_id), "{{ route("participant.show", $participant->id) }}")'>
                       <i class='uil uil-edit-alt'></i>
                     </a>
 
@@ -458,6 +458,7 @@
               <label for="participant">Nome do Participante</label>
               <select class="form-control inline_directive participants-selector" name="participant" id="participant"
                 data-plugin="custom-select" required onchange="checkParticipantField()">
+                <option value="">Selecione um participante</option>
                 @foreach ($participants as $participant)
                   @if (!$participant->hasEvent($event->id))
                     <option value="{{ $participant->id }}">{{ $participant->name }}</option>
@@ -477,7 +478,7 @@
               <div class="form-group">
                 <label for="newParticipant">Nome do Participante</label>
                 <input type="text" name="name" id="name" class="form-control"
-                  placeholder="Nome do Participante">
+                  placeholder="Nome da Entidade Participante">
                 @error("name")
                   <span class="text-danger">{{ $message }}</span>
                 @enderror
@@ -507,7 +508,7 @@
               <div class="form-group">
                 <label for="degree">Grau</label>
                 <input type="text" name="degree" id="degree" class="form-control"
-                  placeholder="Licenciado em Bontxo">
+                  placeholder="Licenciado em Informatica | Empresa">
                 @error("degree")
                   <span class="text-danger">{{ $message }}</span>
                 @enderror
@@ -517,7 +518,7 @@
               <div class="form-group">
                 <label for="description">Descricao</label>
                 <input type="text" name="description" id="description" class="form-control"
-                  placeholder="john.doe@gmail.com">
+                  placeholder="Descricao da entidade">
                 @error("description")
                   <span class="text-danger">{{ $message }}</span>
                 @enderror
@@ -623,9 +624,9 @@
     });
 
 
-    function editParticipantModal(id, name, type) {
+    function editParticipantModal(id, name, type, participantInfoUrl) {
       document.getElementById('EditParticipantModalLabel').innerHTML = "Editar o tipo do participante " + name;
-      document.getElementById('participantInfo').href = '{{ route("participant.show", $participant->id) }}';
+      document.getElementById('participantInfo').href = participantInfoUrl;
       document.getElementById('Etype').value = type;
       document.getElementById('Eparticipant').value = id;
       $('#EditParticipantModal').modal('show');
@@ -653,7 +654,7 @@
     };
     document.getElementById('address').addEventListener('change', checkLocationField);
 
-    function checkParticipantField() {  
+    function checkParticipantField() {
       var select = document.getElementById('participant');
       var selectedLocation = select.value;
       var newLocationFields = document.getElementById('newParticipantFields');

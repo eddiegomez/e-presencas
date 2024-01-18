@@ -18,7 +18,7 @@ class CreateScheduleTable extends Migration
       $table->string('name');
       $table->string('pdf_url');
       $table->date('date');
-      $table->foreignId('event_id')->constrained();
+      $table->foreignId('event_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
       $table->timestamps();
       $table->softDeletes();
     });

@@ -102,6 +102,8 @@ class EventController extends Controller
       $address->name = $data['newLocation'];
       $address->url = $data['url'];
       $address->save();
+    } else {
+      $address = $data['address'];
     }
 
 
@@ -119,7 +121,11 @@ class EventController extends Controller
 
     $event_address = new Event_Address();
     $event_address->event_id = $event->id;
-    $event_address->address_id = $address->id;
+    if ($data['address'] === 'new') {
+      $event_address->address_id = $address->id;
+    } else {
+      $event_address->address_id = $address;
+    }
     $event_address->save();
 
     return redirect()->back()->with('success', 'O evento foi criado com sucesso!');

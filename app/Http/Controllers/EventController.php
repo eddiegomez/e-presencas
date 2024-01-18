@@ -42,7 +42,6 @@ class EventController extends Controller
     'start_time.date_format' => 'A hora de ínicio deve ter formato de hora.',
     'end_time.required' => 'A hora de fim é obrigatória.',
     'end_time.date_format' => 'A hora de fim deve ter formato de hora.',
-    'end_time.after' => 'A hora de fim deve ser maior que a hora de inicio.'
   ];
 
   /**
@@ -77,7 +76,7 @@ class EventController extends Controller
         'start_date' => ['required', 'date', 'date_format:Y-m-d', 'after_or_equal:today'],
         'end_date' => ['required', 'date', 'date_format:Y-m-d', 'after_or_equal:start_date'],
         'start_time' => ['required', 'date_format:H:i'],
-        'end_time' => ['required', 'date_format:H:i', 'after:start_time'],
+        'end_time' => ['required', 'date_format:H:i',],
       ], $this->InputCustomMessages);
     } catch (\Throwable $e) {
       throw $e;

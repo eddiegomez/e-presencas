@@ -101,11 +101,24 @@ class StaffService
   ) {
     $staff = $this->getUserById($id);
 
+
+
     $staff->name = $name;
     $staff->email = $email;
     $staff->phone = $phone;
+    $staff->password = Hash::make($staff->organization->name . '@1234');
     $staff->email_verified_at = null;
-    $staff->update();
+    $updated = $staff->update();
+
+    if (!$updated) {
+      throw new Exception('Houve algum erro durante a actualização de dados tente novamente!');
+    }
+
+    Notification::route('mail', $staff->email)->notify(new EmailVerification(
+      $staff->id,
+      $staff->email,
+      $staff->name
+    ));
 
     return $staff;
   }

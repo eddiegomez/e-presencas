@@ -478,7 +478,7 @@
               <div class="form-group">
                 <label for="newParticipant">Nome do Participante</label>
                 <input type="text" name="name" id="name" class="form-control"
-                  placeholder="Nome do Participante">
+                  placeholder="Nome da Entidade Participante">
                 @error("name")
                   <span class="text-danger">{{ $message }}</span>
                 @enderror
@@ -508,7 +508,7 @@
               <div class="form-group">
                 <label for="degree">Grau</label>
                 <input type="text" name="degree" id="degree" class="form-control"
-                  placeholder="Licenciado em Bontxo">
+                  placeholder="Licenciado em Informatica | Empresa">
                 @error("degree")
                   <span class="text-danger">{{ $message }}</span>
                 @enderror
@@ -518,7 +518,7 @@
               <div class="form-group">
                 <label for="description">Descricao</label>
                 <input type="text" name="description" id="description" class="form-control"
-                  placeholder="john.doe@gmail.com">
+                  placeholder="Descricao da entidade">
                 @error("description")
                   <span class="text-danger">{{ $message }}</span>
                 @enderror

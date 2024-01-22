@@ -268,7 +268,7 @@ class InviteController extends Controller
     $encodedParticipant = base64_encode($participantId);
     $name = $encodedEvent . $encodedParticipant;
 
-    $qrCode = QrCode::format('svg')->size(100)->generate(route(
+    $qrCode = QrCode::format('png')->size(100)->generate(route(
       'invite.acceptInvite',
       ['encryptedevent' => $encodedEvent, 'encryptedparticipant' => $encodedParticipant]
     ));

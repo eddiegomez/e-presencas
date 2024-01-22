@@ -272,7 +272,7 @@ class InviteController extends Controller
       'invite.acceptInvite',
       ['encryptedevent' => $encodedEvent, 'encryptedparticipant' => $encodedParticipant]
     ));
-    $qrCodePath = storage_path('app/public/qrcodes/' . $name . '.svg');
+    $qrCodePath = storage_path('app/public/qrcodes/' . $name . '.png');
     $res = file_put_contents($qrCodePath, $qrCode);
 
     if (!$res) {

@@ -79,8 +79,8 @@ Route::middleware(['auth', 'web'])->group(function () {
   Route::post('/invite/update/{eventId}', [InviteController::class, 'update'])->name('invite.update');
 
   // Confirmar Entrada Controllers
-  Route::get('/confirm/entrance/{encryptedevent}/{encryptedparticipant}', [InviteController::class, 'confirmEntrance'])->name('participant.entrance');
-  Route::post('confirm/entrance/{encryptedevent}/{encryptedparticipant}', [InviteController::class, 'confirmEntrancePost'])->name('confirmEntranceUpdate');
+  Route::get('/staff/confirm/entrance/{encryptedevent}/{encryptedparticipant}', [InviteController::class, 'confirmEntrance'])->name('participant.entrance');
+  Route::post('/confirm/entrance/{encryptedevent}/{encryptedparticipant}', [InviteController::class, 'confirmEntrancePost'])->name('confirmEntranceUpdate');
 
 
   // Get all staff members Controller

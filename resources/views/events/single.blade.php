@@ -201,7 +201,7 @@
                   @elseif ($participant->pivot->status == "Rejeitada")table-warning
                   @elseif ($participant->pivot->status == "Ausente")table-danger @endif">
                   <td>
-                    <img src="{{ asset("storage/qrcodes/" . $participant->pivot->qr_url . ".svg") }}" width="40"
+                    <img src="{{ asset("storage/qrcodes/" . $participant->pivot->qr_url . ".png") }}" width="40"
                       alt="">
                   </td>
                   <td>{{ $participant->name }}</td>

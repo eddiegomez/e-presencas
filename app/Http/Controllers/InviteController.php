@@ -86,15 +86,19 @@ class InviteController extends Controller
             }
           }
 
+          // dd($participant);
+
           $qrCode = $this->generateQrcode($data['id'], $participant->id);
 
           if (!$qrCode) {
             return redirect()->back()->with('error', 'Tente convidar o participante novamente.')->withInput();
           }
 
+          $event = Event::find($data['id']);
+
           $sendInviteNotification = new sendInvite(
-            $data['id'],
-            $participant->id,
+            $event,
+            $participant,
             $qrCode
           );
 
@@ -115,7 +119,7 @@ class InviteController extends Controller
       }
 
       $participant = $this->participantService->getParticipantById($data['participant']);
-
+      $event = Event::find($data['id']);
       $qrCode = $this->generateQrcode($data['id'], $data['participant']);
 
       if (!$qrCode) {
@@ -123,8 +127,8 @@ class InviteController extends Controller
       }
 
       $sendInviteNotification = new sendInvite(
-        $data['id'],
-        $data['participant'],
+        $event,
+        $participant,
         $qrCode
       );
 
@@ -227,6 +231,8 @@ class InviteController extends Controller
       $participantId = base64_decode($encryptedparticipant);
 
       $invite = $this->inviteService->getInviteByCompositeKey($eventId, $participantId);
+      $event = $invite->event;
+      $participant = $invite->participant;
 
       return view('confirmEntrance', compact('event', 'encryptedevent', 'encryptedparticipant', 'participant', 'invite'));
     } catch (Exception $e) {
@@ -269,7 +275,7 @@ class InviteController extends Controller
     $name = $encodedEvent . $encodedParticipant;
 
     $qrCode = QrCode::format('png')->size(100)->generate(route(
-      'invite.acceptInvite',
+      'participant.entrance',
       ['encryptedevent' => $encodedEvent, 'encryptedparticipant' => $encodedParticipant]
     ));
     $qrCodePath = storage_path('app/public/qrcodes/' . $name . '.png');

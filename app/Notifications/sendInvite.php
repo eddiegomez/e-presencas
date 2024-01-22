@@ -17,14 +17,14 @@ class sendInvite extends Notification
    *
    * @return void
    */
-  public $eventId;
-  public $participantId;
+  public $event;
+  public $participant;
   public $qr_url;
 
-  public function __construct($eventId, $participantId, $qr_url)
+  public function __construct($event, $participant, $qr_url)
   {
-    $this->eventId = $eventId;
-    $this->participantId = $participantId;
+    $this->event = $event;
+    $this->participant = $participant;
     $this->qr_url = $qr_url;
   }
 
@@ -47,13 +47,18 @@ class sendInvite extends Notification
    */
   public function toMail($notifiable)
   {
-
-    $eventId = $this->eventId;
-    $participantId = $this->participantId;
+    // dd($this->participant);
+    $event = $this->event;
+    $participant = $this->participant;
     $image_path = $this->qr_url;
     return (new MailMessage)
-      ->view('emails.qrcode', compact('image_path', 'eventId', 'participantId'))
-      ->line('Thank you for using our application!');
+      ->subject("Convite para " . $event->name)
+      ->greeting("Saudacoes " . $participant->name)
+      ->line("Viemos por este meio convidar o ilustre" . $participant->name . "para o evento" . $event->name)
+      ->line("O evento ira decorrer pelas " . date("H:i", strtotime($event->start_time)) . " até às " . date("H:i", strtotime($event->end_time)) . " do dia " . $event->start_date)
+      ->line("Use os botoes abaixo para actualizar o seu convite!")
+      ->action("Confirme a sua presenca", route("invite.acceptInvite", ["encryptedevent" => base64_encode($event->id), "encryptedparticipant" => base64_encode($participant->id)]))
+      ->view("emails.qrcode", compact("image_path"));
   }
 
   /**

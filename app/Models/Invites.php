@@ -40,6 +40,11 @@ class Invites extends Model
     return $this->hasOne(Event::class, 'id', 'event_id');
   }
 
+  public function participant(): HasOne
+  {
+    return $this->hasOne(Participant::class, 'id', 'participant_id');
+  }
+
   public function participantType($participantType): HasOne
   {
     return $this->hasOne(ParticipantType::class, 'id', 'participant_type_id');

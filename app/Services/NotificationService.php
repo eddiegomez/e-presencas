@@ -19,11 +19,12 @@ class NotificationService
     try {
       // Send the email notification
       Notification::route('mail', $email)->notify($notification);
-
+      
       // If we reach this point, the notification was sent successfully
       return true;
     } catch (Exception $e) {
       // Log or handle the exception if needed
+      dd($e);
       return false;
     }
   }

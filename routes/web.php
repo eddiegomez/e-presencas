@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\ManagerController;
@@ -33,6 +34,10 @@ Route::middleware(['auth', 'web'])->group(function () {
   Route::post('/manager/create', [ManagerController::class, 'store'])->name('manager.store');
   Route::post('/manager/update', [ManagerController::class, 'update'])->name('manager.update');
   Route::post('/manager/destroy', [ManagerController::class, 'destroy'])->name('manager.destroy');
+
+  // AdminsController Routes
+  Route::get('/admin', [AdminController::class, 'index'])->name('admin.list');
+  Route::post('/admin/create', [AdminController::class, 'store'])->name('admin.store');
 
   // OrganizationController Routes
   Route::get('/organizations', [OrganizationController::class, 'index'])->name('organizations.list');
@@ -80,7 +85,10 @@ Route::middleware(['auth', 'web'])->group(function () {
 
   // Confirmar Entrada Controllers
   Route::get('/staff/confirm/entrance/{encryptedevent}/{encryptedparticipant}', [InviteController::class, 'confirmEntrance'])->name('participant.entrance');
+
   Route::post('/confirm/entrance/{encryptedevent}/{encryptedparticipant}', [InviteController::class, 'confirmEntrancePost'])->name('confirmEntranceUpdate');
+
+
 
 
   // Get all staff members Controller

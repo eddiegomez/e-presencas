@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Invites;
 use App\Models\Participant;
+use App\Notifications\InviteAccepted;
 use App\Notifications\sendInvite;
 use App\Services\InviteService;
 use App\Services\NotificationService;
@@ -99,7 +100,6 @@ class InviteController extends Controller
           $sendInviteNotification = new sendInvite(
             $event,
             $participant,
-            $qrCode
           );
 
           $sendEmail = $this->notificationService->sendEmail($participant['email'], $sendInviteNotification);
@@ -129,7 +129,6 @@ class InviteController extends Controller
       $sendInviteNotification = new sendInvite(
         $event,
         $participant,
-        $qrCode
       );
 
       $sendEmail = $this->notificationService->sendEmail($participant->email, $sendInviteNotification);
@@ -153,7 +152,15 @@ class InviteController extends Controller
   public function acceptInvite($encryptedevent, $encryptedparticipant)
   {
     try {
-      $invite = $this->inviteService->acceptInvite($encryptedevent, $encryptedparticipant);
+
+
+      $invite = $this->inviteService->getInviteByCompositeKey(base64_decode($encryptedevent), base64_decode($encryptedparticipant));
+
+      $this->inviteService->acceptInvite($encryptedevent, $encryptedparticipant);
+      $sendAccessQrCode = new InviteAccepted($invite->qr_url, $invite->event);
+
+
+      $this->notificationService->sendEmail($invite->participant->email, $sendAccessQrCode);
 
       return view('confirmPresence', compact('invite'))->with('success', 'A sua presenca foi confirmada no evento ' . $invite->event->name);
     } catch (Exception $e) {

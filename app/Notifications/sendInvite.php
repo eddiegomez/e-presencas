@@ -21,11 +21,10 @@ class sendInvite extends Notification
   public $participant;
   public $qr_url;
 
-  public function __construct($event, $participant, $qr_url)
+  public function __construct($event, $participant)
   {
     $this->event = $event;
     $this->participant = $participant;
-    $this->qr_url = $qr_url;
   }
 
   /**
@@ -50,7 +49,6 @@ class sendInvite extends Notification
     // dd($this->participant);
     $event = $this->event;
     $participant = $this->participant;
-    $image_path = $this->qr_url;
     return (new MailMessage)
       ->subject("Convite para " . $event->name)
       ->greeting("Saudacoes " . $participant->name)
@@ -58,7 +56,7 @@ class sendInvite extends Notification
       ->line("O evento ira decorrer pelas " . date("H:i", strtotime($event->start_time)) . " até às " . date("H:i", strtotime($event->end_time)) . " do dia " . $event->start_date)
       ->line("Use os botoes abaixo para actualizar o seu convite!")
       ->action("Confirme a sua presenca", route("invite.acceptInvite", ["encryptedevent" => base64_encode($event->id), "encryptedparticipant" => base64_encode($participant->id)]))
-      ->view("emails.qrcode", compact("image_path"));
+      ->line("Após confirmar a sua presença receberá o QR Code de acesso ao evento!");
   }
 
   /**

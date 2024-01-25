@@ -38,6 +38,7 @@ Route::middleware(['auth', 'web'])->group(function () {
   // AdminsController Routes
   Route::get('/admin', [AdminController::class, 'index'])->name('admin.list');
   Route::post('/admin/create', [AdminController::class, 'store'])->name('admin.store');
+  Route::post('/admin/update', [AdminController::class, 'update'])->name('admin.update');
 
   // OrganizationController Routes
   Route::get('/organizations', [OrganizationController::class, 'index'])->name('organizations.list');

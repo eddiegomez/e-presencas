@@ -188,7 +188,7 @@
           </div>
           {{-- Modal Body --}}
           <div class="modal-body">
-            <form action="{{ route("manager.update") }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route("admin.update") }}" method="POST" enctype="multipart/form-data">
               @csrf
 
               {{-- ID do manager --}}

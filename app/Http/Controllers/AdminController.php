@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -66,14 +67,57 @@ class AdminController extends Controller
 
       $admin->name = $data['name'];
       $admin->email = $data['email'];
-      $admin->phone = '+258' . $data['phone'];
+      $admin->phone =  $data['phone'];
       $admin->organization_id = 1;
       $admin->password = Hash::make("presencas12$%");
       $admin->save();
       $admin->assignRole("gestor do sistema");
 
       return redirect()->back()->with('success', 'Administrador criado com sucesso');
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
+      $errorMessage = $e->getMessage();
+
+      return redirect()->back()->with('error', $errorMessage);
+    }
+  }
+
+
+  /**
+   * Update the specified resource in storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\RedirectResponse
+   */
+  public function update(Request $request)
+  {
+    $editMessages = [
+      'id.exists' => 'Gestor inexistente!',
+      'id.integer' => 'ID invalido.',
+      'id.required' => 'ID é obrigatório.'
+    ];
+
+    try {
+      $validator = Validator::make($request->all(), [
+        'id' => ['required', 'integer', 'exists:users,id'],
+        'name' => ['required', 'max:255', 'string', 'regex:/^[^\d]+$/'],
+        'email' => ['required', 'max:255', 'email'],
+        'phone' => ['required', 'digits:9', 'string'],
+      ], $this->customMessages += $editMessages);
+
+      if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+      $data = $request->all();
+      $user = User::find($data['id']);
+
+      $user->name = $data['name'];
+      $user->email = $data['email'];
+      $user->phone = $data['phone'];
+      $user->update();
+
+      return redirect()->back()->with('success', 'O administrador foi editado com sucesso!');
+    } catch (Exception $e) {
       $errorMessage = $e->getMessage();
 
       return redirect()->back()->with('error', $errorMessage);
@@ -81,47 +125,37 @@ class AdminController extends Controller
   }
 
   /**
-   * Display the specified resource.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function show($id)
-  {
-    //
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function edit($id)
-  {
-    //
-  }
-
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function update(Request $request, $id)
-  {
-    //
-  }
-
-  /**
    * Remove the specified resource from storage.
    *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
+   * @param  Request  $request
+   * @return \Illuminate\Http\RedirectResponse
    */
-  public function destroy($id)
+  public function destroy(Request $request)
   {
-    //
+    try {
+      $validator = Validator::make($request->all(), [
+        'id' => ['required', 'integer', 'exists:users,id'],
+      ]);
+
+      if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+
+
+      $user = User::find($request->id);
+
+      if ($user->email == "dtd@inage.gov.mz") {
+        return redirect()->back()->with('warning', 'Impossivel apagar este usuario');
+      }
+      $user->destroy();
+
+
+      return redirect()->back()->with('success', 'Administrador apagado com sucesso');
+    } catch (Exception $e) {
+      $errorMessage = $e->getMessage();
+
+      return redirect()->back()->with('error', $errorMessage);
+    }
   }
 }

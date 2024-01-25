@@ -300,7 +300,7 @@
           </div>
           {{-- Modal Footer --}}
           <div class="modal-footer">
-            <form action="{{ route("manager.destroy") }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route("admin.destroy") }}" method="POST" enctype="multipart/form-data">
               @csrf
               <input type="hidden" name="id" id="managerId">
               <div class="modal-footer">

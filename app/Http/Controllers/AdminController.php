@@ -148,7 +148,7 @@ class AdminController extends Controller
       if ($user->email == "dtd@inage.gov.mz") {
         return redirect()->back()->with('warning', 'Impossivel apagar este usuario');
       }
-      $user->destroy();
+      $user->delete();
 
 
       return redirect()->back()->with('success', 'Administrador apagado com sucesso');

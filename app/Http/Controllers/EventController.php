@@ -2,20 +2,48 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Address;
+use App\Models\Event_Address;
+use App\Models\Invites;
 use App\Models\Schedule;
 use App\Notifications\sendInvite;
 use App\Models\Event;
 use App\Models\Participant;
-use App\Models\Participant_Has_Event;
 use App\Models\ParticipantType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View as View;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Http\Controllers\ParticipantController;
+use Illuminate\Http\RedirectResponse;
 
 class EventController extends Controller
 {
+
+  // Custom input validation error messages
+  private $InputCustomMessages = [
+    'name.required' => 'O evento deve ter um nome.',
+    'name.string' => 'O nome deve ser uma string.',
+    'name.max' => 'O nome do evento não pode ser um texto!',
+    'banner.required' => 'Submeta uma imagem como banner, se não  tiver um banner submeta o logotipo.',
+    'banner.image' => 'O banner deve ser uma imagem.',
+    'banner.mimes' => 'A imagem deve estar no formato jpg ou png.',
+    'start_date.required' => 'A data de ínicio é obrigatória.',
+    'start_date.date' => 'A data de ínicio deve ter um formato data.',
+    'start_date.date_format' => 'A data de ínicio deve ter um formato data yyyy-mm-dd.',
+    'start_date.after_or_equal' => 'A data de ínicio não pode ser menor que a data actual.',
+    'end_date.required' => 'A data de fim é obrigatória.',
+    'end_date.date' => 'A data de fim deve ter um formato data.',
+    'end_date.date_format' => 'A data de fim deve ter um formato data yyyy-mm-dd.',
+    'end_date.after_or_equal' => 'A data de fim não pode ser menor que a data de ínicio.',
+    'start_time.required' => 'A hora de ínicio é obrigatória.',
+    'start_time.date_format' => 'A hora de ínicio deve ter formato de hora.',
+    'end_time.required' => 'A hora de fim é obrigatória.',
+    'end_time.date_format' => 'A hora de fim deve ter formato de hora.',
+  ];
+
   /**
    * Display a listing of the resource.
    *
@@ -23,36 +51,33 @@ class EventController extends Controller
    */
   public function index()
   {
-    $user = Auth::user();
     $events = Event::all();
-    // dd($events);
+    $addresses = Address::all();
 
-    return response(view('event', compact('user', 'events')));
+    return response(view('events.list', compact('events', 'addresses')));
   }
 
-  /**
-   * Show the form for creating a new resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function create(Request $request)
-  {
-  }
+
 
   /**
    * Store a newly created resource in storage.
    *
    * @param  \Illuminate\Http\Request  $request
-   * @return \Illuminate\Http\Response
+   * @return \Illuminate\Http\RedirectResponse
    */
   public function store(Request $request)
   {
+
+    // dd($request->all());
     try {
       $this->validate(request(), [
-        'name' => ['required', 'string'],
-        'date' => ['required', 'date'],
-        'banner' => ['required', 'image'],
-      ]);
+        'name' => ['required', 'string', 'max:200'],
+        'banner' => ['required', 'image', 'mimes:png,jpg'],
+        'start_date' => ['required', 'date', 'date_format:Y-m-d', 'after_or_equal:today'],
+        'end_date' => ['required', 'date', 'date_format:Y-m-d', 'after_or_equal:start_date'],
+        'start_time' => ['required', 'date_format:H:i'],
+        'end_time' => ['required', 'date_format:H:i',],
+      ], $this->InputCustomMessages);
     } catch (\Throwable $e) {
       throw $e;
     }
@@ -61,40 +86,65 @@ class EventController extends Controller
     // dd($data);  
     // $bannerUrl = time() . '.' . $data['name'];
     // dd($bannerUrl);
+
+    if ($data['address'] === 'new') {
+      $validator = Validator::make($request->all(), [
+        'newLocation' => ['required', 'string'],
+        'url' => ['required', 'url'],
+      ]);
+
+      if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+      $address = new Address();
+
+      $address->name = $data['newLocation'];
+      $address->url = $data['url'];
+      $address->save();
+    } else {
+      $address = $data['address'];
+    }
+
+
+
     $bannerUrl = $request->file('banner')->store('banners', 'public');
     $event = new Event();
     $event->name = $data['name'];
-    $event->date = $data['date'];
+    $event->start_date = $data['start_date'];
+    $event->end_date = $data['end_date'];
+    $event->start_time = $data['start_time'];
+    $event->end_time = $data['end_time'];
     $event->banner_url = $bannerUrl;
+    $event->organization_id = Auth::user()->organization_id;
     $event->save();
 
-    return redirect()->back();
+    $event_address = new Event_Address();
+    $event_address->event_id = $event->id;
+    if ($data['address'] === 'new') {
+      $event_address->address_id = $address->id;
+    } else {
+      $event_address->address_id = $address;
+    }
+    $event_address->save();
+
+    return redirect()->back()->with('success', 'O evento foi criado com sucesso!');
   }
 
   /**
    * Display the specified resource.
    *
    * @param  int  $id
-   * @return \Illuminate\Http\Response
+   * @return View
    */
   public function show($id)
   {
-    $user = Auth::user();
     $event = Event::find($id);
+    $addresses = Address::all();
     $participants = Participant::all();
     $participant_type = ParticipantType::all();
-    return response(view('singleEvent', compact('user', 'event', 'participants', 'participant_type')),);
-  }
 
-
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function edit($id)
-  {
+    return view('events.single', compact('event', 'participants', 'participant_type', 'addresses'));
   }
 
   /**
@@ -102,9 +152,9 @@ class EventController extends Controller
    *
    * @param  \Illuminate\Http\Request  $request
    * @param  int  $id
-   * @return \Illuminate\Http\Response
+   * @return RedirectResponse
    */
-  public function update(Request $request, $id)
+  public function update(Request $request, $id): RedirectResponse
   {
     try {
       $this->validate(request(), [
@@ -126,7 +176,7 @@ class EventController extends Controller
 
     $event->update($data);
 
-    return redirect()->route('events');
+    return redirect()->back()->with('success', 'O evento foi editado com sucesso!');
   }
 
   /**
@@ -141,19 +191,19 @@ class EventController extends Controller
     if ($event) {
       Event::destroy($id);
     }
-
-    return redirect()->route('events');
+    return redirect()->route('event.list');
   }
 
 
   public function inviteParticipant(Request $request, $id)
   {
-   
+
     try {
       $validator = Validator::make($request->all(), [
-        'participant' => ['required', 'numeric'],
+        'participant' => ['required'],
         'type' => ['required', 'numeric']
       ]);
+
       if ($validator->fails()) {
         return redirect()->back()->withErrors($validator)->withInput();
       }
@@ -163,14 +213,46 @@ class EventController extends Controller
 
 
     $data = $request->all();
-    $qrCodeName = base64_encode($id . $data['participant']);
 
-    $participant_event = new Participant_Has_Event();
-    $participant_event->participant_id = $data['participant'];
+    if ($data['participant'] == 'new') {
+      try {
+        $validator2 = Validator::make($request->all(), [
+          'name' => ['required', 'string', 'regex:/^[^\d]+$/'],
+          'email' => ['required', 'email'],
+          'degree' => ['required', 'string'],
+          'phone_number' => ['required', 'numeric'],
+          'description' => ['required', 'string']
+        ]);
+
+        if ($validator2->fails()) {
+          return redirect()->back()->withErrors($validator2)->withInput();
+        }
+      } catch (\Throwable $th) {
+        throw $th;
+      }
+
+      $data = $request->all();
+
+      $participant = new Participant();
+
+      $participant->name = $data['name'];
+      $participant->email = $data['email'];
+      $participant->description = $data['description'];
+      $participant->phone_number = $data['phone_number'];
+      $participant->degree = $data['degree'];
+      $participant->save();
+    } else {
+      $participant = Participant::find($data['particpant']);
+    }
+
+
+    $qrCodeName = base64_encode($id . $participant->id);
+
+    $participant_event = new Invites();
+    $participant_event->participant_id = $participant->id;
     $participant_event->event_id = $id;
     $participant_event->participant_type_id = $data['type'];
     $participant_event->qr_url = $qrCodeName;
-    $participant = Participant::find($participant_event->participant_id);
     $participantEmail = $participant->email;
     // Mail::to($participantEmail)->send(new sendInvite);
 
@@ -192,18 +274,25 @@ class EventController extends Controller
 
   public function createSchedule(Request $request, $id)
   {
-    try {
+    $validateScheduleMessages = [
+      'name.required' => 'O programa deve ter um nome.',
+      'name.string' => 'O nome do programa deve ser texto',
+      'date.required' => 'O programa deve ter uma data.',
+      'date.date' => 'A data do programa deve ser do tipo data.',
+      'schedule.required' => 'O programa deve ter um pdf.',
+      'schedule.mimetypes' => 'O programa deve ter uma extensao pdf.'
+    ];
 
-      // dd($request);
-      $this->validate(request(), [
+    try {
+      $validator = Validator::make($request->all(), [
         'name' => ['required', 'string'],
         'date' => ['required', 'date'],
         'schedule' => ['required', 'mimetypes:application/pdf'],
-      ]);
+      ], $validateScheduleMessages);
 
-      // if ($validator->fails()) {
-      //   return redirect()->back()->withErrors($validator)->withInput();
-      // }
+      if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
     } catch (\Throwable $th) {
       throw $th;
     }
@@ -227,10 +316,9 @@ class EventController extends Controller
       return redirect()->back()->with('Success', 'Schedule created sucessfully');
     }
 
-
     return redirect()->back()->with('error', 'Something went wrong!');
   }
-  private function generateQrcode($name, Participant_Has_Event $participant_event)
+  private function generateQrcode($name, Invites $participant_event)
   {
     $encryptedEvent = base64_encode($participant_event->event_id);
     $encryptedParticipant = base64_encode($participant_event->participant_id);

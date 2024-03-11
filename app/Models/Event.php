@@ -11,30 +11,43 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Event extends Model
 {
-  use HasFactory, SoftDeletes;
+  use HasFactory;
 
   protected $table = "events";
 
   protected $fillable = [
     'name',
-    'date',
-    'banner_url'
+    'banner_url',
+    'start_date',
+    'end_date',
+    'start_time',
+    'end_time',
+    'organization_id'
   ];
+
+  public $timestamps = true;
 
   // Get Participants Function
   public function participants(): BelongsToMany
   {
-    return $this->belongsToMany(Participant::class, 'participant_event')->withPivot('qr_url', 'status');
+    return $this->belongsToMany(Participant::class, 'invites')->withPivot('qr_url', 'status', 'participant_type_id');
   }
 
+  // Check if it has participant by ID
   public function hasParticipant($participant): HasOneThrough
   {
-    return $this->hasOneThrough(Participant::class, 'participant_event');
+    return $this->hasOneThrough(Participant::class, 'invites');
   }
 
   // Get Schedules Function
   public function schedules(): HasMany
   {
     return $this->hasMany(Schedule::class);
+  }
+
+  // Get the event address
+  public function addresses(): BelongsToMany
+  {
+    return $this->belongsToMany(Address::class, 'event_address');
   }
 }

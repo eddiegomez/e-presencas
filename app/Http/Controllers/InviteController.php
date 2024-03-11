@@ -3,195 +3,294 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Invites;
 use App\Models\Participant;
-use App\Models\Participant_Has_Event;
+use App\Notifications\InviteAccepted;
+use App\Notifications\sendInvite;
+use App\Services\InviteService;
+use App\Services\NotificationService;
+use App\Services\ParticipantService;
 use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class InviteController extends Controller
 {
-  /**
-   * Display a listing of the resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function index()
+
+
+  protected $participantService;
+  protected $inviteService;
+
+  protected $notificationService;
+
+  public function __construct(ParticipantService $participantService, InviteService $inviteService, NotificationService $notificationService)
   {
-    //
+    $this->participantService = $participantService;
+    $this->inviteService = $inviteService;
+    $this->notificationService = $notificationService;
   }
 
   /**
-   * Show the form for creating a new resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function create()
-  {
-    //
-  }
-
-  /**
-   * Store a newly created resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @return \Illuminate\Http\Response
+   * Store information about an invited participant to a certain event
+   * 
+   * @param Request $request
+   * @param int $id
+   * @return \Illuminate\Http\RedirectResponse
    */
   public function store(Request $request)
   {
-    //
+    try {
+      $validator = Validator::make($request->all(), [
+        'id' => ['required', 'integer'],
+        'participant' => ['required'],
+        'type' => ['required', 'numeric']
+      ]);
+
+      if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+      $data = $request->all();
+
+      if ($data['participant'] == 'new') {
+        try {
+          $validator2 = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'regex:/^[^\d]+$/'],
+            'email' => ['required', 'email'],
+            'degree' => ['required', 'string'],
+            'phone_number' => ['required', 'numeric'],
+            'description' => ['required', 'string']
+          ]);
+
+          if ($validator2->fails()) {
+            return redirect()->back()->withErrors($validator2)->withInput();
+          }
+
+          $exists = $this->participantService->checkParticipantByEmailOrPhoneNumber($data['email'], $data['phone_number']);
+          if ($exists) {
+            $participant = Participant::where('email', $data['email'])->orWhere('phone_number', $data['phone_number'])->first();
+          } else {
+            $participant = $this->participantService->createParticipant(
+              $data['name'],
+              $data['email'],
+              $data['description'],
+              $data['phone_number'],
+              $data['degree']
+            );
+            if (!$participant) {
+              return redirect()->back()->with('warning', 'Algo correu mal no acto de criacao do participante.');
+            }
+          }
+
+          // dd($participant);
+
+          $qrCode = $this->generateQrcode($data['id'], $participant->id);
+
+          if (!$qrCode) {
+            return redirect()->back()->with('error', 'Tente convidar o participante novamente.')->withInput();
+          }
+
+          $event = Event::find($data['id']);
+
+          $sendInviteNotification = new sendInvite(
+            $event,
+            $participant,
+          );
+
+          $sendEmail = $this->notificationService->sendEmail($participant['email'], $sendInviteNotification);
+
+          if (!$sendEmail) {
+            return redirect()->back()->with('error', 'Ocorreu algum um erro no envio do convite via email, tente novamente.')->withInput();
+          }
+
+          // Notification::route('mail', $participant->email)->notify($sendInviteNotification);
+          $invite = $this->inviteService->createInvite($participant->id, $data['id'], $data['type'], $qrCode);
+          return redirect()->back()->with('success', 'O participante foi convidado com sucesso!');
+        } catch (Exception $e) {
+          $errorMessage = $e->getMessage();
+
+          return redirect()->back()->with('error', $errorMessage);
+        }
+      }
+
+      $participant = $this->participantService->getParticipantById($data['participant']);
+      $event = Event::find($data['id']);
+      $qrCode = $this->generateQrcode($data['id'], $data['participant']);
+
+      if (!$qrCode) {
+        return redirect()->back()->with('error', 'Tente convidar o participante novamente.')->withInput();
+      }
+
+      $sendInviteNotification = new sendInvite(
+        $event,
+        $participant,
+      );
+
+      $sendEmail = $this->notificationService->sendEmail($participant->email, $sendInviteNotification);
+
+      if (!$sendEmail) {
+        return redirect()->back()->with('error', 'Ocorreu algum um erro no envio do convite via email, tente novamente.')->withInput();
+      }
+
+      $invite = $this->inviteService->createInvite($data['participant'], $data['id'], $data['type'], $qrCode);
+
+      return redirect()->back()->with('success', 'O participante foi convidado com sucesso!');
+    } catch (Exception $e) {
+      $errorMessage = $e->getMessage();
+
+      return redirect()->back()->with('error', $errorMessage);
+    }
+  }
+
+
+
+  public function acceptInvite($encryptedevent, $encryptedparticipant)
+  {
+    try {
+
+
+      $invite = $this->inviteService->getInviteByCompositeKey(base64_decode($encryptedevent), base64_decode($encryptedparticipant));
+
+      $this->inviteService->acceptInvite($encryptedevent, $encryptedparticipant);
+      $sendAccessQrCode = new InviteAccepted($invite->qr_url, $invite->event);
+
+
+      $this->notificationService->sendEmail($invite->participant->email, $sendAccessQrCode);
+
+      return view('confirmPresence', compact('invite'))->with('success', 'A sua presenca foi confirmada no evento ' . $invite->event->name);
+    } catch (Exception $e) {
+      $errorMessage = $e->getMessage();
+      // dd(session()->all());
+      return view('error.404', ['error' => $errorMessage]);
+    }
   }
 
   /**
-   * Display the specified resource.
+   * Update the participant type
    *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
+   * @param int $eventId
+   * @param int $participantId
+   * @param Request $request
+   * 
+   * @return RedirectResponse 
    */
-  public function show($encryptedevent, $encryptedparticipant)
+
+  public function update(int $eventId, Request $request)
   {
+    try {
+      $validator = Validator::make($request->all(), [
+        'participant' => ['required', 'integer'],
+        'type' => ['required', 'integer']
+      ]);
 
+      if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
 
-    $eventId = base64_decode($encryptedevent);
-    $participantId = base64_decode($encryptedparticipant);
-    $rs = Participant_Has_Event::where([['event_id', $eventId], ['participant_id', $participantId]])
-      ->update(['status' => 'Confirmada']);
+      $this->inviteService->updateParticipant($eventId, $request->participant, $request->type);
 
-    $successMessage = session('success');
+      return redirect()->back()->with('success', 'O participante foi actualizado com sucesso!');
+    } catch (Exception $e) {
+      $errorMessage = $e->getMessage();
 
-
-    $event = Event::find($eventId);
-    $participant = Participant::find($participantId);
-
-    // dd(session());
-
-    return response(view('confirmPresence', compact('successMessage', 'event', 'participant', 'encryptedevent', 'encryptedparticipant'))->with('success', 'A sua presenca foi confirmada no evento ' . $event->name));
+      return redirect()->back()->with('error', $errorMessage);
+    }
   }
 
   /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
+   * Remove the specified Invite from storage.
+   * @param Request $request 
+   * @return \Illuminate\Http\RedirectResponse
    */
-  public function edit($id)
-  {
-    //
-  }
-
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function update(Request $request, $id)
-  {
-    //
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function delete(Request $request, $eventId, $participantId)
-  {
-    $user = Auth::user();
-    $event = Event::find($eventId);
-    $participant = Participant::find($participantId);
-    $invite = Participant_Has_Event::where([['event_id', $eventId], ['participant_id', $participantId]])->first();
-
-    return response(view("delete", compact('user', 'event', 'invite', 'participant')));
-  }
   public function destroy(Request $request)
   {
     try {
       $validator = Validator::make($request->all(), [
-        "event" => ['required', 'numeric'],
-        "participant" => ['required', 'numeric'],
+        'event' => ['required', 'numeric'],
+        'participant' => ['required', 'numeric']
       ]);
 
+
       if ($validator->fails()) {
-        return redirect()->back()->with('error', 'Something went wrong!');
+        return redirect()->back()->with('error', 'Algo ocorreu mal na validação dos campos, tente novamente!');
       }
+
+      $this->inviteService->deleteInvite($request->event, $request->participant);
+
+      return redirect()->back()->with('success', 'O participante foi eliminado da lista dos convidados com sucesso!');
     } catch (Exception $e) {
-      throw $e;
+      $errorMessage = $e->getMessage();
+
+      return redirect()->back()->with('error', $errorMessage);
     }
-
-    $data = $request->all();
-    $invite = Participant_Has_Event::where([['event_id', $data['event']], ['participant_id', $data['participant']]])->first();
-
-
-    if (!$invite) {
-      return redirect()->back()->with('error', 'Esse participante naoa faz parte da lista do evento.');
-    }
-
-    Participant_Has_Event::where([['event_id', $data['event']], ['participant_id', $data['participant']]])->delete();
-    return redirect(route('event', $data['event']))->with('success', 'O participante foi removido com sucesso!');
   }
 
   public function confirmEntrance($encryptedevent, $encryptedparticipant)
   {
-    $user = Auth::user();
-    $eventId = base64_decode($encryptedevent);
-    $participantId = base64_decode($encryptedparticipant);
-    $event = Event::find($eventId);
-    $participant = Participant::find($participantId);
-    $invite = Participant_Has_Event::where([['event_id', $eventId], ['participant_id', $participantId]])->first();
+    try {
 
+      $eventId = base64_decode($encryptedevent);
+      $participantId = base64_decode($encryptedparticipant);
 
-    return response(view('confirmEntrance', compact('user', 'event', 'encryptedevent', 'encryptedparticipant', 'participant', 'invite')));
-  }
+      $invite = $this->inviteService->getInviteByCompositeKey($eventId, $participantId);
+      $event = $invite->event;
+      $participant = $invite->participant;
 
-  public function confirmEntrancePost($encryptedevent, $encryptedparticipant)
-  {
-    $eventId = base64_decode($encryptedevent);
-    $participantId = base64_decode($encryptedparticipant);
-
-    $event = Event::where("id", $eventId)->first();
-
-
-    $rs = Participant_Has_Event::where([['event_id', $eventId], ['participant_id', $participantId]])
-      ->update(['status' => 'Presente']);
-
-
-    return redirect()->back()->with('success', 'A presenca do participante foi actualizada com sucesso!');
-  }
-
-  public function removerParticipante(Request $request){
-    try{
-      $participantEvent = Participant_Has_Event::where([['event_id', $request->eventId], ['participant_id', $request->participantId]])->delete();
-      return redirect()->back()->with('success', 'Participante removido com sucesso!');
+      return view('confirmEntrance', compact('event', 'encryptedevent', 'encryptedparticipant', 'participant', 'invite'));
     } catch (Exception $e) {
+      $errorMessage = $e->getMessage();
+
+      return view('error.404', ['error' => $errorMessage]);
     }
   }
 
-  // public function confirmPresence($encryptedevent, $encryptedparticipant)
-  // {
-  //   // return redirect()->route('event', 1)->with('message', 'IT WORKS!');
-  //   $eventId = base64_decode($encryptedevent);
-  //   $participantId = base64_decode($encryptedparticipant);
+  public function confirmEntrancePost($encryptedEvent, $encryptedParticipant)
+  {
+    try {
+      $updatedInvite = $this->inviteService->confirmEntrance($encryptedEvent, $encryptedParticipant);
+      return redirect()->route("event.show", $updatedInvite->event_id)->with('success', 'A presenca do participante foi actualizada com sucesso!');
+    } catch (Exception $e) {
+      $errorMessage = $e->getMessage();
+
+      return view('error.404', ['error' => $errorMessage]);
+    }
+  }
+
+  public function rejectInvite(string $encodedEvent, string $encodedParticipant)
+  {
+    try {
+      $invite = $this->inviteService->rejectInvite($encodedEvent, $encodedParticipant);
+
+      return view('rejectInvite', compact('invite'))->with('warning', 'Rejeitou o convitr com sucesso!');
+    } catch (Exception $e) {
+      $errorMessage = $e->getMessage();
+
+      return view('error.404', ['error' => $errorMessage]);
+    }
+  }
 
 
-  //   $invite = Participant_Has_Event::where(["event_id" => $eventId, "participant_id" => $participantId])->first();
-  //   $event = Event::find($eventId);
-  //   // dd($event->name);
+  private function generateQrcode(int $eventId,  int $participantId): bool|string
+  {
+    $encodedEvent = base64_encode($eventId);
+    $encodedParticipant = base64_encode($participantId);
+    $name = $encodedEvent . $encodedParticipant;
 
-  //   $updateStatus = DB::table('participant_event')
-  //     ->where('event_id', $eventId)
-  //     ->where('participant_id', $participantId)
-  //     ->update([
-  //       'status' => 'Confirmada',
-  //       'updated_at' => now()
-  //     ]);
+    $qrCode = QrCode::format('png')->size(100)->generate(route(
+      'participant.entrance',
+      ['encryptedevent' => $encodedEvent, 'encryptedparticipant' => $encodedParticipant]
+    ));
+    $qrCodePath = storage_path('app/public/qrcodes/' . $name . '.png');
+    $res = file_put_contents($qrCodePath, $qrCode);
 
-  //   // dd($updateStatus);
-
-  //   return redirect()->route('confirmPresenceShow', ['encryptedevent' => $encryptedevent, 'encryptedparticipant' => $encryptedparticipant])->with('success', 'A sua presenca foi confirmada no evento ' . $event->name);
-  // }
+    if (!$res) {
+      return false;
+    }
+    return $name;
+  }
 }

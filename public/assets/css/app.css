@@ -3891,7 +3891,7 @@ body.authentication-bg {
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 .auth-page-sidebar .auth-user-testimonial {

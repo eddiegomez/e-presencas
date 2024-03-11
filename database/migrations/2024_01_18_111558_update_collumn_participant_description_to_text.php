@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateTimestampsParticipantEventTable extends Migration
+class UpdateCollumnParticipantDescriptionToText extends Migration
 {
   /**
    * Run the migrations.
@@ -13,8 +13,8 @@ class UpdateTimestampsParticipantEventTable extends Migration
    */
   public function up()
   {
-    Schema::table('participant_event', function (Blueprint $table) {
-      $table->timestamps();
+    Schema::table('participants', function (Blueprint $table) {
+      $table->text('description')->change();
     });
   }
 
@@ -25,7 +25,7 @@ class UpdateTimestampsParticipantEventTable extends Migration
    */
   public function down()
   {
-    Schema::table('participant_event', function (Blueprint $table) {
+    Schema::table('participants', function (Blueprint $table) {
       //
     });
   }

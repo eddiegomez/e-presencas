@@ -10,11 +10,25 @@ class Schedule extends Model
 {
   use HasFactory;
 
-  protected $table = 'schedules';
+  protected $table = 'schedule';
+
+  /**
+   * The attributes that are mass assignable.
+   *
+   * @var array<int, string>
+   */
+  protected $fillable = [
+    "name",
+    "pdf_url",
+    "date",
+    "event_id"
+  ];
+
+  public $timestamps = true;
 
   // Get Event 
-  public function events() : BelongsToMany{
-    return $this->belongsToMany(Event::class, 'event_schedule');
+  public function events(): BelongsToMany
+  {
+    return $this->belongsToMany(Event::class, 'invites');
   }
-
 }

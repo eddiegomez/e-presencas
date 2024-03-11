@@ -17,11 +17,14 @@ class UserSeeder extends Seeder
   {
     $password = "admin12345";
 
-    \App\Models\User::factory()->create([
+    $user = \App\Models\User::factory()->create([
       'name' => 'admin',
       'email' => 'admin@admin.com',
+      'phone' => '+258821234567',
       'password' => Hash::make($password),
-      'user_role' => 1,
+      'organization_id' => 1
     ]);
+
+    $user->assignRole('gestor do sistema');
   }
 }

@@ -9,7 +9,6 @@
   <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
   <meta content="Coderthemes" name="author" />
 
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   @if (isset($isDark) && $isDark)
     @include("layouts.shared.head", ["isDark" => true])
@@ -19,6 +18,11 @@
     @include("layouts.shared.head")
   @endif
 
+  <!-- Include jQuery (required by Select2) -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Include Select2 JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 </head>
 
 @if (isset($isScrollable) && $isScrollable)
@@ -76,8 +80,14 @@
 
 @if (getenv("APP_ENV") === "local")
 @endif
+
+<script src="{{ asset("assets/libs/select2/select2.min.js") }}"></script>
+
+
 </body>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
 <!-- Include jQuery -->
+{{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>   --}}
 
 </html>

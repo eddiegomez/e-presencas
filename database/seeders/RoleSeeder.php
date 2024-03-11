@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 
 class RoleSeeder extends Seeder
 {
@@ -14,8 +15,12 @@ class RoleSeeder extends Seeder
    */
   public function run()
   {
-    DB::table('roles')->insert([
-      'name' => 'admin'
-    ]);
+    // Reset cached roles and permissions
+    app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
+    // Create Roles
+    Role::create(['name' => 'gestor do sistema']);
+    Role::create(['name' => 'gestor']);
+    Role::create(['name' => 'protocolo']);
   }
 }

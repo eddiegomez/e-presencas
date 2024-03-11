@@ -2,16 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-  use HasApiTokens, HasFactory, Notifiable;
+  use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes;
 
   /**
    * The attributes that are mass assignable.
@@ -22,7 +25,8 @@ class User extends Authenticatable
     'name',
     'email',
     'password',
-    'user_role'
+    'phone',
+    'organization_id'
   ];
 
   /**
@@ -44,8 +48,8 @@ class User extends Authenticatable
     'email_verified_at' => 'datetime',
   ];
 
-  public function role(): BelongsTo
+  public function organization(): BelongsTo
   {
-    return $this->BelongsTo(Role::class, 'user_role');
+    return $this->belongsTo(Organization::class);
   }
 }

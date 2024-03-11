@@ -22,6 +22,16 @@ Route::get('/', function () {
   return view('welcome');
 });
 
+Route::get('businessCard', function () {
+  return view('businessCard');
+});
+
+Route::get(
+  '/businessCard/{hashed_mail}',
+  [ParticipantController::class, 'showBusinessCard']
+)->name('showBusinessCard');
+
+
 Route::middleware(['auth', 'web'])->group(function () {
   Route::get('/events', [EventController::class, 'index'])->name('events');
   // Route::resource('event', EventController::class);

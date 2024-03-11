@@ -115,4 +115,11 @@ class ParticipantController extends Controller
   {
     //
   }
+
+  public function showBusinessCard($hashed_mail)
+  {
+    //http://127.0.0.1:8000/businessCard/ZWRzb24uZ29tZXNAaW5hZ2UuZ292Lm16
+    $participant = Participant::where('email',base64_decode($hashed_mail))->first();
+    return response(view("businessCard", compact("participant", "participant")));
+  }
 }

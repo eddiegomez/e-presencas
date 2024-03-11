@@ -25,12 +25,12 @@
       </a>
     </li>
 
-    <li>
+    <!--<li>
       <a href="{{ route("admin.list") }}">
         <i data-feather="user"></i>
         <span> Admins </span>
       </a>
-    </li>
+    </li>-->
   @endhasrole
 
   {{-- Institution manager menu --}}

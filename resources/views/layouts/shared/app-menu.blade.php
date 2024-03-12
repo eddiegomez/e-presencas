@@ -24,13 +24,6 @@
         <span> Gestores </span>
       </a>
     </li>
-
-    <!--<li>
-      <a href="{{ route("admin.list") }}">
-        <i data-feather="user"></i>
-        <span> Admins </span>
-      </a>
-    </li>-->
   @endhasrole
 
   {{-- Institution manager menu --}}

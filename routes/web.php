@@ -26,10 +26,6 @@ Route::get('/', function () {
   return redirect()->route('login');
 });
 
-Route::get('businessCard', function () {
-  return view('businessCard');
-});
-
 Route::get(
   '/businessCard/{hashed_mail}',
   [ParticipantController::class, 'showBusinessCard']

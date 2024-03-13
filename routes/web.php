@@ -26,7 +26,7 @@ Route::get('/', function () {
   return redirect()->route('login');
 });
 
-Route::get('/showBusinessCard', [ParticipantController::class, 'showBusinessCard'])->name('showBusinessCard');
+Route::get('/showBusinessCard/{hash}', [ParticipantController::class, 'showBusinessCard'])->name('showBusinessCard');
 
 Route::middleware(['auth', 'web'])->group(function () {
   Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

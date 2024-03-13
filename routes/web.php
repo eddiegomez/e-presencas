@@ -26,11 +26,7 @@ Route::get('/', function () {
   return redirect()->route('login');
 });
 
-Route::get(
-  '/businessCard/{hashed_mail}',
-  [ParticipantController::class, 'showBusinessCard']
-)->name('showBusinessCard');
-
+Route::get("/showBusinessCard", 'App\Http\Controllers\ParticipantController@showBusinessCard')->name('showBusinessCard');
 
 Route::middleware(['auth', 'web'])->group(function () {
   Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

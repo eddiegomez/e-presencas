@@ -150,9 +150,10 @@ class ParticipantController extends Controller
     }
   }
 
-  public function showBusinessCard($hashed_mail)
+  public function showBusinessCard()
   {
-    $participant = Participant::where('email',base64_decode($hashed_mail))->first();
+    dd('in');
+   // $participant = Participant::where('email',base64_decode($hashed_mail))->first();
     return response(view("businessCard", compact("participant", "participant")));
   }
 }

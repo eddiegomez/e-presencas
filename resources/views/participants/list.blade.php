@@ -46,7 +46,7 @@
 @section("content")
 <div class="row">
   @foreach ($participants as $participant)
-  @if ($participant->hasRelationWithOrganization(auth()->user()->organization_id))
+  <!--@if ($participant->hasRelationWithOrganization(auth()->user()->organization_id))-->
   <div class="col-md-6 col-xl-3 col-12">
     <a href="{{ route("participant.show", $participant->id) }}" class="card">
       <div class="card-body p-0">
@@ -67,20 +67,7 @@
       </div>
     </a>
   </div>
-  <!--<div id="displayQrcode{{ $participant->id }}" class="modal fade" role=dialog>
-    <div class="modal-dialog modal-dialog-centered">
-      {{-- Modal content --}}
-      <div class="modal-content">
-        <div class="modal-body">
-          <center>
-            <h3 class="mt-5 mb-3">{{$participant->name}}</h3>
-            <img src="data:image/png;base64,{{base64_encode(QrCode::color(0, 0, 0)->style('round')->eye('circle')->size(412)->format('png')->merge('/public/logo.png',0.3,)->errorCorrection('H')->generate('https://assiduidade.inage.gov.mz/businessCard/'. base64_encode($participant->email)))}}" alt="QR Code with Merged Image">
-          </center>
-        </div>
-      </div>
-    </div>
-  </div>-->
-  @endif
+  <!--@endif-->
   @endforeach
 </div>
 

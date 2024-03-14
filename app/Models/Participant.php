@@ -18,7 +18,8 @@ class Participant extends Model
     'description',
     'email',
     'phone_number',
-    'degree'
+    'degree',
+    'upload'
   ];
 
   public $timestamps = true;

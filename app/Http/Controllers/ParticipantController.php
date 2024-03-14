@@ -66,16 +66,19 @@ class ParticipantController extends Controller
         return redirect()->back()->withErrors($validator)->withInput();
       }
 
+      $profile_url = $request->file('upload')->store('profiles', 'public');
+
       $data = $request->all();
       $participant = $this->participantService->createParticipant(
         $data['name'],
         $data['email'],
         $data['description'],
         $data['phone'],
-        $data['degree']
+        $data['degree'],
+        $profile_url
       );
 
-      return redirect()->back()->with('success', 'O ' . $participant->name . 'foi criado!');
+      return redirect()->back()->with('success', 'O participante ' . $participant->name . ' foi criado!');
     } catch (Exception $e) {
       $errorMessage = $e->getMessage();
 
@@ -152,7 +155,12 @@ class ParticipantController extends Controller
 
   public function showBusinessCard($hashed_mail)
   {
-    $participant = Participant::where('email', base64_decode($hashed_mail))->first();
-    return response(view("businessCard", compact("participant", "participant")));
+    try {
+      $participant = Participant::where('email', base64_decode($hashed_mail))->first();
+      return response(view("businessCard", compact("participant", "participant")));
+    } catch (Exception $e) {
+      $errorMessage = $e->getMessage();
+      return redirect()->back()->with('error', $errorMessage);
+    }
   }
 }

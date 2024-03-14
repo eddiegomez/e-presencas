@@ -83,7 +83,7 @@
             <div class="form-group">
               <label for="name">Nome do seu evento</label>
               <input type="text" class="form-control" id="name" name="name" aria-describedby="emailHelp"
-                placeholder="Exemplo: Conferencia de kekeke" required value="{{ old("name") }}">
+                placeholder="" required value="{{ old("name") }}">
               @error("name")
                 <span class="text-danger">{{ $message }}</span>
               @enderror

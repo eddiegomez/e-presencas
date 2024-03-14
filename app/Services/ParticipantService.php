@@ -25,7 +25,8 @@ class ParticipantService
     string $email,
     string $description,
     string $phoneNumber,
-    string $degree
+    string $degree,
+    string $profile_url
   ) {
     $ParticipantExists = $this->checkParticipantByEmailOrPhoneNumber($email, $phoneNumber);
 
@@ -40,6 +41,7 @@ class ParticipantService
     $participant->description = $description;
     $participant->phone_number = $phoneNumber;
     $participant->degree = $degree;
+    $participant->profile_url = $profile_url;
     $participant->save();
 
     return $participant;

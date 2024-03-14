@@ -4,6 +4,8 @@
 @section("css")
 <link href="{{ URL::asset("assets/libs/flatpickr/flatpickr.min.css") }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset("css/style.css") }}" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
 @endsection
 
 @section("breadcrumb")
@@ -46,7 +48,6 @@
 @section("content")
 <div class="row">
   @foreach ($participants as $participant)
-  <!--@if ($participant->hasRelationWithOrganization(auth()->user()->organization_id))-->
   <div class="col-md-6 col-xl-3 col-12">
     <a href="{{ route("participant.show", $participant->id) }}" class="card">
       <div class="card-body p-0">
@@ -67,7 +68,6 @@
       </div>
     </a>
   </div>
-  <!--@endif-->
   @endforeach
 </div>
 
@@ -83,11 +83,11 @@
 
       {{-- Modal Body --}}
       <div class="modal-body">
-        <form action="{{ route("participant.store") }}" method="POST">
+        <form action="{{ route("participant.store") }}" method="POST" enctype="multipart/form-data">
           @csrf
           <div class="form-group">
             <label for="name">Nome</label>
-            <input type="text" class="form-control @error(" name") is-invalid @enderror" id="name" name="name" aria-describedby="emailHelp" placeholder="Exemplo: Conferencia de kekeke" value="{{ old("name") }}">
+            <input type="text" class="form-control @error(" name") is-invalid @enderror" id="name" name="name" aria-describedby="emailHelp" placeholder="Nome completo" value="{{ old("name") }}">
 
             @error("name")
             <span class="invalid-feedback" role="alert"> <strong> {{ $message }}</strong></span>
@@ -95,7 +95,7 @@
           </div>
           <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" class="form-control @error(" email") is-invalid @enderror" required id="email" name="email" aria-describedby="emailHelp" placeholder="JohnDoe@inage.gov.mz" value="{{ old("email") }}">
+            <input type="email" class="form-control @error(" email") is-invalid @enderror" required id="email" name="email" aria-describedby="emailHelp" placeholder="" value="{{ old("email") }}">
             @error("email")
             <span class="invalid-feedback" role="alert"> <strong> {{ $message }}</strong></span>
             @enderror
@@ -124,6 +124,12 @@
             @enderror
           </div>
 
+          {{-- Photo Input --}}
+          <div class="form-group">
+            <input type="file" accept="image/*" class="form-control" id="upload" name="upload" required value="{{ old('upload') }}">
+            <div id="upload-demo"></div>
+          </div>
+
           {{-- Description Input --}}
           <div class="form-group">
             <label for="description">Descricao do participante</label>
@@ -144,4 +150,50 @@
   </div>
 </div>
 @endsection
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var uploadCrop = new Croppie(document.getElementById('upload-demo'), {
+        viewport: { width: 200, height: 200 },
+        boundary: { width: 300, height: 300 },
+        showZoomer: true,
+        enableResize: false,
+        enableOrientation: true,
+    });
+
+    function readFile(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                uploadCrop.bind({
+                    url: e.target.result,
+                });
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+        else {
+            console.log("Sorry - you're browser doesn't support the FileReader API");
+        }
+    }
+
+    document.getElementById('upload').addEventListener('change', function() {
+        readFile(this);
+    });
+
+    document.getElementById('upload-result').addEventListener('click', function(ev) {
+        uploadCrop.result({
+            type: 'canvas',
+            size: 'viewport',
+        }).then(function(blob) {
+            // Here, you would typically send the blob to your server with an AJAX request.
+            // For demonstration, we'll just log it to the console.
+            console.log(blob);
+            // Example: AJAX request to server (pseudo code)
+            // var formData = new FormData();
+            // formData.append('image', blob);
+            // fetch('/upload-image', { method: 'POST', body: formData });
+        });
+    });
+});
+</script>
+
 @endhasrole

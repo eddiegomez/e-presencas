@@ -157,7 +157,9 @@ class ParticipantController extends Controller
   {
     try {
       $participant = Participant::where('email', base64_decode($hashed_mail))->first();
-      return response(view("businessCard", compact("participant", "participant")));
+      if($participant!=null){
+        return response(view("businessCard", compact("participant", "participant")));
+      }
     } catch (Exception $e) {
       $errorMessage = $e->getMessage();
       return redirect()->back()->with('error', $errorMessage);

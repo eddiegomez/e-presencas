@@ -1,5 +1,18 @@
 @extends("layouts.non-auth")
-
+<style>
+    .initials-placeholder {
+        background-color: #808080; /* Grey background */
+        color: white; /* White text color */
+        width: 100px; /* Set a specific width */
+        height: 100px; /* Set a specific height to match the width, making the shape a circle */
+        border-radius: 50%; /* Make the shape circular */
+        display: inline-block; /* Allows the use of text-align and line-height for centering */
+        text-align: center; /* Center the text horizontally */
+        line-height: 100px; /* Center the text vertically */
+        top: 20px;
+        position: relative;
+    }
+</style>
 
 @section("content")
 <center>
@@ -71,4 +84,11 @@
 </center>
 
 </div>
+<script>
+    // Select the element with the class 'initials-placeholder'
+    var initialsPlaceholder = document.querySelector('.initials-placeholder');
+
+    // Set the font size of the selected element
+    initialsPlaceholder.style.fontSize = '44px'; // Example: Set font size to 24px
+</script>
 @endsection

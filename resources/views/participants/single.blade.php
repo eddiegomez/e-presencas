@@ -79,7 +79,13 @@
             </h5>
           </div>
           <div class="col-md-2">
+            @if ($participant->profile_url)
+            {{-- Participant has a profile image --}}
             <img class="mt-2" data-target="#displayQrcode" data-toggle="modal" src="data:image/png;base64,{{base64_encode(QrCode::color(0, 0, 0)->style('round')->eye('circle')->size(112)->format('png')->merge('/storage/app/public/'.$participant->profile_url ,0.4,)->errorCorrection('H')->generate('https://assiduidade.inage.gov.mz/showBusinessCard/'. base64_encode($participant->email)))}}">
+            @else
+            {{-- Participant does not have a profile image --}}
+            <img class="mt-2" data-target="#displayQrcode" data-toggle="modal" src="data:image/png;base64,{{base64_encode(QrCode::color(0, 0, 0)->style('round')->eye('circle')->size(112)->format('png')->generate('https://assiduidade.inage.gov.mz/showBusinessCard/'. base64_encode($participant->email)))}}">
+            @endif
           </div>
         </div>
       </div>
@@ -101,7 +107,13 @@
           <div class="modal-body">
             <center>
               <h3 class="mt-5 mb-3">{{$participant->name}}</h3>
-              <img src="data:image/png;base64,{{base64_encode(QrCode::color(0, 0, 0)->style('round')->eye('circle')->size(412)->format('png')->merge('/storage/app/public/'.$participant->profile_url ,0.4,)->errorCorrection('H')->generate('https://assiduidade.inage.gov.mz/showBusinessCard/'. base64_encode($participant->email)))}}">
+              @if ($participant->profile_url)
+              {{-- Participant has a profile image --}}
+              <img class="mt-2" data-target="#displayQrcode" data-toggle="modal" src="data:image/png;base64,{{base64_encode(QrCode::color(0, 0, 0)->style('round')->eye('circle')->size(412)->format('png')->merge('/storage/app/public/'.$participant->profile_url ,0.4,)->errorCorrection('H')->generate('https://assiduidade.inage.gov.mz/showBusinessCard/'. base64_encode($participant->email)))}}">
+              @else
+              {{-- Participant does not have a profile image --}}
+              <img class="mt-2" data-target="#displayQrcode" data-toggle="modal" src="data:image/png;base64,{{base64_encode(QrCode::color(0, 0, 0)->style('round')->eye('circle')->size(412)->format('png')->generate('https://assiduidade.inage.gov.mz/showBusinessCard/'. base64_encode($participant->email)))}}">
+              @endif
             </center>
           </div>
         </div>

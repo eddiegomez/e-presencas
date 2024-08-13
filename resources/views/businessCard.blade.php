@@ -1,24 +1,67 @@
 @extends("layouts.non-auth")
 <style>
-    .initials-placeholder {
-        background-color: #808080; /* Grey background */
-        color: white; /* White text color */
-        width: 100px; /* Set a specific width */
-        height: 100px; /* Set a specific height to match the width, making the shape a circle */
-        border-radius: 50%; /* Make the shape circular */
-        display: inline-block; /* Allows the use of text-align and line-height for centering */
-        text-align: center; /* Center the text horizontally */
-        line-height: 100px; /* Center the text vertically */
-        top: 20px;
-        position: relative;
-    }
-</style>
+  .initials-placeholder {
+    background-color: #808080;
+    /* Grey background */
+    color: white;
+    /* White text color */
+    width: 100px;
+    /* Set a specific width */
+    height: 100px;
+    /* Set a specific height to match the width, making the shape a circle */
+    border-radius: 50%;
+    /* Make the shape circular */
+    display: inline-block;
+    /* Allows the use of text-align and line-height for centering */
+    text-align: center;
+    /* Center the text horizontally */
+    line-height: 100px;
+    /* Center the text vertically */
+    top: 20px;
+    position: relative;
+  }
 
+  .border-shadow {
+    box-shadow: 0 1px 5px 0 rgba(82, 93, 102, .25), 0 2px 8px 0 rgba(82, 93, 102, .15);
+  }
+
+
+  /*Float Window*/
+  body {
+    font-family: Arial, sans-serif;
+  }
+
+  .floating-window {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+    transform: translateY(100%);
+    z-index: 1000;
+  }
+
+  .floating-window-content {
+    padding: 20px;
+  }
+
+  .floating-window .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+  }
+</style>
+<meta name="csrf-token" content="{{ csrf_token() }}">
 @section("content")
 <center>
-  <div class="col-md-12 col-xl-4 mb-4 mt-5">
+  <div class="col-md-12 col-xl-3 mb-4 mt-5">
     <!-- Trigger the modal with a button -->
-    <div class="card">
+    <div class="card" style="border-radius: 20px; box-shadow: 0 1px 5px 0 rgba(82, 93, 102, .25), 0 2px 8px 0 rgba(82, 93, 102, .15);">
       <div class="card-body">
         <div class="text-center mt-2">
           @if ($participant->profile_url)
@@ -34,12 +77,15 @@
           $initials .= strtoupper(substr($word, 0, 1));
           }
           @endphp
-          <div class="initials-placeholder">{{ $initials }}</div>
+          <div class="initials-placeholder" style="font-size: 44px">{{ $initials }}</div>
           @endif
-          <h3 class="mt-5 mb-0">{{$participant->name}}</h3>
-          <h6 class="text-muted fw-normal mt-2 mb-0">{{$participant->description}}</h6>
-
+          <h3 class="mt-5 mb-0" style="font-size: 2rem;font-weight: 700;line-height: 1.3;">{{$participant->name}}</h3>
+          <h6 class="text-muted fw-normal mt-2 mb-0" id="name" style="font-size: 1.5rem;font-weight: 600; line-height: 1.2; margin-bottom: .25rem;white-space: pre-wrap;">{{$participant->description}}</h6>
+          <h6 class="text-muted fw-normal mt-2 mb-0" id="name" style="font-size: 1.5rem;font-weight: 600; line-height: 1.2; margin-bottom: .25rem;white-space: pre-wrap;">INAGE,IP - National eGovernment Institute</h6>
         </div>
+        <input type="text" id="name" value="{{$participant->name}}" hidden>
+        <input type="email" id="email" value="{{$participant->email}}" hidden>
+        <input type="text" id="phone" value="{{$participant->phone_number}}" hidden>
 
         <!-- profile  -->
         <!--<div class="mt-4 pt-2 border-top">
@@ -50,24 +96,44 @@
         </p>
       </div>-->
         <div class="mt-3 pt-2 border-top">
-          <h4 class="mb-2 fs-15">Informação de Contacto</h4>
           <div class="table-responsive">
             <table class="table table-borderless mb-0 text-muted">
               <tbody>
                 <tr>
-                  <th scope="row">Email</th>
-                  <td>{{$participant->email}}</td>
+                  <th scope="row" style="padding: 1rem; padding-left: 0rem"><i data-feather="phone" style="color:#527a7a; font-weight: 700; size: 1.375rem;"></i></th>
+                  <td style="padding: 0rem; padding-top: 0.75rem; padding-bottom: 0.75rem"><a href="tel:{{$participant->phone_number}}" style="font-weight: 600; color: #1f2e2e">{{$participant->phone_number}}</a></td>
                 </tr>
                 <tr>
-                  <th scope="row">Phone</th>
-                  <td>{{$participant->phone_number}}</td>
+                  <th scope="row" style="padding: 0.75rem; padding-left: 0rem"><i data-feather="mail"></i></th>
+                  <td style="padding: 0rem; padding-top: 0.75rem; padding-bottom: 0.75rem"><a href="mailto:{{$participant->email}}" style="font-weight: 600; color: #1f2e2e">{{$participant->email}}</a></td>
                 </tr>
                 <tr>
-                  <th scope="row">Address</th>
-                  <td>Address</td>
+                  <th scope="row" style="padding: 0.75rem; padding-left: 0rem"><i data-feather="globe"></i></th>
+                  <td style="padding: 0rem; padding-top: 0.75rem; padding-bottom: 0.75rem"><a href="https://www.inage.gov.mz" style="font-weight: 600; color: #1f2e2e">inage.gov.mz</a></td>
                 </tr>
               </tbody>
             </table>
+          </div>
+          <center><button type="button" class="btn btn-primary mt-3 border-shadow" style="border-radius: 80px; font-weight: 700; font-size: 1.375rem; background-color: #669999; border-color: #669999;" onclick="showFloatingWindow()">Gravar contacto</button>
+          </center>
+
+          <div id="floatingWindow" class="floating-window" style="border-top-left-radius: 30px; border-top-right-radius: 30px;">
+            <div class="floating-window-content">
+              <span class="close" onclick="closeFloatingWindow()">&times;</span>
+              <a href="#" onclick="saveContact()" class="btn btn-primary mt-3 border-shadow" style="font-weight: 700; font-size: 1.375rem; background-color: #669999; border-color: #669999; width:100%; border-radius: 30px;">
+                <i data-feather="user-plus"></i>
+                <span> Guardar nos contactos </span>
+              </a>
+              <a href="#" class="btn mt-3 border-shadow" style="font-weight: 600; font-size: 1.375rem; width:100%" onclick="receiveByEmail()">
+                <i data-feather="mail" style="color: #669999"></i>
+                <span style="color: #669999;"> Receber por email </span>
+              </a>
+              <a href="#" onclick="downloadVCard()" class="btn mt-3 border-shadow" style="font-weight: 600; font-size: 1.375rem; width:100%">
+                <i data-feather="download" style="color: #669999"></i>
+                <span style="color: #669999;"> Baixar vCard </span>
+              </a>
+              <!-- Add your form or content here -->
+            </div>
           </div>
         </div>
         <!--<div class="mt-2 pt-2 border-top">
@@ -84,11 +150,131 @@
 </center>
 
 </div>
-<script>
-    // Select the element with the class 'initials-placeholder'
-    var initialsPlaceholder = document.querySelector('.initials-placeholder');
 
-    // Set the font size of the selected element
-    initialsPlaceholder.style.fontSize = '44px'; // Example: Set font size to 24px
+<script>
+  function saveContact() {
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    // Create a contact URL
+    const contactUrl = `BEGIN:VCARD
+VERSION:3.0
+FN:${name}
+TEL:${phone}
+EMAIL:${email}
+END:VCARD`;
+
+    if (navigator.share) {
+      navigator.share({
+          title: 'Contact Info',
+          text: `Contact Info for ${name}`,
+          url: contactUrl,
+        })
+        .then(() => console.log('Share successful'))
+        .catch((error) => console.log('Share failed', error));
+    } else {
+      const vCard = `
+        BEGIN:VCARD
+        VERSION:3.0
+        FN:${name}
+        TEL:${phone}
+        EMAIL:${email}
+        END:VCARD`;
+
+      const blob = new Blob([vCard], {
+        type: 'text/vcard'
+      });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${name.replace(/\s+/g, '_')}.vcf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    closeFloatingWindow();
+  }
+
+  function downloadVCard() {
+    const email = "{{$participant->email}}";
+    const phone = "{{$participant->phone_number}}";
+    const name = "{{$participant->name}}"; // assuming you have participant's name
+
+    const vCard =
+      `BEGIN:VCARD
+VERSION:3.0
+FN:${name}
+TEL:${phone}
+EMAIL:${email}
+END:VCARD`;
+
+    const blob = new Blob([vCard], {
+      type: 'text/vcard'
+    });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${name.replace(/\s+/g, '_')}.vcf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function showFloatingWindow() {
+    const floatingWindow = document.getElementById('floatingWindow');
+    floatingWindow.style.display = 'block';
+    setTimeout(() => {
+      floatingWindow.style.transform = 'translateY(0)';
+    }, 10);
+  }
+
+  function closeFloatingWindow() {
+    const floatingWindow = document.getElementById('floatingWindow');
+    floatingWindow.style.transform = 'translateY(100%)';
+    setTimeout(() => {
+      floatingWindow.style.display = 'none';
+    }, 300);
+  }
+
+  function receiveByEmail() {
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const recipientEmail = prompt("Please enter your email address:");
+
+    if (!recipientEmail) {
+      alert("Email address is required!");
+      return;
+    }
+    fetch('/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          recipientEmail
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        window.alert(response);
+        alert(data.message);
+        closeFloatingWindow();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while sending the email.');
+      });
+  }
 </script>
+
 @endsection

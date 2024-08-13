@@ -7,6 +7,7 @@ use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\StaffController;
+use App\Http\Controllers\ContactController;
 use App\Models\Participant;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -118,5 +119,6 @@ Route::post('/protocolo/{encryptedId}/confirmation', [StaffController::class, 'e
 
 // Confirm Presence Controller
 Route::get('/invite/accept/{encryptedevent}/{encryptedparticipant}', [InviteController::class, 'acceptInvite'])->name('invite.acceptInvite');
+Route::post('/send-email', [ContactController::class, 'sendEmail']);
 
 Auth::routes();

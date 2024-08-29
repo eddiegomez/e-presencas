@@ -120,7 +120,7 @@
           <div id="floatingWindow" class="floating-window" style="border-top-left-radius: 30px; border-top-right-radius: 30px;">
             <div class="floating-window-content">
               <span class="close" onclick="closeFloatingWindow()">&times;</span>
-              <a href="#" onclick="saveContact()" class="btn btn-primary mt-3 border-shadow" style="font-weight: 700; font-size: 1.375rem; background-color: #669999; border-color: #669999; width:100%; border-radius: 30px;">
+              <a href="data:text/vcard;charset=utf-8,BEGIN:VCARD%0AVERSION:3.0%0AFN:John Doe%0ATEL:+1234567890%0AEMAIL:john.doe@example.com%0AEND:VCARD" download="John_Doe.vcf" class="btn btn-primary mt-3 border-shadow" style="font-weight: 700; font-size: 1.375rem; background-color: #669999; border-color: #669999; width:100%; border-radius: 30px;">
                 <i data-feather="user-plus"></i>
                 <span> Guardar nos contactos </span>
               </a>
@@ -152,51 +152,6 @@
 </div>
 
 <script>
-  function saveContact() {
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const phone = document.getElementById('phone').value;
-    // Create a contact URL
-    const contactUrl = `BEGIN:VCARD
-VERSION:3.0
-FN:${name}
-TEL:${phone}
-EMAIL:${email}
-END:VCARD`;
-
-    if (navigator.share) {
-      navigator.share({
-          title: 'Contact Info',
-          text: `Contact Info for ${name}`,
-          url: contactUrl,
-        })
-        .then(() => console.log('Share successful'))
-        .catch((error) => console.log('Share failed', error));
-    } else {
-      const vCard = `
-        BEGIN:VCARD
-        VERSION:3.0
-        FN:${name}
-        TEL:${phone}
-        EMAIL:${email}
-        END:VCARD`;
-
-      const blob = new Blob([vCard], {
-        type: 'text/vcard'
-      });
-      const url = URL.createObjectURL(blob);
-
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${name.replace(/\s+/g, '_')}.vcf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-
-    closeFloatingWindow();
-  }
 
   function downloadVCard() {
     const email = "{{$participant->email}}";

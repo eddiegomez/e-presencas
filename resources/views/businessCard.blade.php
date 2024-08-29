@@ -120,7 +120,7 @@
           <div id="floatingWindow" class="floating-window" style="border-top-left-radius: 30px; border-top-right-radius: 30px;">
             <div class="floating-window-content">
               <span class="close" onclick="closeFloatingWindow()">&times;</span>
-              <a href="data:text/vcard;charset=utf-8,BEGIN:VCARD%0AVERSION:3.0%0AFN:John Doe%0ATEL:+1234567890%0AEMAIL:john.doe@example.com%0AEND:VCARD" download="John_Doe.vcf" class="btn btn-primary mt-3 border-shadow" style="font-weight: 700; font-size: 1.375rem; background-color: #669999; border-color: #669999; width:100%; border-radius: 30px;">
+              <a href="data:text/vcard;charset=utf-8,BEGIN:VCARD%0AVERSION:3.0%0AFN:{{$participant->name}}%0ATEL:{{$participant->phone_number}}%0AEMAIL:{{$participant->email}}m%0AEND:VCARD" download="{{$participant->name}}.vcf" class="btn btn-primary mt-3 border-shadow" style="font-weight: 700; font-size: 1.375rem; background-color: #669999; border-color: #669999; width:100%; border-radius: 30px;">
                 <i data-feather="user-plus"></i>
                 <span> Guardar nos contactos </span>
               </a>

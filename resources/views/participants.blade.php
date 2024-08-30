@@ -37,10 +37,18 @@
                     <form action="{{ route("participant.store") }}" method="POST">
                         @csrf
                         <div class="form-group">
-                            <label for="name">Nome do Participante</label>
-                            <input type="text" class="form-control @error(" name") is-invalid @enderror" id="name" name="name" aria-describedby="emailHelp" placeholder="Exemplo: Conferencia de kekeke">
+                            <label for="name">Nome</label>
+                            <input type="text" class="form-control @error(" name") is-invalid @enderror" id="name" name="name" aria-describedby="emailHelp" placeholder="Nome">
 
                             @error("name")
+                            <span class="invalid-feedback" role="alert"> <strong> {{ $message }}</strong></span>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="last_name">Apelido</label>
+                            <input type="text" class="form-control @error(" last_name") is-invalid @enderror" id="last_name" name="last_name" aria-describedby="last_name" placeholder="Apelido">
+
+                            @error("last_name")
                             <span class="invalid-feedback" role="alert"> <strong> {{ $message }}</strong></span>
                             @enderror
                         </div>

@@ -24,7 +24,8 @@ class ParticipantController extends Controller
   public $customValidatorMessages = [
     "name.required" => "O participante deve ter um nome.",
     "name.string" => "O nome do participante deve ser um texto.",
-    "name.regex" => "O nome do participante nao pode conter numeros",
+    "name.regex" => "O nome do participante não pode conter numeros",
+    "last_name.regex" => "O spbrenome do participante não pode conter numeros",
     "email.required" => "O paricipante deve ter um email",
     "email.email" => "O email do inserido não é valido.",
     "degree.string" => "O grau deve ser um texto",
@@ -56,6 +57,7 @@ class ParticipantController extends Controller
     try {
       $validator = Validator::make($request->all(), [
         'name' => ['required', 'string', 'regex:/^[^\d]+$/'],
+        'last_name' => ['required', 'string', 'regex:/^[^\d]+$/'],
         'email' => ['required', 'email'],
         'degree' => ['required', 'string'],
         'phone' => ['required', 'numeric',  'digits:9'],
@@ -71,6 +73,7 @@ class ParticipantController extends Controller
       $data = $request->all();
       $participant = $this->participantService->createParticipant(
         $data['name'],
+        $data['last_name'],
         $data['email'],
         $data['description'],
         $data['phone'],
@@ -78,7 +81,7 @@ class ParticipantController extends Controller
         $profile_url
       );
 
-      return redirect()->back()->with('success', 'O participante ' . $participant->name . ' foi criado!');
+      return redirect()->back()->with('success', 'O participante ' . $participant->name . ' ' . $participant->last_name . ' foi criado!');
     } catch (Exception $e) {
       $errorMessage = $e->getMessage();
 
@@ -114,6 +117,7 @@ class ParticipantController extends Controller
     try {
       $validator = Validator::make($request->all(), [
         "name" => ["required", "string"],
+        "last_name" => ["required", "string"],
         "description" => ["required", "string"],
         "phone_number" => ["required", "numeric"],
         "degree" => ["required", "string"],
@@ -124,7 +128,7 @@ class ParticipantController extends Controller
         return redirect()->back()->withErrors($validator)->withInput();
       }
 
-      $data = $request->only(['name', 'description', 'phone_number', 'degree', 'email']);
+      $data = $request->only(['name', 'last_name', 'description', 'phone_number', 'degree', 'email']);
 
       $this->participantService->update($data, $id);
 
@@ -148,7 +152,6 @@ class ParticipantController extends Controller
       return redirect()->route('participant.index')->with('success', 'Participante eliminado com sucesso!');
     } catch (Exception $e) {
       $errorMessage = $e->getMessage();
-
       return redirect()->back()->with('error', $errorMessage);
     }
   }
@@ -157,7 +160,7 @@ class ParticipantController extends Controller
   {
     try {
       $participant = Participant::where('email', base64_decode($hashed_mail))->first();
-      if($participant!=null){
+      if ($participant != null) {
         return response(view("businessCard", compact("participant", "participant")));
       }
     } catch (Exception $e) {

@@ -15,6 +15,7 @@ class Participant extends Model
 
   public $fillable = [
     'name',
+    'last_name',
     'description',
     'email',
     'phone_number',

@@ -79,7 +79,7 @@
           @endphp
           <div class="initials-placeholder" style="font-size: 44px">{{ $initials }}</div>
           @endif
-          <h3 class="mt-5 mb-0" style="font-size: 2rem;font-weight: 700;line-height: 1.3;">{{$participant->name}}</h3>
+          <h3 class="mt-5 mb-0" style="font-size: 2rem;font-weight: 700;line-height: 1.3;">{{$participant->name}} {{$participant->last_name}}</h3>
           <h6 class="text-muted fw-normal mt-2 mb-0" id="name" style="font-size: 1.5rem;font-weight: 600; line-height: 1.2; margin-bottom: .25rem;white-space: pre-wrap;">{{$participant->description}}</h6>
           <h6 class="text-muted fw-normal mt-2 mb-0" id="name" style="font-size: 1.5rem;font-weight: 600; line-height: 1.2; margin-bottom: .25rem;white-space: pre-wrap;">INAGE,IP - National eGovernment Institute</h6>
         </div>
@@ -120,10 +120,11 @@
           <div id="floatingWindow" class="floating-window" style="border-top-left-radius: 30px; border-top-right-radius: 30px;">
             <div class="floating-window-content">
               <span class="close" onclick="closeFloatingWindow()">&times;</span>
-              <a href="data:text/vcard;charset=utf-8,BEGIN:VCARD%0AVERSION:3.0%0AFN:{{$participant->name}}%0AORG:INAGE%0ATITLE:{{$participant->degree}}%0ATEL:{{$participant->phone_number}}%0AEMAIL:{{$participant->email}}m%0AEND:VCARD" download="{{$participant->name}}.vcf" class="btn btn-primary mt-3 border-shadow" style="font-weight: 700; font-size: 1.375rem; background-color: #669999; border-color: #669999; width:100%; border-radius: 30px;">
+              <a href="data:text/vcard;charset=utf-8,BEGIN:VCARD%0AVERSION:3.0%0AN:{{$participant->last_name}};{{$participant->name}};;;%0AFN:{{$participant->name}}%0AORG:INAGE%0ATITLE:{{$participant->degree}}%0ATEL:{{$participant->phone_number}}%0AEMAIL:{{$participant->email}}%0AEND:VCARD" download="{{$participant->name}}{{$participant->last_name}}.vcf" class="btn btn-primary mt-3 border-shadow" style="font-weight: 700; font-size: 1.375rem; background-color: #669999; border-color: #669999; width:100%; border-radius: 30px;">
                 <i data-feather="user-plus"></i>
                 <span> Guardar nos contactos </span>
               </a>
+
               <a href="#" class="btn mt-3 border-shadow" style="font-weight: 600; font-size: 1.375rem; width:100%" onclick="receiveByEmail()">
                 <i data-feather="mail" style="color: #669999"></i>
                 <span style="color: #669999;"> Receber por email </span>

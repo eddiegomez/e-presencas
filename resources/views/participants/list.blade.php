@@ -87,15 +87,23 @@
           @csrf
           <div class="form-group">
             <label for="name">Nome</label>
-            <input type="text" class="form-control @error(" name") is-invalid @enderror" id="name" name="name" aria-describedby="emailHelp" placeholder="Nome completo" value="{{ old("name") }}">
+            <input type="text" class="form-control @error(" name") is-invalid @enderror" id="name" name="name" aria-describedby="emailHelp" placeholder="Nome" value="{{ old("name") }}">
 
             @error("name")
             <span class="invalid-feedback" role="alert"> <strong> {{ $message }}</strong></span>
             @enderror
           </div>
           <div class="form-group">
+            <label for="last_name">Apelido</label>
+            <input type="text" class="form-control @error(" last_name") is-invalid @enderror" id="last_name" name="last_name" aria-describedby="last_name" placeholder="Apelido">
+
+            @error("last_name")
+            <span class="invalid-feedback" role="alert"> <strong> {{ $message }}</strong></span>
+            @enderror
+          </div>
+          <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" class="form-control @error(" email") is-invalid @enderror" required id="email" name="email" aria-describedby="emailHelp" placeholder="" value="{{ old("email") }}">
+            <input type="email" class="form-control @error(" email") is-invalid @enderror" required id="email" name="email" aria-describedby="emailHelp" placeholder="exemplo@dominio.com" value="{{ old("email") }}">
             @error("email")
             <span class="invalid-feedback" role="alert"> <strong> {{ $message }}</strong></span>
             @enderror
@@ -107,7 +115,7 @@
               <div class="input-group-prepend">
                 <div class="input-group-text">+258</div>
               </div>
-              <input type="text" class="form-control  @error(" phone") is-invalid @enderror" id="phone" name="phone" placeholder="84 000 0000" autocomplete="off" value="{{ old("phone") }}">
+              <input type="text" class="form-control  @error(" phone") is-invalid @enderror" id="phone" name="phone" placeholder="" autocomplete="off" value="{{ old("phone") }}">
             </div>
             @error("phone")
             <p class="invalid-feedback" role="alert"> <strong> {{ $message }}</strong></p>
@@ -116,8 +124,8 @@
 
           {{-- Degree Input --}}
           <div class="form-group">
-            <label for="degree">Grau (Posicao ou Profissao)</label>
-            <input type="text" class="form-control @error(" degree") is-invalid @enderror" id="degree" name="degree" placeholder="Exemplo: Ministro das Financas | Engenheiro de Software" value="{{ old("degree") }}">
+            <label for="degree">Grau (Posicao ou Profissão)</label>
+            <input type="text" class="form-control @error(" degree") is-invalid @enderror" id="degree" name="degree" placeholder="" value="{{ old("degree") }}">
 
             @error("degree")
             <span class="invalid-feedback" role="alert"> <strong> {{ $message }}</strong></span>
@@ -133,7 +141,7 @@
           {{-- Description Input --}}
           <div class="form-group">
             <label for="description">Descricao do participante</label>
-            <textarea type="text" class="form-control @error(" description") is-invalid @enderror" id="description" name="description" placeholder="Exemplo: Um grande docente com coragem e sempre certo, ninguem discute com ele, ele sempre perfeito.">{{ old("description") }}</textarea>
+            <textarea type="text" class="form-control @error(" description") is-invalid @enderror" id="description" name="description" placeholder="">{{ old("description") }}</textarea>
 
             @error("description")
             <span class="invalid-feedback" role="alert"> <strong> {{ $message }}</strong></span>
@@ -151,49 +159,54 @@
 </div>
 @endsection
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function() {
     var uploadCrop = new Croppie(document.getElementById('upload-demo'), {
-        viewport: { width: 200, height: 200 },
-        boundary: { width: 300, height: 300 },
-        showZoomer: true,
-        enableResize: false,
-        enableOrientation: true,
+      viewport: {
+        width: 200,
+        height: 200
+      },
+      boundary: {
+        width: 300,
+        height: 300
+      },
+      showZoomer: true,
+      enableResize: false,
+      enableOrientation: true,
     });
 
     function readFile(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                uploadCrop.bind({
-                    url: e.target.result,
-                });
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-        else {
-            console.log("Sorry - you're browser doesn't support the FileReader API");
-        }
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          uploadCrop.bind({
+            url: e.target.result,
+          });
+        };
+        reader.readAsDataURL(input.files[0]);
+      } else {
+        console.log("Sorry - you're browser doesn't support the FileReader API");
+      }
     }
 
     document.getElementById('upload').addEventListener('change', function() {
-        readFile(this);
+      readFile(this);
     });
 
     document.getElementById('upload-result').addEventListener('click', function(ev) {
-        uploadCrop.result({
-            type: 'canvas',
-            size: 'viewport',
-        }).then(function(blob) {
-            // Here, you would typically send the blob to your server with an AJAX request.
-            // For demonstration, we'll just log it to the console.
-            console.log(blob);
-            // Example: AJAX request to server (pseudo code)
-            // var formData = new FormData();
-            // formData.append('image', blob);
-            // fetch('/upload-image', { method: 'POST', body: formData });
-        });
+      uploadCrop.result({
+        type: 'canvas',
+        size: 'viewport',
+      }).then(function(blob) {
+        // Here, you would typically send the blob to your server with an AJAX request.
+        // For demonstration, we'll just log it to the console.
+        console.log(blob);
+        // Example: AJAX request to server (pseudo code)
+        // var formData = new FormData();
+        // formData.append('image', blob);
+        // fetch('/upload-image', { method: 'POST', body: formData });
+      });
     });
-});
+  });
 </script>
 
 @endhasrole

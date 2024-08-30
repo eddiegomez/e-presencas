@@ -22,6 +22,7 @@ class ParticipantService
    */
   public function createParticipant(
     string $name,
+    string $last_name,
     string $email,
     string $description,
     string $phoneNumber,
@@ -37,6 +38,7 @@ class ParticipantService
     $participant = new Participant();
 
     $participant->name = $name;
+    $participant->last_name = $last_name;
     $participant->email = $email;
     $participant->description = $description;
     $participant->phone_number = $phoneNumber;

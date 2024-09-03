@@ -29,7 +29,7 @@
     <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
       <ol class="breadcrumb fs-1">
         <h4 class="breadcrumb-item text-muted fs-4"><a href="{{ route("participant.index") }}" class="text-muted">Participante</a></h4>
-        <h4 class="breadcrumb-item active text-dark text-capitalize" aria-current="page">{{ $participant->name }}</h4>
+        <h4 class="breadcrumb-item active text-dark text-capitalize" aria-current="page">{{ $participant->name }} {{ $participant->last_name }}</h4>
       </ol>
     </nav>
   </div>
@@ -61,7 +61,15 @@
           <div class="col-md-10">
             <h5>
               <span class="text-muted">Nome do Participante: </span>
-              <span>{{ $participant->name }}</span>
+              <span>{{ $participant->name }} {{ $participant->last_name }}</span>
+            </h5>
+            <h5>
+              <span class="text-muted">Instituição: </span>
+              <span>{{ $participant->nome_org }}</span>
+            </h5>
+            <h5>
+              <span class="text-muted">Website: </span>
+              <a href="{{ $participant->website }}"><span>{{ $participant->website }}</span></a>
             </h5>
             <h5>
               <span class="text-muted">Grau: </span>
@@ -98,6 +106,8 @@
         <p class="text-muted">
           {{ $participant->description }}
         <p>
+
+        <p>http://127.0.0.1:8000/showBusinessCard/{{base64_encode($participant->email)}}</p>
       </div>
     </div>
     <div id="displayQrcode" class="modal fade" role=dialog>
@@ -106,7 +116,7 @@
         <div class="modal-content">
           <div class="modal-body">
             <center>
-              <h3 class="mt-5 mb-3">{{$participant->name}}</h3>
+              <h3 class="mt-5 mb-3">{{$participant->name}} {{$participant->last_name}}</h3>
               @if ($participant->profile_url)
               {{-- Participant has a profile image --}}
               <img class="mt-2" data-target="#displayQrcode" data-toggle="modal" src="data:image/png;base64,{{base64_encode(QrCode::color(0, 0, 0)->style('round')->eye('circle')->size(412)->format('png')->merge('/storage/app/public/'.$participant->profile_url ,0.4,)->errorCorrection('H')->generate('https://assiduidade.inage.gov.mz/showBusinessCard/'. base64_encode($participant->email)))}}">
@@ -155,10 +165,10 @@
         </thead>
 
         <tbody>
-          @foreach ($participant->events as $event)
+          <!-- @foreach ($events  as $event)
           <tr>
             <td>
-              <img src="{{ asset("storage/qrcodes/" . $event->pivot->qr_url . ".svg") }}" width="40" alt="">
+              <img src="{{ asset("storage/qrcodes/" . $event  ->name . ".svg") }}" width="40" alt="">
             </td>
 
             <td>
@@ -167,45 +177,18 @@
               </a>
             </td>
             <td>
-              @switch($event->pivot->participant_type_id)
-              @case(1)
-              Convidado
-              @break
-
-              @case(2)
-              Orador
-              @break
-
-              @default
-              {{ null }}
-              @endswitch
             </td>
             <td>
               <span class="badge py-1 font-size-13
-                      @if ($event->pivot->status == " Presente") badge-soft-success @elseif ($event->pivot->status == "Em espera") badge-soft-warning
-                @elseif ($event->pivot->status == "Confirmada") badge-soft-info
-                @elseif ($event->pivot->status == "Participou") badge-soft-success
-                @elseif ($event->pivot->status == "Rejeitada")badge-soft-warning
-                @elseif ($event->pivot->status == "Ausente") badge-soft-danger @endif
-                ">
-                {{ $event->pivot->status }}
+
               </span>
             </td>
             <td class="text-right">
-              @if ($event->organization_id == $user->organization_id)
-              <a class="btn btn-info p-1 mr-1 participant_modal text-white" href="#" onclick='updateParticipantTypeModal({{ $event->id }}, @json($participant->id), @json($participant->name), @json($event->pivot->participant_type_id) )'>
-                <i class='uil uil-edit-alt'></i>
-              </a>
-              <a class="btn btn-danger p-1 participant_modal text-white" href="#" onclick='showDeleteModal({{ $participant->id }},@json($participant->name), {{ $event->id }},@json($event->name))'>
-                <i class='uil uil-trash-alt'></i>
-              </a>
-              @else
-              <span class="badge py-1 font-size-13 badge-soft-warning">---</span>
-              @endif
+  
             </td>
           <tr>
             @endforeach
-        </tbody>
+        </tbody>-->
       </table>
 
     </div> <!-- end card body-->
@@ -336,9 +319,7 @@
             <select class="form-control inline_directive custom-select" name="id" id="id" required>
               <option selected hidden value="">Selecione um evento</option>
               @foreach ($events as $event)
-              @if (!$participant->hasEvent($event->id))
-              <option value="{{ $event->id }}">{{ $event->name }}</option>
-              @endif
+
               @endforeach
             </select>
             @error("participant")

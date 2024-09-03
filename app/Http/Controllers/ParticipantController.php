@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;  
 
 class ParticipantController extends Controller
 {
@@ -98,7 +99,11 @@ class ParticipantController extends Controller
   public function show($id)
   {
     $user = Auth::user();
-    $participant = Participant::find($id);
+    $participant = DB::table('participants')
+    ->leftjoin('organization', 'organization.id', '=', 'participants.organization_id')
+    ->select('participants.*', 'organization.name as nome_org', 'organization.website')
+    ->where('participants.id', $id)
+    ->first();
     $events = Event::where('organization_id', $user->organization_id)->get();
     $participant_type = ParticipantType::all();
     return response(view('participants.single', compact('user', 'participant', 'events', 'participant_type')));
@@ -159,7 +164,11 @@ class ParticipantController extends Controller
   public function showBusinessCard($hashed_mail)
   {
     try {
-      $participant = Participant::where('email', base64_decode($hashed_mail))->first();
+      $participant = DB::table('participants')
+      ->leftjoin('organization', 'organization.id', '=', 'participants.organization_id')
+      ->select('participants.*', 'organization.name as nome_org', 'organization.website', 'organization.location')
+      ->where('participants.email', base64_decode($hashed_mail))
+      ->first();
       if ($participant != null) {
         return response(view("businessCard", compact("participant", "participant")));
       }

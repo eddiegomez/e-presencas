@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\Participant;
 use Exception;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Auth;
+use Ramsey\Uuid\Type\Integer;
 
 class ParticipantService
 {
@@ -44,6 +46,7 @@ class ParticipantService
     $participant->phone_number = $phoneNumber;
     $participant->degree = $degree;
     $participant->profile_url = $profile_url;
+    $participant->organization_id = Auth::user()->organization_id;
     $participant->save();
 
     return $participant;

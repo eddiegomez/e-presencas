@@ -56,7 +56,7 @@
             <span class="text-muted text-uppercase font-size-12 font-weight-bold">
               {{ $participant->degree }}
             </span>
-            <h2 class="mb-0">{{ $participant->name }}</h2>
+            <h2 class="mb-0">{{ $participant->name }} {{ $participant->last_name }}</h2>
           </div>
           <div class="align-self-center">
             <div id="today-revenue-chart" class="apex-charts"></div>
@@ -95,7 +95,7 @@
           </div>
           <div class="form-group">
             <label for="last_name">Apelido</label>
-            <input type="text" class="form-control @error(" last_name") is-invalid @enderror" id="last_name" name="last_name" aria-describedby="last_name" placeholder="Apelido">
+            <input type="text" class="form-control @error("last_name") is-invalid @enderror" id="last_name" name="last_name" aria-describedby="last_name" placeholder="Apelido" value="{{ old("last_name") }}">
 
             @error("last_name")
             <span class="invalid-feedback" role="alert"> <strong> {{ $message }}</strong></span>

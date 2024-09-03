@@ -108,8 +108,12 @@
                   <td style="padding: 0rem; padding-top: 0.75rem; padding-bottom: 0.75rem"><a href="mailto:{{$participant->email}}" style="font-weight: 600; color: #1f2e2e">{{$participant->email}}</a></td>
                 </tr>
                 <tr>
+                  <th scope="row" style="padding: 0.75rem; padding-left: 0rem"><i data-feather="home"></i></th>
+                  <td style="padding: 0rem; padding-top: 0.75rem; padding-bottom: 0.75rem"><a href="{{$participant->website}}" style="font-weight: 600; color: #1f2e2e">{{$participant->nome_org}}</a></td>
+                </tr>
+                <tr>
                   <th scope="row" style="padding: 0.75rem; padding-left: 0rem"><i data-feather="globe"></i></th>
-                  <td style="padding: 0rem; padding-top: 0.75rem; padding-bottom: 0.75rem"><a href="https://www.inage.gov.mz" style="font-weight: 600; color: #1f2e2e">inage.gov.mz</a></td>
+                  <td style="padding: 0rem; padding-top: 0.75rem; padding-bottom: 0.75rem"><a href="{{$participant->website}}" style="font-weight: 600; color: #1f2e2e">{{$participant->website}}</a></td>
                 </tr>
               </tbody>
             </table>
@@ -120,7 +124,8 @@
           <div id="floatingWindow" class="floating-window" style="border-top-left-radius: 30px; border-top-right-radius: 30px;">
             <div class="floating-window-content">
               <span class="close" onclick="closeFloatingWindow()">&times;</span>
-              <a href="data:text/vcard;charset=utf-8,BEGIN:VCARD%0AVERSION:3.0%0AN:{{$participant->last_name}};{{$participant->name}};;;%0AFN:{{$participant->name}}%0AORG:INAGE%0ATITLE:{{$participant->degree}}%0ATEL:{{$participant->phone_number}}%0AEMAIL:{{$participant->email}}%0AEND:VCARD" download="{{$participant->name}}{{$participant->last_name}}.vcf" class="btn btn-primary mt-3 border-shadow" style="font-weight: 700; font-size: 1.375rem; background-color: #669999; border-color: #669999; width:100%; border-radius: 30px;">
+              <a href="data:text/vcard;charset=utf-8,BEGIN:VCARD%0AVERSION:3.0%0AN:{{$participant->last_name}};{{$participant->name}};;;%0AFN:{{$participant->name}}%0AORG:{{$participant->nome_org}}%0ATITLE:{{$participant->degree}}%0ATEL:{{$participant->phone_number}}%0AEMAIL:{{$participant->email}}%0AURL:{{$participant->website}}%0AADR:;;%0ANOTE:{{$participant->description}}%0AADR:;;{{$participant->location}};%0AEND:VCARD"
+                download="{{$participant->name}}{{$participant->last_name}}.vcf" class=" btn btn-primary mt-3 border-shadow" style="font-weight: 700; font-size: 1.375rem; background-color: #669999; border-color: #669999; width:100%; border-radius: 30px;">
                 <i data-feather="user-plus"></i>
                 <span> Guardar nos contactos </span>
               </a>
@@ -153,7 +158,6 @@
 </div>
 
 <script>
-
   function downloadVCard() {
     const email = "{{$participant->email}}";
     const phone = "{{$participant->phone_number}}";

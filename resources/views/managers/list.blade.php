@@ -31,7 +31,7 @@
     <div class="col-sm-8 col-xl-6">
       <div class="float-sm-right mt-3 mt-sm-0">
         <button type="button" class="btn btn-outline-info" data-toggle="modal" data-target="#createManagerModal">
-          <i class='uil uil-upload-alt mr-1'></i>Criar Gestor
+          <i class='uil uil-upload-alt mr-1'></i>Registar Gestor
         </button>
       </div>
     </div>
@@ -183,7 +183,7 @@
 
               <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-success">Criar</button>
+                <button type="submit" class="btn btn-success">Registar</button>
 
               </div>
             </form>

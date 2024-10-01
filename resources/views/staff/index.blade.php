@@ -61,8 +61,8 @@
                     <th scope="col">Nome</th>
                     <th scope="col">Email</th>
                     <th scope="col">Telefone</th>
-                    <th scope="col">Status da Conta</th>
-                    <th scope="col" class="text-right">Action</th>
+                    <th scope="col">Estado da Conta</th>
+                    <th scope="col" class="text-right">Acções</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -126,7 +126,7 @@
               <div class="form-group">
                 <label for="name">Nome</label>
                 <input type="text" class="form-control" id="name" name="name" aria-describedby="emailHelp"
-                  placeholder="Exemplo: Martinha">
+                  placeholder="Nome completo">
                 @error("name")
                   <span class="text-danger">{{ $message }}</span>
                 @enderror
@@ -136,7 +136,7 @@
               <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" class="form-control" id="email" name="email"
-                  placeholder="Exemplo: John.doe@inage.gov.mz">
+                  placeholder="email@dominio.com">
                 @error("email")
                   <span class="text-danger">{{ $message }}</span>
                 @enderror
@@ -149,7 +149,7 @@
                   <div class="input-group-prepend">
                     <div class="input-group-text">+258</div>
                   </div>
-                  <input type="text" class="form-control" id="phone" name="phone" placeholder="84 000 0000"
+                  <input type="text" class="form-control" id="phone" name="phone" placeholder=""
                     autocomplete="off" value="{{ old("phone") }}">
                 </div>
                 @error("phone")

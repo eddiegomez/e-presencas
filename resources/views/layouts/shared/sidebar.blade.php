@@ -18,17 +18,17 @@
       <div class="dropdown-menu profile-dropdown">
         <a href="/pages/profile" class="dropdown-item notify-item">
           <i data-feather="user" class="icon-dual icon-xs mr-2"></i>
-          <span>My Account</span>
+          <span>Perfil</span>
         </a>
 
         <a href="javascript:void(0);" class="dropdown-item notify-item">
           <i data-feather="settings" class="icon-dual icon-xs mr-2"></i>
-          <span>Settings</span>
+          <span>Definições</span>
         </a>
 
         <a href="javascript:void(0);" class="dropdown-item notify-item">
           <i data-feather="help-circle" class="icon-dual icon-xs mr-2"></i>
-          <span>Support</span>
+          <span>Suporte</span>
         </a>
 
         <div class="dropdown-divider"></div>
@@ -37,7 +37,7 @@
           onclick="event.preventDefault();
                           document.getElementById('logout-form').submit();">
           <i data-feather="log-out" class="icon-dual icon-xs mr-2"></i>
-          <span>Logout</span>
+          <span>Terminar sessão</span>
         </a>
         <form id="logout-form" action="{{ route("logout") }}" method="POST" class="d-none">
           @csrf

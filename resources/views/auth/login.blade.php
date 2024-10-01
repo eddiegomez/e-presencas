@@ -11,13 +11,13 @@
                 <div class="col-md-6 p-5">
                   <div class="mx-auto mb-5 text-center">
                     <a href="/">
-                      <img src="assets/images/logo.jpeg" alt="" height="80" />
+                      <img src="assets/images/logo.png" alt="" height="80" />
                       {{-- <h3 class="d-inline align-middle ml-1 text-logo">Shreyu</h3> --}}
                     </a>
                   </div>
 
                   <h6 class="h5 mb-0 mt-4">Seja bem vindo!</h6>
-                  <p class="text-muted mt-1 mb-4">Insira as suas credenciais para ter acesso aos dados que tem acesso.</p>
+                  <p class="text-muted mt-1 mb-4">Insira as suas credenciais para ter acesso ao seu perfil.</p>
 
                   @if (session("error"))
                     <div class="alert alert-danger">{{ session("error") }}</div>
@@ -40,7 +40,7 @@
                           </span>
                         </div>
                         <input type="email" class="form-control @if ($errors->has("email")) is-invalid @endif"
-                          id="email" placeholder="hello@inage.gov.mz" name="email" value="{{ old("email") }}" />
+                          id="email" placeholder="email@dominio.gov.mz" name="email" value="{{ old("email") }}" />
 
                         @if ($errors->has("email"))
                           <span class="invalid-feedback" role="alert">
@@ -105,7 +105,7 @@
                       <p class="font-size-24 font-weight-bold text-white mb-1">Individualmente somos uma gota, juntos
                         somos um oceano!</p>
                       {{-- <p class="lead">"It's a elegent templete. I love it very much!"</p> --}}
-                      <p>- Eng. Boa</p>
+                      <!--<p>- Eng. Boa</p>-->
                     </div>
                   </div>
                 </div>

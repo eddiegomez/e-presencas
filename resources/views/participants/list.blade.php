@@ -110,7 +110,7 @@
           </div>
           {{-- Phone number input --}}
           <div class="form-group">
-            <label for="phone_number" class="col-form-label">Numero de Telefone</label>
+            <label for="phone_number" class="col-form-label">Número de Telefone</label>
             <div class="input-group mb-2">
               <div class="input-group-prepend">
                 <div class="input-group-text">+258</div>
@@ -124,7 +124,7 @@
 
           {{-- Degree Input --}}
           <div class="form-group">
-            <label for="degree">Grau (Posicao ou Profissão)</label>
+            <label for="degree">Grau (Posição ou Profissão)</label>
             <input type="text" class="form-control @error(" degree") is-invalid @enderror" id="degree" name="degree" placeholder="" value="{{ old("degree") }}">
 
             @error("degree")
@@ -140,7 +140,7 @@
 
           {{-- Description Input --}}
           <div class="form-group">
-            <label for="description">Descricao do participante</label>
+            <label for="description">Descrição do participante</label>
             <textarea type="text" class="form-control @error(" description") is-invalid @enderror" id="description" name="description" placeholder="">{{ old("description") }}</textarea>
 
             @error("description")

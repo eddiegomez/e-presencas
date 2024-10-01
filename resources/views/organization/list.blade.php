@@ -122,7 +122,7 @@
           {{-- Modal Header --}}
           <div class="modal-header">
             <h5 class="modal-title text-capitalize" id="createManagerModalLabel">
-              Criar uma nova instituicao
+              Criar uma nova instituição
             </h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
           </div>
@@ -135,7 +135,7 @@
               <div class="form-group">
                 <label for="name" class="col-lg-8 col-form-label">Nome</label>
                 <input type="text" class="form-control" name="name" id="name" value="{{ old("name") }}"
-                  placeholder="Example: instituicao das piadas" autocomplete="off">
+                  placeholder="SIGLA - Nome da instituição" autocomplete="off">
                 @error("name")
                   <span class="text-danger">{{ $message }}</span>
                 @enderror
@@ -146,7 +146,7 @@
               <div class="form-group">
                 <label for="email" class="col-lg-8 col-form-label">Email</label>
                 <input type="email" name="email" id="email" class="form-control" value="{{ old("email") }}"
-                  placeholder="info@instituicao.gov.mz" autocomplete="off" required>
+                  placeholder="email@instituicao.gov.mz" autocomplete="off" required>
                 @error("email")
                   <span class="text-danger">{{ $message }}</span>
                 @enderror
@@ -159,7 +159,7 @@
                     <div class="input-group-prepend">
                       <div class="input-group-text">+258</div>
                     </div>
-                    <input type="text" class="form-control" id="phone" name="phone" placeholder="84 000 0000"
+                    <input type="text" class="form-control" id="phone" name="phone" placeholder="+258"
                       autocomplete="off" value="{{ old("phone") }}">
                   </div>
                   @error("phone")
@@ -171,7 +171,7 @@
               <div class="form-group">
                 <label for="location" class="col-lg-8 col-form-label">Location</label>
                 <input type="text" class="form-control" name="location" id="location"
-                  value="{{ old("location") }}" placeholder="Example: Av Vladimir Lenine esquina com 24 de Julho"
+                  value="{{ old("location") }}" placeholder="Av./Rua, Nº"
                   autocomplete="off" required>
                 @error("location")
                   <span class="text-danger">{{ $message }}</span>
@@ -182,7 +182,7 @@
               <div class="form-group">
                 <label for="website" class="col-lg-8 col-form-label">Website</label>
                 <input type="text" class="form-control" name="website" id="website" value="{{ old("website") }}"
-                  placeholder="Example: www.google.com" autocomplete="off" required>
+                  placeholder="url" autocomplete="off" required>
                 @error("website")
                   <span class="text-danger">{{ $message }}</span>
                 @enderror

@@ -121,7 +121,7 @@
           {{-- Modal Header --}}
           <div class="modal-header">
             <h5 class="modal-title text-capitalize" id="createManagerModalLabel">
-              Criar um novo gestor
+              Registar Gestor
             </h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
           </div>
@@ -133,7 +133,7 @@
               {{-- Name --}}
               <div class="form-group">
                 <label for="name" class="col-lg-8 col-form-label">Nome</label>
-                <input type="text" class="form-control" name="name" id="name" placeholder="Example: John Doe"
+                <input type="text" class="form-control" name="name" id="name" placeholder="Nome completo"
                   autocomplete="off" value="{{ old("name") }}" required>
               </div>
               @error("name")
@@ -143,7 +143,7 @@
               {{-- Email --}}
               <div class="form-group">
                 <label for="email" class="col-lg-8 col-form-label">Email</label>
-                <input type="email" name="email" id="email" class="form-control" placeholder="john.doe@gmail.com"
+                <input type="email" name="email" id="email" class="form-control" placeholder="email@dominio.gov.mz"
                   autocomplete="off" value="{{ old("email") }}" required>
               </div>
               @error("email")
@@ -157,7 +157,7 @@
                   <div class="input-group-prepend">
                     <div class="input-group-text">+258</div>
                   </div>
-                  <input type="text" class="form-control" id="phone" name="phone" placeholder="84 000 0000"
+                  <input type="text" class="form-control" id="phone" name="phone" placeholder=""
                     value="{{ old("phone") }}" required>
                 </div>
               </div>
@@ -170,7 +170,7 @@
                 <label for="organization" class="col-lg-8 col-form-label">{{ __("Instituição") }}</label>
                 <select type="text" name="organization" id="organization" class="form-control" required
                   placeholder="john.doe@gmail.com" autocomplete="off" value="{{ old("organization") }}">
-                  <option disabled selected>Escolha uma Instituicao</option>
+                  <option disabled selected>Selecione a Instituição</option>
                   @foreach ($organizations as $organization)
                     <option value="{{ $organization->id }}">{{ $organization->name }} ({{ $organization->location }})
                     </option>

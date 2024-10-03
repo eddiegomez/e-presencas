@@ -54,7 +54,7 @@
         @if($event->banner_url == null)
         <img class="card-img-top" src="assets/images/default.png" style="height: 300px;">
         @else
-        <img class="card-img-top" src="{{ asset('storage/' . $event->banner_url) }}" style="height: 300px;">
+        <img class="card-img-top" src="{{ asset('storage/' . $event->banner_url) }}" style="height: 300px;width: 100%; object-fit: cover;">
         @endif
         <div class="card-body">
           <h5 class="card-title">{{ $event->name }}</h5>

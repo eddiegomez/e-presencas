@@ -42,7 +42,7 @@ class ParticipantController extends Controller
    */
   public function index()
   {
-    $participants = Participant::all();
+    $participants = Participant::where('organization_id', Auth::user()->organization_id)->get();
 
     return response(view("participants.list", compact("participants")));
   }

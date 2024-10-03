@@ -30,7 +30,7 @@ class StaffController extends Controller
   public function index()
   {
     $user = Auth::user();
-    $protocolos = User::role('protocolo')->get();
+    $protocolos = User::role('protocolo')->where('organization_id', Auth::user()->organization_id)->get();
     return response(view('staff.index', compact('user', 'protocolos')));
   }
 

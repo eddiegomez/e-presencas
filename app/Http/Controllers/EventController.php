@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View as View;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Controllers\ParticipantController;
+use App\Models\Organization;
 use Illuminate\Http\RedirectResponse;
 
 class EventController extends Controller
@@ -51,7 +52,7 @@ class EventController extends Controller
    */
   public function index()
   {
-    $events = Event::all();
+    $events = Event::where('organization_id', Auth::user()->organization_id)->get();
     $addresses = Address::all();
 
     return response(view('events.list', compact('events', 'addresses')));

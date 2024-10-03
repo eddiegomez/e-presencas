@@ -463,7 +463,7 @@
               <option value="">Selecione um participante</option>
               @foreach ($participants as $participant)
               @if (!$participant->hasEvent($event->id))
-              <option value="{{ $participant->id }}">{{ $participant->name }}</option>
+              <option value="{{ $participant->id }}">{{ $participant->name }} - {{ $participant->email }}</option>
               @endif
               @endforeach
               <option value="new">Outro</option>

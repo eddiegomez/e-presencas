@@ -26,7 +26,7 @@ class ParticipantController extends Controller
     "name.required" => "O participante deve ter um nome.",
     "name.string" => "O nome do participante deve ser um texto.",
     "name.regex" => "O nome do participante não pode conter numeros",
-    "last_name.regex" => "O spbrenome do participante não pode conter numeros",
+    "last_name.regex" => "O sobrenome do participante não pode conter numeros",
     "email.required" => "O paricipante deve ter um email",
     "email.email" => "O email do inserido não é valido.",
     "degree.string" => "O grau deve ser um texto",

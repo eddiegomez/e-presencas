@@ -275,7 +275,7 @@ class InviteController extends Controller
   }
 
 
-  private function generateQrcode(int $eventId,  int $participantId): bool|string
+  private function generateQrcode(int $eventId,  int $participantId)
   {
     $encodedEvent = base64_encode($eventId);
     $encodedParticipant = base64_encode($participantId);

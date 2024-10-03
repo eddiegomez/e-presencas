@@ -204,7 +204,7 @@
                 <img src="{{ asset("storage/qrcodes/" . $participant->pivot->qr_url . ".png") }}" width="40"
                   alt="">
               </td>
-              <td>{{ $participant->name }}</td>
+              <td>{{ $participant->name }} {{ $participant->last_name }}</td>
               <td>
                 @switch($participant->pivot->participant_type_id)
                 @case(1)
@@ -223,12 +223,12 @@
               <td>{{ $participant->phone_number }}</td>
               <td class="text-right">
                 <a class="btn btn-secondary p-1" href="" data-toggle="modal"
-                  onclick='editParticipantModal({{ $participant->id }}, @json($participant->name), @json($participant->pivot->participant_type_id), "{{ route("participant.show", $participant->id) }}")'>
+                  onclick='editParticipantModal({{ $participant->id }}, @json($participant->name." ".$participant->last_name), @json($participant->pivot->participant_type_id), "{{ route("participant.show", $participant->id) }}")'>
                   <i class='uil uil-edit-alt'></i>
                 </a>
 
                 <a class="btn btn-danger p-1" data-toggle="modal" href=""
-                  onclick='deleteParticipantModal({{ $participant->id }}, @json($participant->name))'>
+                  onclick='deleteParticipantModal({{ $participant->id }}, @json($participant->name." ".$participant->last_name))'>
                   <i class='uil uil-trash-alt'></i>
                 </a>
               </td>
@@ -252,7 +252,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
       </div>
       <div class="modal-body">
-        Apagar este evento significa eliminar toda lista de participantes e outros dados relacionados ao mesmo.
+        Apagar este evento significa remover toda lista de participantes e outros dados relacionados ao mesmo.
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -463,7 +463,7 @@
               <option value="">Selecione um participante</option>
               @foreach ($participants as $participant)
               @if (!$participant->hasEvent($event->id))
-              <option value="{{ $participant->id }}">{{ $participant->name }} - {{ $participant->email }}</option>
+              <option value="{{ $participant->id }}">{{ $participant->name }} {{ $participant->last_name }} - {{ $participant->email }}</option>
               @endif
               @endforeach
               <option value="new">Outro</option>
@@ -559,12 +559,14 @@
     <div class="modal-content">
       {{-- Modal Header --}}
       <div class="modal-header">
-        <h5 class="modal-title text-capitalize" id="EditParticipantModalLabel"></h5>
+        <h5 class="modal-title" id="EditParticipantModalLabel"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
       </div>
       {{-- Modal Body --}}
       <div class="modal-body">
+        @if($participant->organization_id != Auth::user()->organization_id)
         <p class="my-1"><a href="" id="participantInfo">Mudar informações do participante!</a></p>
+        @endif
         <form action="{{ route("invite.update", ["eventId" => $event->id]) }}" method="POST"
           id="updateParticipantForm">
           @csrf
@@ -627,8 +629,7 @@
 
 
   function editParticipantModal(id, name, type, participantInfoUrl) {
-    document.getElementById('EditParticipantModalLabel').innerHTML = "Editar o tipo do participante " + name;
-    document.getElementById('participantInfo').href = participantInfoUrl;
+    document.getElementById('EditParticipantModalLabel').innerHTML = "Alterar o tipo do participante " + name;
     document.getElementById('Etype').value = type;
     document.getElementById('Eparticipant').value = id;
     $('#EditParticipantModal').modal('show');

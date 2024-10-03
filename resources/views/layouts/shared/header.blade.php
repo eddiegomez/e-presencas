@@ -4,7 +4,6 @@
     <!-- LOGO -->
     <a href="/" class="navbar-brand mr-0 mr-md-2 logo">
       <span class="logo-lg">
-        <img src="{{ URL::asset("assets/images/logo.jpeg") }}" alt="" height="40" />
         <span class="d-inline h5 ml-1 text-success">e-Presencas</span>
       </span>
       <span class="logo-sm">

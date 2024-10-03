@@ -32,7 +32,7 @@
           <div class="card-body p-0">
             <div class="media p-3">
               <div class="media-body">
-                <span class="text-muted text-uppercase font-size-12 font-weight-bold">{{ __("Organizações") }}</span>
+                <span class="text-muted text-uppercase font-size-12 font-weight-bold">{{ __("Instituições") }}</span>
                 <h2 class="mb-0">{{ $organizations }}</h2>
               </div>
             </div>
@@ -45,7 +45,7 @@
           <div class="card-body p-0">
             <div class="media p-3">
               <div class="media-body">
-                <span class="text-muted text-uppercase font-size-12 font-weight-bold">Usuarios</span>
+                <span class="text-muted text-uppercase font-size-12 font-weight-bold">Utilizadores</span>
                 <h2 class="mb-0">{{ $users }}</h2>
               </div>
             </div>

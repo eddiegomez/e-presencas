@@ -1,5 +1,5 @@
 <ul class="metismenu" id="menu-bar">
-  <li class="menu-title">Navigation</li>
+  <li class="menu-title">Navegador</li>
 
   <li>
     <a href="/dashboard">

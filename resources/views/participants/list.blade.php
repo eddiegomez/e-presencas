@@ -57,6 +57,7 @@
               {{ $participant->degree }}
             </span>
             <h2 class="mb-0">{{ $participant->name }} {{ $participant->last_name }}</h2>
+            <h6 class="mb-0 text-muted">{{ $participant->email }}</h6>
           </div>
           <div class="align-self-center">
             <div id="today-revenue-chart" class="apex-charts"></div>

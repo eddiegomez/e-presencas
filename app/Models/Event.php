@@ -22,7 +22,8 @@ class Event extends Model
     'end_date',
     'start_time',
     'end_time',
-    'organization_id'
+    'organization_id',
+    'description'
   ];
 
   public $timestamps = true;

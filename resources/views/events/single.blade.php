@@ -68,62 +68,72 @@
         </h4>
       </div>
       {{-- Starting Date --}}
-      <div class="col-6 mb-1">
+      <div class="col-3 mb-1">
         <span class="font-weight-bold text-secondary">
-          Data de Inicio
+          Data de Inicio:
         </span>
       </div>
-      <div class="col-6">
+      <div class="col-9">
         <span>
           {{ $event->start_date }}
         </span>
       </div>
       {{-- Finishing Date --}}
-      <div class="col-6 mb-1">
+      <div class="col-3 mb-1">
         <span class="font-weight-bold text-secondary">
-          Data de Fim
+          Data de Fim:
         </span>
       </div>
-      <div class="col-6">
+      <div class="col-9">
         <span>
           {{ $event->end_date }}
         </span>
       </div>
       {{-- Starting Time --}}
-      <div class="col-6 mb-1">
+      <div class="col-3 mb-1">
         <span class="font-weight-bold text-secondary">
-          Hora de Inicio
+          Hora de Inicio:
         </span>
       </div>
-      <div class="col-6">
+      <div class="col-9">
         <span>
           {{ date("H:i", strtotime($event->start_time)) }}
         </span>
       </div>
       {{-- Finishing Time --}}
-      <div class="col-6 mb-1">
+      <div class="col-3 mb-1">
         <span class="font-weight-bold text-secondary">
-          Hora de Fim
+          Hora de Fim:
         </span>
       </div>
-      <div class="col-6">
+      <div class="col-9">
         <span>
           {{ date("H:i", strtotime($event->end_time)) }}
         </span>
       </div>
       {{-- Finishing Time --}}
-      <div class="col-6 mb-1">
+      <div class="col-3 mb-1">
         <span class="font-weight-bold text-secondary">
-          Localização
+          Localização:
         </span>
       </div>
-      <div class="col-12">
+      <div class="col-9">
         <span>
           @if ($event->addresses[0]->url)
           <a href="{{ $event->addresses[0]->url }}" target="_blank">{{ $event->addresses[0]->name }}</a>
           @else
           <span class="ml-1">{{ $event->addresses[0]->name }}</span>
           @endif
+        </span>
+      </div>
+      <div class="col-3 mb-1">
+        <span class="font-weight-bold text-secondary">
+          Descrição:
+        </span>
+      </div>
+      <div class="col-12">
+        <span>
+          {{ $event->description }}
         </span>
       </div>
     </div>
@@ -142,7 +152,7 @@
       {{-- Schedules --}}
       <div class="col-12 text-center mt-4 ">
         @if ($event->schedules->count() == 0)
-        <span class="text-danger font-size-14">Ainda nao temos o programa deste evento!</span>
+        <span class="text-danger font-size-14">Nenhum programa anexado ao presente evento!</span>
         @endif
 
         @foreach ($event->schedules as $schedule)
@@ -323,16 +333,34 @@
             </div>
           </div>
 
-          <div class="form-group mb-3">
+          <!--<div class="form-group mb-3">
             <label for="banner">Escolha o banner</label>
             <div class="col-lg-10">
               <input type="file" accept="image/*" class="form-control" id="banner" name="banner"
-                value="{{ old("banner") }}">
+                value="{{$event->banner_url}}">
             </div>
             @error("banner")
             <span class="text-danger">{{ $message }}</span>
             @enderror
+          </div>-->
+
+          <div class="form-group">
+            <label for="banner">Banner actual</label>
+
+            <!-- Display the current banner image if it exists -->
+            @if($event->banner_url)
+            <div class="mb-3">
+              <img src="{{ asset("storage/" . $event->banner_url) }}" alt="Current Banner" class="img-fluid" style="max-width: 50px; height: auto;">
+            </div>
+            @endif
+            <!-- File input for uploading a new banner -->
+            <input type="file" accept="image/*" class="form-control" id="banner" name="banner">
+
+            @error("banner")
+            <span class="text-danger">{{ $message }}</span>
+            @enderror
           </div>
+
 
           <div class="form-group row">
             <label class="col-lg-6 col-form-label" for="address">Selecione a localizacao</label>
@@ -367,6 +395,15 @@
               <span class="text-danger">{{ $message }}</span>
               @enderror
             </div>
+          </div>
+
+          <div class="form-group">
+            <label for="name">Descrição</label>
+            <textarea class="form-control" id="description" name="description"
+              placeholder="Breve descrição do evento" required>{{ old('description', $event->description) }}</textarea>
+            @error("description")
+            <span class="text-danger">{{ $message }}</span>
+            @enderror
           </div>
 
           <div class="modal-footer">
@@ -440,7 +477,7 @@
 
 {{-- Add participant --}}
 <div id="addParticipantModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-l">
     {{-- Modal Content --}}
     <div class="modal-content">
       {{-- Modal Header --}}

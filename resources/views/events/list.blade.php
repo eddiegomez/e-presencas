@@ -58,8 +58,8 @@
         @endif
         <div class="card-body">
           <h5 class="card-title">{{ $event->name }}</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-          <a href="#" class="btn btn-primary">Detalhes</a>
+          <p class="card-text">{{ \Illuminate\Support\Str::limit($event->description, 100, '...') }}</p>
+          <a onClick='EventDetailsModal({{ $event->id }} , "{{ $event->name }}", @json($event->start_date), @json($event->end_date), "{{ date("H:i", strtotime($event->start_time)) }}", "{{ date("H:i", strtotime($event->end_time)) }}", @json($event->banner_url), @json($event->addresses[0]->name), "{{ route("event.show", $event->id) }}")' class="btn btn-primary" style="color: #fff">Detalhes</a>
         </div>
       </div>
   </div>
@@ -173,6 +173,14 @@
               <span class="text-danger">{{ $message }}</span>
               @enderror
             </div>
+          </div>
+          <div class="form-group">
+            <label for="name">Descrição</label>
+            <textarea class="form-control" id="description" name="description"
+              placeholder="Breve descrição do evento" required value="{{ old("description") }}"></textarea>
+            @error("description")
+            <span class="text-danger">{{ $message }}</span>
+            @enderror
           </div>
 
           <div class="modal-footer">

@@ -78,6 +78,7 @@ class EventController extends Controller
         'end_date' => ['required', 'date', 'date_format:Y-m-d', 'after_or_equal:start_date'],
         'start_time' => ['required', 'date_format:H:i'],
         'end_time' => ['required', 'date_format:H:i',],
+        'description' => ['required'],
       ], $this->InputCustomMessages);
     } catch (\Throwable $e) {
       throw $e;
@@ -116,6 +117,7 @@ class EventController extends Controller
     $event->end_date = $data['end_date'];
     $event->start_time = $data['start_time'];
     $event->end_time = $data['end_time'];
+    $event->description = $data['description'];
     $event->banner_url = $bannerUrl;
     $event->organization_id = Auth::user()->organization_id;
     $event->save();
@@ -144,7 +146,6 @@ class EventController extends Controller
     $addresses = Address::all();
     $participants = Participant::all();
     $participant_type = ParticipantType::all();
-
     return view('events.single', compact('event', 'participants', 'participant_type', 'addresses'));
   }
 

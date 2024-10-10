@@ -51,11 +51,11 @@ class sendInvite extends Notification
     $participant = $this->participant;
     return (new MailMessage)
       ->subject("Convite para " . $event->name)
-      ->greeting("Saudacoes " . $participant->name)
-      ->line("Viemos por este meio convidar o ilustre" . $participant->name . "para o evento" . $event->name)
+      ->greeting("Saudações " . $participant->name)
+      ->line("Foi convidado a participar do evento " . $event->name)
       ->line("O evento ira decorrer pelas " . date("H:i", strtotime($event->start_time)) . " até às " . date("H:i", strtotime($event->end_time)) . " do dia " . $event->start_date)
-      ->line("Use os botoes abaixo para actualizar o seu convite!")
-      ->action("Confirme a sua presenca", route("invite.acceptInvite", ["encryptedevent" => base64_encode($event->id), "encryptedparticipant" => base64_encode($participant->id)]))
+      ->line("Clique no botão abaixo para confirmar sua presença.")
+      ->action("Confirmar presença", route("invite.acceptInvite", ["encryptedevent" => base64_encode($event->id), "encryptedparticipant" => base64_encode($participant->id)]))
       ->line("Após confirmar a sua presença receberá o QR Code de acesso ao evento!");
   }
 

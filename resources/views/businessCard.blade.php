@@ -60,9 +60,16 @@
 @section("content")
 <center>
   <div class="col-md-12 col-xl-3 mb-4 mt-5">
+    @auth
+    @if(Auth::user()->roles->contains('id', 3))
+    <button type="button" class="btn btn-warning mt-3 mb-3 border-shadow" style="border-radius: 80px; font-weight: 700; font-size: 1.375rem; ">Cancelar</button>
+    <button type="button" class="btn btn-success mt-3 mb-3 border-shadow" style="border-radius: 80px; font-weight: 700; font-size: 1.375rem;">Confirmar</button>
+    @endif
+    @endauth
     <!-- Trigger the modal with a button -->
     <div class="card" style="border-radius: 20px; box-shadow: 0 1px 5px 0 rgba(82, 93, 102, .25), 0 2px 8px 0 rgba(82, 93, 102, .15);">
       <div class="card-body">
+
         <div class="text-center mt-2">
           @if ($participant->profile_url)
           {{-- Participant has a profile image --}}

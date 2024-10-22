@@ -1,5 +1,24 @@
 @extends("layouts.vertical")
+<style>
+  .btn-with-icon {
+    position: relative;
+    padding: 10px 20px;
+    /* Adjust padding as needed */
+    display: inline-block;
+  }
 
+  .remove-icon {
+    position: relative;
+    top: -15px;
+    /* Adjust as needed */
+    right: -18px;
+    /* Adjust as needed */
+    font-size: 1.2rem;
+    /* Adjust size as needed */
+    color: white;
+    /* Change color as needed */
+  }
+</style>
 
 @section("css")
 <link href="{{ URL::asset("assets/libs/flatpickr/flatpickr.min.css") }}" rel="stylesheet" type="text/css" />
@@ -62,10 +81,16 @@
   <div class="col-12 col-md-6">
     <div class="row justify-content-between">
       {{-- Name of the event --}}
-      <div class="col-12 mb-2">
+      <div class="col-12 mb-1">
         <h4>
           {{ $event->name }}
         </h4>
+      </div>
+      {{-- Banner --}}
+      <div class="col-12 mb-1">
+        <div class="w-100 mx-auto border border-dark rounded"
+          style="height: 150px; background-image: url('{{ asset("storage/" . $event->banner_url) }}'); background-size: contain">
+        </div>
       </div>
       {{-- Starting Date --}}
       <div class="col-3 mb-1">
@@ -73,7 +98,7 @@
           Data de Inicio:
         </span>
       </div>
-      <div class="col-9">
+      <div class="col-9  mt-1">
         <span>
           {{ $event->start_date }}
         </span>
@@ -111,7 +136,7 @@
           {{ date("H:i", strtotime($event->end_time)) }}
         </span>
       </div>
-      {{-- Finishing Time --}}
+      {{-- Address --}}
       <div class="col-3 mb-1">
         <span class="font-weight-bold text-secondary">
           Localização:
@@ -126,6 +151,27 @@
           @endif
         </span>
       </div>
+      {{-- Agendas --}}
+      <div class="col-3 mb-1">
+        <span class="font-weight-bold text-secondary">
+          Programa(s):
+        </span>
+      </div>
+      <div class="col-9">
+        @if ($event->schedules->count() == 0)
+        <span class="text-danger font-size-14">Nenhum programa anexado ao presente evento!</span>
+        @endif
+
+        @foreach ($event->schedules as $schedule)
+        <a href="{{ asset('storage/schedules/' . $schedule->pdf_url) }}"
+          target="_blank" class="btn btn-secondary" style="margin-right: 10px">
+          {{ $schedule->name }}
+          <span class="uil uil-minus remove-icon btn-danger"
+            style="border-radius: 3rem"
+            onclick="showRemoveAgendaModal(event, {{ $schedule->id }})"></span>
+        </a>
+        @endforeach
+      </div>
       <div class="col-3 mb-1">
         <span class="font-weight-bold text-secondary">
           Descrição:
@@ -139,29 +185,59 @@
     </div>
   </div>
 
-  {{-- Event banner and schedules --}}
-  <div class="col-12 col-md-6">
+  {{-- Event Staff --}}
+  <div class="col-12 col-md-6 mt-5">
     <div class="row">
-      {{-- Banner --}}
-      <div class="col-12">
-        <div class="w-100 mx-auto border border-dark rounded"
-          style="height: 150px; background-image: url('{{ asset("storage/" . $event->banner_url) }}'); background-size: contain">
-        </div>
-      </div>
+      <div class="card" style="width:100%">
+        <div class="card-body">
+          <div class="d-flex">
+            <div class="col-sm-4 col-xl-6 p-0">
+              <h4>Protocolos</h4>
+            </div>
 
-      {{-- Schedules --}}
-      <div class="col-12 text-center mt-4 ">
-        @if ($event->schedules->count() == 0)
-        <span class="text-danger font-size-14">Nenhum programa anexado ao presente evento!</span>
-        @endif
+            <div class="col-sm-8 col-xl-6 mb-3 p-0">
+              <div class="float-sm-right mt-3 mt-sm-0">
+                <button type="button" class="btn btn-outline-secondary" data-toggle="modal"
+                  data-target="#addParticipantModal">
+                  <i class='uil uil-plus mr-1'></i>Adicionar
+                </button>
+              </div>
+            </div>
+          </div>
 
-        @foreach ($event->schedules as $schedule)
-        <a href="{{ asset("storage/schedules/" . $schedule->pdf_url) }}"
-          target="_blank" class="btn btn-secondary">{{ $schedule->name }}</a>
-        @endforeach
-      </div>
-    </div>
+          <table id="basic-datatable" class="table dt-responsive nowrap">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Celular</th>
+                <th class="text-right">Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              @foreach ($staffs as $staff)
+              <tr>
+                <td>{{ $staff->name }}</td>
+                <td>{{ $staff->email }}</td>
+                <td>{{ $staff->phone }}</td>
+                <td class="text-right">
+                  <a class="btn btn-danger p-1" data-toggle="modal" href=""
+                    onclick=''>
+                    <i class='uil uil-minus'></i>
+                  </a>
+                </td>
+              </tr>
+              @endforeach
+            </tbody>
+          </table>
+
+        </div> <!-- end card body-->
+      </div> <!-- end card -->
+    </div><!-- end col-->
+
   </div>
+</div>
 </div>
 
 {{-- Divider line --}}
@@ -705,5 +781,11 @@
       newLocationFields.style.display = 'none';
     }
   };
+
+  function showRemoveAgendaModal(event, schedule_id) {
+    event.preventDefault(); // Prevents default link behavior
+    event.stopPropagation(); // Stops the click event from bubbling up
+    window.alert(schedule_id);
+  }
 </script>
 @endsection

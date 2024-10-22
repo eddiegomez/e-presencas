@@ -171,6 +171,7 @@ class ParticipantController extends Controller
         ->select('participants.*', 'organization.name as nome_org', 'organization.website', 'organization.location')
         ->where('participants.email', base64_decode($hashed_mail))
         ->first();
+      $eventos = [];
       if (auth()->check() && Auth::user()->roles->contains('id', 3)) {
         $currentDateTime = Carbon::now(); // Get the current date and time
         $eventos = ProtocoloEvento::leftjoin('events', 'events.id', '=', 'protocolo_evento.evento_id')

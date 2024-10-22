@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Participant;
 use App\Models\ParticipantType;
+use App\Models\ProtocoloEvento;
 use App\Services\ParticipantService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;  
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class ParticipantController extends Controller
 {
@@ -100,10 +102,10 @@ class ParticipantController extends Controller
   {
     $user = Auth::user();
     $participant = DB::table('participants')
-    ->leftjoin('organization', 'organization.id', '=', 'participants.organization_id')
-    ->select('participants.*', 'organization.name as nome_org', 'organization.website')
-    ->where('participants.id', $id)
-    ->first();
+      ->leftjoin('organization', 'organization.id', '=', 'participants.organization_id')
+      ->select('participants.*', 'organization.name as nome_org', 'organization.website')
+      ->where('participants.id', $id)
+      ->first();
     $events = Event::where('organization_id', $user->organization_id)->get();
     $participant_type = ParticipantType::all();
     return response(view('participants.single', compact('user', 'participant', 'events', 'participant_type')));
@@ -165,12 +167,30 @@ class ParticipantController extends Controller
   {
     try {
       $participant = DB::table('participants')
-      ->leftjoin('organization', 'organization.id', '=', 'participants.organization_id')
-      ->select('participants.*', 'organization.name as nome_org', 'organization.website', 'organization.location')
-      ->where('participants.email', base64_decode($hashed_mail))
-      ->first();
+        ->leftjoin('organization', 'organization.id', '=', 'participants.organization_id')
+        ->select('participants.*', 'organization.name as nome_org', 'organization.website', 'organization.location')
+        ->where('participants.email', base64_decode($hashed_mail))
+        ->first();
+      if (auth()->check() && Auth::user()->roles->contains('id', 3)) {
+        $currentDateTime = Carbon::now(); // Get the current date and time
+        $eventos = ProtocoloEvento::leftjoin('events', 'events.id', '=', 'protocolo_evento.evento_id')
+          ->select('events.start_date', 'events.end_date', 'events.start_time', 'events.end_time')
+          ->where('protocolo_id', Auth::user()->id)
+          ->where(function ($query) use ($currentDateTime) {
+            $query->where(function ($subQuery) use ($currentDateTime) {
+              $subQuery->where('events.start_date', '<=', $currentDateTime->toDateString())
+                ->where('events.start_time', '<=', $currentDateTime->toTimeString());
+            })
+              ->where(function ($subQuery) use ($currentDateTime) {
+                $subQuery->where('events.end_date', '>=', $currentDateTime->toDateString())
+                  ->where('events.end_time', '>=', $currentDateTime->toTimeString());
+              });
+          })
+          ->get();
+      }
+
       if ($participant != null) {
-        return response(view("businessCard", compact("participant", "participant")));
+        return response(view("businessCard", compact("participant", "participant", "eventos")));
       }
     } catch (Exception $e) {
       $errorMessage = $e->getMessage();

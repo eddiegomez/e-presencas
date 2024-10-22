@@ -18,6 +18,7 @@ use Illuminate\View\View as View;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Controllers\ParticipantController;
 use App\Models\Organization;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 
 class EventController extends Controller
@@ -146,7 +147,14 @@ class EventController extends Controller
     $addresses = Address::all();
     $participants = Participant::all();
     $participant_type = ParticipantType::all();
-    return view('events.single', compact('event', 'participants', 'participant_type', 'addresses'));
+    $staffs = User::leftJoin('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+      ->leftJoin('protocolo_evento', 'model_has_roles.model_id', '=', 'users.id')
+      ->select('users.name', 'users.email', 'users.phone')
+      ->where('organization_id', Auth::user()->organization_id)
+      ->where('model_has_roles.role_id', 3)
+      ->get();
+
+    return view('events.single', compact('event', 'participants', 'participant_type', 'addresses', 'staffs'));
   }
 
   /**

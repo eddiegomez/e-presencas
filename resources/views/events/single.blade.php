@@ -288,7 +288,6 @@
 
   </div>
 </div>
-</div>
 
 {{-- Divider line --}}
 <div style="height: 2px" class="bg-white dark:bg-white rounded w-100 my-3"></div>
@@ -568,8 +567,18 @@
 
           <div class="form-group">
             <label for="date">Data do programa</label>
-            <input type="date" id="date" name="date" class="form-control" placeholder="Data do programa"
-              required>
+            <input
+              type="date"
+              id="date"
+              name="date"
+              class="form-control"
+              placeholder="Data do programa"
+              min="{{ $event->start_date }}"
+              max="{{ $event->end_date }}"
+              required
+              value="{{ $event->start_date }}"
+              @if ($event->start_date == $event->end_date) disabled @endif
+            >
             @error("date")
             <p class="text-danger">{{ $message }}</p>
             @enderror
@@ -824,7 +833,6 @@
     </div>
   </div>
 </div>
-
 
 <script>
   $(document).ready(function() {

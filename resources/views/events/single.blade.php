@@ -168,8 +168,32 @@
           {{ $schedule->name }}
           <span class="uil uil-minus remove-icon btn-danger"
             style="border-radius: 3rem"
-            onclick="showRemoveAgendaModal(event, {{ $schedule->id }})"></span>
+            onclick="showRemoveAgendaModal({{$schedule->id}})"></span>
         </a>
+
+        {{-- Remove Schedule from Event Modal --}}
+        <div id="removeScheduleEventModal{{$schedule->id}}" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id=""> Remover Agenda do Evento</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+              </div>
+              <div class="modal-body">
+                <p>Tem certeza que pretende remover <strong>{{$schedule->name}}</strong> evento?</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <form id="" method="POST" action='{{ route("schedule.remove") }}'>
+                  @csrf
+                  <input type="hidden" name="schedule_id" value="{{$schedule->id}}">
+                  <button type="submit" class="btn btn-danger mt-3">Remover</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{-- End of Remove Schedule from Event --}}
         @endforeach
       </div>
       <div class="col-3 mb-1">
@@ -855,10 +879,10 @@
     }
   };
 
-  function showRemoveAgendaModal(event, schedule_id) {
+  function showRemoveAgendaModal(schedule_id) {
     event.preventDefault(); // Prevents default link behavior
     event.stopPropagation(); // Stops the click event from bubbling up
-    window.alert(schedule_id);
+    $('#removeScheduleEventModal' + schedule_id).modal('show');
   }
 </script>
 @endsection

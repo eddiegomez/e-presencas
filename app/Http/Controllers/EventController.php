@@ -152,7 +152,7 @@ class EventController extends Controller
       ->where('organization_id', Auth::user()->organization_id)
       ->where('model_has_roles.role_id', 3)
       ->get();
-    
+
     return view('events.single', compact('event', 'participants', 'participant_type', 'addresses', 'staffs'));
   }
 
@@ -322,11 +322,27 @@ class EventController extends Controller
       $schedule->pdf_url = $scheduleName;
       $schedule->save();
 
-      return redirect()->back()->with('Success', 'Schedule created sucessfully');
+      return redirect()->back()->with('Success', 'Agenda adicionada com sucesso');
     }
 
     return redirect()->back()->with('error', 'Something went wrong!');
   }
+
+  public function removeSchedule(Request $request)
+  {
+    try {
+      $schedule = Schedule::find($request->schedule_id);
+      $schedule->delete();
+      return redirect()->back()->with('Success', 'Agenda removida com sucesso');
+    } catch (\Throwable $th) {
+      throw $th;
+      return redirect()->back()->with('error', 'Something went wrong!');
+    }
+
+
+    return redirect()->back()->with('Success', 'Schedule created sucessfully');
+  }
+
   private function generateQrcode($name, Invites $participant_event)
   {
     $encryptedEvent = base64_encode($participant_event->event_id);

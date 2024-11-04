@@ -64,6 +64,8 @@ Route::middleware(['auth', 'web'])->group(function () {
 
   // Create Schedule
   Route::post('/schedule/store/{id}', [EventController::class, 'createSchedule'])->name('schedule.create');
+  // Remove Schedule
+  Route::post('/schedule/remove', [EventController::class, 'removeSchedule'])->name('schedule.remove');
 
   // Participants Controllers
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\StaffEvento;
 use App\Models\User;
 use App\Notifications\EmailVerification;
 use App\Services\StaffService;
@@ -170,6 +171,21 @@ class StaffController extends Controller
       $this->staffService->delete($request->id);
 
       return redirect()->back()->with('success', 'O participante foi apagado com suceso.');
+    } catch (Exception $e) {
+      $errorMessage = $e->getMessage();
+
+      return redirect()->back()->with('error', $errorMessage);
+    }
+  }
+
+  public function removeStaffFromEvent(Request $request)
+  {
+    try {
+
+      $staffEvent = StaffEvento::find($request->staff_evento_id);
+      $staffEvent->delete();
+
+      return redirect()->back()->with('success', 'O protocolo foi removido com sucesso.');
     } catch (Exception $e) {
       $errorMessage = $e->getMessage();
 

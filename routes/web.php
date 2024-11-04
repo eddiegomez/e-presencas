@@ -101,6 +101,8 @@ Route::middleware(['auth', 'web'])->group(function () {
   Route::delete('/protocolo/delete', [StaffController::class, 'destroy'])->name('staff.delete');
   // Add staff to event
   Route::post('/staff.add', [EventController::class, 'addStaff'])->name('staff.add');
+  // Remove staff from event
+  Route::post('/removeStaffFromEvent', [StaffController::class, 'removeStaffFromEvent'])->name('removeStaffFromEvent');
 });
 
 

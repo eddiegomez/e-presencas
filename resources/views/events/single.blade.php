@@ -225,13 +225,36 @@
                 <td>{{ $staff->phone }}</td>
                 <td class="text-right">
                   <a class="btn btn-danger p-1" data-toggle="modal" href=""
-                    onclick=''>
+                    onclick='removeStaff({{$staff->staff_evento_id}})'>
                     <i class='uil uil-minus'></i>
                   </a>
                 </td>
               </tr>
-              @endforeach
 
+              {{-- Remove Staff from Event Modal --}}
+              <div id="removeStaffEventModal{{$staff->staff_evento_id}}" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id=""> Remover Protocolo do Evento</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                      <p>Tem certeza que pretende remover <strong>{{$staff->name}}</strong> evento?</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                      <form id="" method="POST" action='{{ route("removeStaffFromEvent") }}'>
+                        @csrf
+                        <input type="hidden" name="staff_evento_id" value="{{$staff->staff_evento_id}}">
+                        <button type="submit" class="btn btn-danger">Remover</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {{-- End of Remove Staff from Event --}}
+              @endforeach
             </tbody>
           </table>
 
@@ -792,6 +815,10 @@
     document.getElementById('Etype').value = type;
     document.getElementById('Eparticipant').value = id;
     $('#EditParticipantModal').modal('show');
+  }
+
+  function removeStaff(event_staff_id) {
+    $('#removeStaffEventModal' + event_staff_id).modal('show');
   }
 
   // Function that triggers the deletion of a participant modal

@@ -174,9 +174,9 @@ class ParticipantController extends Controller
       $eventos = [];
       if (auth()->check() && Auth::user()->roles->contains('id', 3)) {
         $currentDateTime = Carbon::now(); // Get the current date and time
-        $eventos = ProtocoloEvento::leftjoin('events', 'events.id', '=', 'protocolo_evento.evento_id')
+        $eventos = ProtocoloEvento::leftjoin('events', 'events.id', '=', 'staff_evento.evento_id')
           ->select('events.start_date', 'events.end_date', 'events.start_time', 'events.end_time')
-          ->where('protocolo_id', Auth::user()->id)
+          ->where('staff_id', Auth::user()->id)
           ->where(function ($query) use ($currentDateTime) {
             $query->where(function ($subQuery) use ($currentDateTime) {
               $subQuery->where('events.start_date', '<=', $currentDateTime->toDateString())

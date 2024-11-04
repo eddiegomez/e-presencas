@@ -78,9 +78,6 @@ Route::middleware(['auth', 'web'])->group(function () {
   // Delete a participant Controller
   Route::post('/participant/{id}/delete', [ParticipantController::class, 'destroy'])->name('participant.destroy');
 
-
-  // Invite Controllers
-
   // Create a new Invite route
   Route::post('/inviteParticipant', [InviteController::class, 'store'])->name('invite.store');
   // Delete a new Invite controller
@@ -94,8 +91,6 @@ Route::middleware(['auth', 'web'])->group(function () {
   Route::post('/confirm/entrance/{encryptedevent}/{encryptedparticipant}', [InviteController::class, 'confirmEntrancePost'])->name('confirmEntranceUpdate');
 
 
-
-
   // Get all staff members Controller
   Route::get('/protocolos', [StaffController::class, 'index'])->name('protocolos.index');
   // Create a new staff member Controller
@@ -104,6 +99,8 @@ Route::middleware(['auth', 'web'])->group(function () {
   Route::post('/protocolo/edit', [StaffController::class, 'update'])->name('staff.update');
   // Delete a Staff Member Controller
   Route::delete('/protocolo/delete', [StaffController::class, 'destroy'])->name('staff.delete');
+  // Add staff to event
+  Route::post('/staff.add', [EventController::class, 'addStaff'])->name('staff.add');
 });
 
 

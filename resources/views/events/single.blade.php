@@ -48,9 +48,9 @@
   <div class="col-sm-4 col-xl-6">
     <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
       <ol class="breadcrumb fs-1">
-        <h4 class="breadcrumb-item text-muted fs-4"><a href="{{ route("event.list") }}" class="text-muted">Eventos</a>
-        </h4>
-        <h4 class="breadcrumb-item active text-dark text-capitalize" aria-current="page">{{ $event->name }}</h4>
+        <h6 class="breadcrumb-item text-muted fs-4"><a href="{{ route("event.list") }}" class="text-muted">Eventos</a>
+        </h6>
+        <h6 class="breadcrumb-item active text-dark text-capitalize" aria-current="page">{{ $event->name }}</h6>
       </ol>
     </nav>
   </div>
@@ -198,7 +198,7 @@
             <div class="col-sm-8 col-xl-6 mb-3 p-0">
               <div class="float-sm-right mt-3 mt-sm-0">
                 <button type="button" class="btn btn-outline-secondary" data-toggle="modal"
-                  data-target="#addParticipantModal">
+                  data-target="#addStaffModal">
                   <i class='uil uil-plus mr-1'></i>Adicionar
                 </button>
               </div>
@@ -216,7 +216,9 @@
             </thead>
 
             <tbody>
-              @foreach ($staffs as $staff)
+              @foreach ($staffs->filter(function($staff) use ($event) {
+              return $staff->evento_id === $event->id;
+              }) as $staff)
               <tr>
                 <td>{{ $staff->name }}</td>
                 <td>{{ $staff->email }}</td>
@@ -229,6 +231,7 @@
                 </td>
               </tr>
               @endforeach
+
             </tbody>
           </table>
 
@@ -244,7 +247,7 @@
 <div style="height: 2px" class="bg-white dark:bg-white rounded w-100 my-3"></div>
 
 {{-- Participants Table --}}
-<div class="row">
+<div class="row" style="margin-bottom: 300px;">
   {{-- Table --}}
   <div class="col-12">
     <div class="card">
@@ -326,7 +329,6 @@
       </div> <!-- end card body-->
     </div> <!-- end card -->
   </div><!-- end col-->
-
 </div>
 
 {{-- Delete the Event Modal --}}
@@ -665,6 +667,50 @@
   </div>
 </div>
 
+
+{{-- Add participant --}}
+<div id="addStaffModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-l">
+    {{-- Modal Content --}}
+    <div class="modal-content">
+      {{-- Modal Header --}}
+      <div class="modal-header">
+        <h5 class="modal-title text-capitalize" id="addStaffModal">Adicionar Protocolo
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+      </div>
+      {{-- Modal Body --}}
+      <div class="modal-body">
+        <form action="{{ route("staff.add") }}" method="POST" enctype="multipart/form-data">
+          @csrf
+          <input type="hidden" name="evento_id" value="{{ $event->id }}">
+
+          <div class="form-group">
+            <label for="participant">Selecione o protocolo</label>
+            <select class="form-control inline_directive participants-selector" name="staff_id" id="staff_id"
+              data-plugin="custom-select" required>
+              @foreach ($staffs as $staff)
+              @if ($staff->evento_id === null)
+              <option value="{{ $staff->id }}">{{ $staff->name }} ({{ $staff->email }})</option>
+              @endif
+              @endforeach
+            </select>
+            @error("staff_id")
+            <span class="text-danger">{{ $message }}</span>
+            @enderror
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-success">Adicionar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 {{-- Update Participant Type --}}
 <div id="EditParticipantModal" class="modal fade" role="dialog">
   <div class="modal-dialog">
@@ -736,7 +782,7 @@
 <script>
   $(document).ready(function() {
     $('[data-plugin="custom-select"]').select2({
-      placeholder: "Selecione os participantes",
+      placeholder: "Clique para selecionar",
     });
   });
 

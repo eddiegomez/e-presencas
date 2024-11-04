@@ -16,9 +16,8 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View as View;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use App\Http\Controllers\ParticipantController;
-use App\Models\Organization;
 use App\Models\User;
+use App\Models\StaffEvento;
 use Illuminate\Http\RedirectResponse;
 
 class EventController extends Controller
@@ -148,12 +147,12 @@ class EventController extends Controller
     $participants = Participant::all();
     $participant_type = ParticipantType::all();
     $staffs = User::leftJoin('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
-      ->leftJoin('protocolo_evento', 'model_has_roles.model_id', '=', 'users.id')
-      ->select('users.name', 'users.email', 'users.phone')
+      ->leftJoin('staff_evento', 'model_has_roles.model_id', '=', 'staff_evento.staff_id')
+      ->select('users.id', 'users.name', 'users.email', 'users.phone', 'staff_evento.evento_id')
       ->where('organization_id', Auth::user()->organization_id)
       ->where('model_has_roles.role_id', 3)
       ->get();
-
+    
     return view('events.single', compact('event', 'participants', 'participant_type', 'addresses', 'staffs'));
   }
 
@@ -340,5 +339,33 @@ class EventController extends Controller
     $qrCodePath = storage_path('app/public/qrcodes/' . $name . '.svg');
     $resp = file_put_contents($qrCodePath, $qrCode);
     return $resp;
+  }
+
+  public function addStaff(Request $request)
+  {
+    $validateStaffEventoMessages = [
+      'staff_id.required' => 'Nenhum protocolo foi associado',
+      'evento_id.required' => 'Nenhum evento associado',
+    ];
+
+    try {
+      $validator = Validator::make($request->all(), [
+        'staff_id' => ['required'],
+        'evento_id' => ['required'],
+      ], $validateStaffEventoMessages);
+
+      if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+
+      $staff_evento = new StaffEvento();
+      $staff_evento->staff_id = $request->staff_id;
+      $staff_evento->evento_id = $request->evento_id;
+      $staff_evento->save();
+      return redirect()->back()->with('Success', 'Protocolo adicionado com sucesso');
+    } catch (\Throwable $th) {
+      throw $th;
+      return redirect()->back()->with('Error', 'Erro ao adicionar protocolo');
+    }
   }
 }

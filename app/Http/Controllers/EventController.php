@@ -152,7 +152,6 @@ class EventController extends Controller
       ->where('organization_id', Auth::user()->organization_id)
       ->where('model_has_roles.role_id', 3)
       ->get();
-
     return view('events.single', compact('event', 'participants', 'participant_type', 'addresses', 'staffs'));
   }
 
@@ -220,7 +219,6 @@ class EventController extends Controller
       throw $th;
     }
 
-
     $data = $request->all();
 
     if ($data['participant'] == 'new') {
@@ -261,24 +259,18 @@ class EventController extends Controller
     $participant_event->participant_id = $participant->id;
     $participant_event->event_id = $id;
     $participant_event->participant_type_id = $data['type'];
-    $participant_event->qr_url = $qrCodeName;
     $participantEmail = $participant->email;
     // Mail::to($participantEmail)->send(new sendInvite);
 
-    $rsp = $this->generateQrcode($participant_event->qr_url, $participant_event);
+    //$rsp = $this->generateQrcode($participant_event->qr_url, $participant_event);
 
-    if ($rsp == 0) {
-      return redirect()->back()->with('error', 'Algo de errado nao esta certo!');
-    } else {
-      Notification::route('mail', $participantEmail)->notify(new sendInvite(
-        $participant_event->event_id,
-        $participant_event->participant_id,
-        $participant_event->qr_url
-      ));
+    Notification::route('mail', $participantEmail)->notify(new sendInvite(
+      $participant_event->event_id,
+      $participant_event->participant_id
+    ));
 
-      $participant_event->save();
-      return redirect()->back()->with('Success', 'O participante ' . $participant_event->name . ' Foi convidado');
-    }
+    $participant_event->save();
+    return redirect()->back()->with('Success', 'O participante ' . $participant_event->name . ' Foi convidado');
   }
 
   public function createSchedule(Request $request, $id)

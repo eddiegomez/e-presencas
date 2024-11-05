@@ -51,8 +51,7 @@ class InviteService
   public function createInvite(
     int $participantId,
     int $eventId,
-    int $participant_type_id,
-    string $qr_url
+    int $participant_type_id
   ) {
 
     $participantExists = $this->participantService->getParticipantById($participantId);
@@ -70,7 +69,6 @@ class InviteService
         'participant_id' => $participantId,
         'event_id' => $eventId,
         'participant_type_id' => $participant_type_id,
-        'qr_url' => $qr_url
       ]
     );
   }
@@ -111,10 +109,9 @@ class InviteService
 
     if ($invite) {
       $updateInvite = Invites::where('event_id', $eventId)->where('participant_id', $participantId)->update(['participant_type_id' => $participantType]);
-      // dd($updateInvite);
       return $participant;
     } else {
-      throw new Exception('Wuaaaaaaaaaaaaaaa');
+      throw new Exception('');
     }
   }
 

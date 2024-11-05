@@ -28,8 +28,8 @@ class ParticipantService
     string $email,
     string $description,
     string $phoneNumber,
-    string $degree,
-    string $profile_url
+    string $degree
+    //string $profile_url
   ) {
     $ParticipantExists = $this->checkParticipantByEmailOrPhoneNumber($email, $phoneNumber);
 
@@ -45,7 +45,7 @@ class ParticipantService
     $participant->description = $description;
     $participant->phone_number = $phoneNumber;
     $participant->degree = $degree;
-    $participant->profile_url = $profile_url;
+    $participant->profile_url = "";
     $participant->organization_id = Auth::user()->organization_id;
     $participant->save();
 
@@ -83,7 +83,11 @@ class ParticipantService
 
   public function getParticipantById(int $id)
   {
-    $participant = Participant::find($id);
+    $participant = Participant::leftjoin('invites', 'invites.participant_id', 'participants.id')
+      ->leftjoin('participant_type', 'participant_type.id', 'invites.participant_type_id')
+      ->select('participants.*', 'participant_type.name as participant_type')
+      ->where('participants.id', $id)
+      ->first();
 
     if ($participant) {
       return $participant;

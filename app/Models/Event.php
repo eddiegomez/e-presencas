@@ -31,7 +31,7 @@ class Event extends Model
   // Get Participants Function
   public function participants(): BelongsToMany
   {
-    return $this->belongsToMany(Participant::class, 'invites')->withPivot('qr_url', 'status', 'participant_type_id');
+    return $this->belongsToMany(Participant::class, 'invites')->withPivot('status', 'participant_type_id');
   }
 
   // Check if it has participant by ID

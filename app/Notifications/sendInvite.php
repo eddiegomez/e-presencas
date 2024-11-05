@@ -46,17 +46,22 @@ class sendInvite extends Notification
    */
   public function toMail($notifiable)
   {
-    // dd($this->participant);
     $event = $this->event;
     $participant = $this->participant;
+
     return (new MailMessage)
-      ->subject("Convite para " . $event->name)
-      ->greeting("Saudações " . $participant->name)
-      ->line("Foi convidado a participar do evento " . $event->name)
-      ->line("O evento ira decorrer pelas " . date("H:i", strtotime($event->start_time)) . " até às " . date("H:i", strtotime($event->end_time)) . " do dia " . $event->start_date)
-      ->line("Clique no botão abaixo para confirmar sua presença.")
-      ->action("Confirmar presença", route("invite.acceptInvite", ["encryptedevent" => base64_encode($event->id), "encryptedparticipant" => base64_encode($participant->id)]))
-      ->line("Após confirmar a sua presença receberá o QR Code de acesso ao evento!");
+      ->subject("Convite para Participar do(a) " . $event->name)
+      ->greeting("Olá " . $participant->name)
+      ->line("Temos o prazer de convidá-lo(a) para participar do(a), " . $event->name . ".")
+      ->line("**Detalhes do Evento:**")
+      ->line("**Data de início:** " . $event->start_date)
+      ->line("**Data de término:** " . $event->end_date)
+      ->line("**Horário:** " . date("H:i", strtotime($event->start_time)) . " - " . date("H:i", strtotime($event->end_time)))
+      ->line("Para confirmar sua presença, clique no botão abaixo.")
+      ->action("Confirmar", route("invite.acceptInvite", [
+        "encryptedevent" => base64_encode($event->id),
+        "encryptedparticipant" => base64_encode($participant->id)
+      ]));
   }
 
   /**

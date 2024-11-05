@@ -336,8 +336,6 @@
               @elseif ($participant->pivot->status == "Rejeitada")table-warning
               @elseif ($participant->pivot->status == "Ausente")table-danger @endif">
               <td>
-                <img src="{{ asset("storage/qrcodes/" . $participant->pivot->qr_url . ".png") }}" width="40"
-                  alt="">
               </td>
               <td>{{ $participant->name }} {{ $participant->last_name }}</td>
               <td>
@@ -649,10 +647,19 @@
 
             {{-- Nome do participant --}}
             <div class="form-group">
-              <label for="newParticipant">Nome do Participante</label>
+              <label for="newParticipant">Nome</label>
               <input type="text" name="name" id="name" class="form-control"
-                placeholder="Nome da Entidade Participante">
+                placeholder="Primeiro nome">
               @error("name")
+              <span class="text-danger">{{ $message }}</span>
+              @enderror
+            </div>
+
+            <div class="form-group">
+              <label for="newParticipant">Apelido</label>
+              <input type="text" name="last_name" id="last_name" class="form-control"
+                placeholder="Último nome">
+              @error("last_name")
               <span class="text-danger">{{ $message }}</span>
               @enderror
             </div>

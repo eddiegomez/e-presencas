@@ -24,7 +24,6 @@ class Invites extends Model
     'participant_id',
     'event_id',
     'participant_type_id',
-    'qr_url',
     'status'
   ];
   protected $attributes = [

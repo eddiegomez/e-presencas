@@ -29,7 +29,7 @@ class Participant extends Model
   // Get Events function
   public function events(): BelongsToMany
   {
-    return $this->belongsToMany(Event::class, 'invites')->withPivot('qr_url', 'status', 'participant_type_id');
+    return $this->belongsToMany(Event::class, 'invites')->withPivot('status', 'participant_type_id');
   }
 
   /**

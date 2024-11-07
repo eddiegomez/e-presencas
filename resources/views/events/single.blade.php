@@ -316,12 +316,12 @@
         <table id="basic-datatable" class="table dt-responsive nowrap">
           <thead>
             <tr>
-              <th>QR</th>
+              <th>ID</th>
               <th>Nome</th>
               <th>Tipo</th>
               <th>Email</th>
               <th>Celular</th>
-              <th class="text-right">Actions</th>
+              <th class="text-right">Gerir</th>
             </tr>
           </thead>
 
@@ -335,8 +335,7 @@
               @elseif ($participant->pivot->status == "Participou")table-success
               @elseif ($participant->pivot->status == "Rejeitada")table-warning
               @elseif ($participant->pivot->status == "Ausente")table-danger @endif">
-              <td>
-              </td>
+              <td><img class="mt-2" onclick="displayQRCode({{$participant->id}})" src="data:image/png;base64,{{base64_encode(QrCode::color(0, 0, 0)->style('round')->eye('circle')->size(42)->format('png')->generate('https://assiduidade.inage.gov.mz/showBusinessCard/'. base64_encode($participant->email)))}}"></td>
               <td>{{ $participant->name }} {{ $participant->last_name }}</td>
               <td>
                 @switch($participant->pivot->participant_type_id)
@@ -352,6 +351,7 @@
                 {{ null }}
                 @endswitch
               </td>
+              <!--<td>{{ $participant->status }}</td>-->
               <td>{{ $participant->email }}</td>
               <td>{{ $participant->phone_number }}</td>
               <td class="text-right">
@@ -366,6 +366,21 @@
                 </a>
               </td>
             </tr>
+
+            <div id="displayQrcodeModal{{ $participant->id }}" class="modal fade" role=dialog>
+              <div class="modal-dialog modal-dialog-centered">
+                {{-- Modal content --}}
+                <div class="modal-content">
+                  <div class="modal-body">
+                    <center>
+                      <h3 class="mt-5 mb-3">{{$participant->name}} {{$participant->last_name}}</h3>
+                      {{-- Participant does not have a profile image --}}
+                      <img class="mt-2" data-target="#displayQrcode" data-toggle="modal" src="data:image/png;base64,{{base64_encode(QrCode::color(0, 0, 0)->style('round')->eye('circle')->size(412)->format('png')->generate('https://assiduidade.inage.gov.mz/showBusinessCard/'. base64_encode($participant->email)))}}">
+                    </center>
+                  </div>
+                </div>
+              </div>
+            </div>
             @endforeach
           </tbody>
         </table>
@@ -773,5 +788,68 @@
   </div>
 </div>
 
+<script>
+  $(document).ready(function() {
+    $('[data-plugin="custom-select"]').select2({
+      placeholder: "Clique para selecionar",
+    });
+  });
+
+
+  function editParticipantModal(id, name, type, participantInfoUrl) {
+    document.getElementById('EditParticipantModalLabel').innerHTML = "Alterar o tipo do participante " + name;
+    document.getElementById('Etype').value = type;
+    document.getElementById('Eparticipant').value = id;
+    $('#EditParticipantModal').modal('show');
+  }
+
+  function removeStaff(event_staff_id) {
+    $('#removeStaffEventModal' + event_staff_id).modal('show');
+  }
+
+  // Function that triggers the deletion of a participant modal
+  function deleteParticipantModal(id, name) {
+    document.getElementById('DeleteParticipantModalLabel').innerHTML = 'Desconvidar ' + name;
+    document.getElementById('Dparticipant').value = id;
+
+    $('#DeleteParticipantModal').modal('show');
+  }
+
+
+  function checkLocationField() {
+    var select = document.getElementById('address');
+    var selectedLocation = select.value;
+    var newLocationFields = document.getElementById('newLocationFields');
+
+    if (selectedLocation === "new") {
+      newLocationFields.style.display = 'block';
+    } else {
+      newLocationFields.style.display = 'none';
+    }
+  };
+  document.getElementById('address').addEventListener('change', checkLocationField);
+
+  function checkParticipantField() {
+    var select = document.getElementById('participant');
+    var selectedLocation = select.value;
+    var newLocationFields = document.getElementById('newParticipantFields');
+
+    if (selectedLocation === "new") {
+      newLocationFields.style.display = 'block';
+    } else {
+      newLocationFields.style.display = 'none';
+    }
+  };
+
+  function showRemoveAgendaModal(schedule_id) {
+    event.preventDefault(); // Prevents default link behavior
+    event.stopPropagation(); // Stops the click event from bubbling up
+    $('#removeScheduleEventModal' + schedule_id).modal('show');
+  }
+
+  function displayQRCode(participant_id) {
+    $('#displayQrcodeModal' + participant_id).modal('show');
+  }
+</script>
 
 @endsection

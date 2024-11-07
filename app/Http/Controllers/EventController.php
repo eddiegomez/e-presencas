@@ -142,17 +142,22 @@ class EventController extends Controller
    */
   public function show($id)
   {
-    $event = Event::find($id);
-    $addresses = Address::all();
-    $participants = Participant::all();
-    $participant_type = ParticipantType::all();
-    $staffs = User::leftJoin('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
-      ->leftJoin('staff_evento', 'model_has_roles.model_id', '=', 'staff_evento.staff_id')
-      ->select('users.id', 'users.name', 'users.email', 'users.phone', 'staff_evento.evento_id', 'staff_evento.id as staff_evento_id')
-      ->where('organization_id', Auth::user()->organization_id)
-      ->where('model_has_roles.role_id', 3)
-      ->get();
-    return view('events.single', compact('event', 'participants', 'participant_type', 'addresses', 'staffs'));
+    try {
+      $event = Event::find($id);
+      $addresses = Address::all();
+      $participants = Participant::all();
+      $participant_type = ParticipantType::all();
+      $staffs = User::leftJoin('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+        ->leftJoin('staff_evento', 'model_has_roles.model_id', '=', 'staff_evento.staff_id')
+        ->select('users.id', 'users.name', 'users.email', 'users.phone', 'staff_evento.evento_id', 'staff_evento.id as staff_evento_id')
+        ->where('organization_id', Auth::user()->organization_id)
+        ->where('model_has_roles.role_id', 3)
+        ->get();
+      return view('events.single', compact('event', 'participants', 'participant_type', 'addresses', 'staffs'));
+    } catch (\Throwable $th) {
+      dd('ERRO!!');
+      throw $th;
+    }
   }
 
   /**

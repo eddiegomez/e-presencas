@@ -96,7 +96,7 @@
           </div>
           <div class="form-group">
             <label for="last_name">Apelido</label>
-            <input type="text" class="form-control @error("last_name") is-invalid @enderror" id="last_name" name="last_name" aria-describedby="last_name" placeholder="Apelido" value="{{ old("last_name") }}">
+            <input type="text" class="form-control @error(" last_name") is-invalid @enderror" id="last_name" name="last_name" aria-describedby="last_name" placeholder="Apelido" value="{{ old("last_name") }}">
 
             @error("last_name")
             <span class="invalid-feedback" role="alert"> <strong> {{ $message }}</strong></span>
@@ -158,7 +158,6 @@
     </div>
   </div>
 </div>
-@endsection
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     var uploadCrop = new Croppie(document.getElementById('upload-demo'), {
@@ -209,5 +208,7 @@
     });
   });
 </script>
+@endsection
+
 
 @endhasrole

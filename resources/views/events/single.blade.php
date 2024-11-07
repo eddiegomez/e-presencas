@@ -1,4 +1,8 @@
 @extends("layouts.vertical")
+
+@section("css")
+<link href="{{ URL::asset("assets/libs/flatpickr/flatpickr.min.css") }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset("css/style.css") }}" rel="stylesheet">
 <style>
   .btn-with-icon {
     position: relative;
@@ -19,10 +23,6 @@
     /* Change color as needed */
   }
 </style>
-
-@section("css")
-<link href="{{ URL::asset("assets/libs/flatpickr/flatpickr.min.css") }}" rel="stylesheet" type="text/css" />
-<link href="{{ asset("css/style.css") }}" rel="stylesheet">
 @endsection
 
 @section("breadcrumb")
@@ -293,7 +293,7 @@
 <div style="height: 2px" class="bg-white dark:bg-white rounded w-100 my-3"></div>
 
 {{-- Participants Table --}}
-<div class="row" style="margin-bottom: 300px;">
+<div class="row">
   {{-- Table --}}
   <div class="col-12">
     <div class="card">
@@ -774,130 +774,4 @@
 </div>
 
 
-{{-- Update Participant Type --}}
-<div id="EditParticipantModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-    {{-- Modal Content --}}
-    <div class="modal-content">
-      {{-- Modal Header --}}
-      <div class="modal-header">
-        <h5 class="modal-title" id="EditParticipantModalLabel"></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
-      </div>
-      {{-- Modal Body --}}
-      <div class="modal-body">
-        @if($participant->organization_id != Auth::user()->organization_id)
-        <p class="my-1"><a href="" id="participantInfo">Mudar informações do participante!</a></p>
-        @endif
-        <form action="{{ route("invite.update", ["eventId" => $event->id]) }}" method="POST"
-          id="updateParticipantForm">
-          @csrf
-          <input type="hidden" name="participant" id="Eparticipant">
-          <div class="form-group">
-            <label for="participant">Tipo de Participante</label>
-            <select class="form-control @error(" type") is-invalid @enderror custom-select" name="type"
-              id="Etype" required>
-              @foreach ($participant_type as $type)
-              <option value="{{ $type->id }}">{{ $type->name }}</option>
-              @endforeach
-            </select>
-            @error("type")
-            <p class="text-danger">{{ $message }}</p>
-            @enderror
-          </div>
-
-          <div class="modal-footer">
-            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-success">Submeter</button>
-
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-{{-- Delete Participant from invited list --}}
-<div id="DeleteParticipantModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="DeleteParticipantModalLabel"></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p>Tem certeza que pretende eliminar este participante da lista dos convidados?</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-        <form id="deleteEventForm" method="POST" action='{{ route("invite.delete") }}'>
-          @csrf
-          <input type="hidden" name="event" id="event" value="{{ $event->id }}">
-          <input type="hidden" name="participant" id="Dparticipant">
-          <button type="submit" class="btn btn-danger">Eliminar</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-  $(document).ready(function() {
-    $('[data-plugin="custom-select"]').select2({
-      placeholder: "Clique para selecionar",
-    });
-  });
-
-
-  function editParticipantModal(id, name, type, participantInfoUrl) {
-    document.getElementById('EditParticipantModalLabel').innerHTML = "Alterar o tipo do participante " + name;
-    document.getElementById('Etype').value = type;
-    document.getElementById('Eparticipant').value = id;
-    $('#EditParticipantModal').modal('show');
-  }
-
-  function removeStaff(event_staff_id) {
-    $('#removeStaffEventModal' + event_staff_id).modal('show');
-  }
-
-  // Function that triggers the deletion of a participant modal
-  function deleteParticipantModal(id, name) {
-    document.getElementById('DeleteParticipantModalLabel').innerHTML = 'Desconvidar ' + name;
-    document.getElementById('Dparticipant').value = id;
-
-    $('#DeleteParticipantModal').modal('show');
-  }
-
-
-  function checkLocationField() {
-    var select = document.getElementById('address');
-    var selectedLocation = select.value;
-    var newLocationFields = document.getElementById('newLocationFields');
-
-    if (selectedLocation === "new") {
-      newLocationFields.style.display = 'block';
-    } else {
-      newLocationFields.style.display = 'none';
-    }
-  };
-  document.getElementById('address').addEventListener('change', checkLocationField);
-
-  function checkParticipantField() {
-    var select = document.getElementById('participant');
-    var selectedLocation = select.value;
-    var newLocationFields = document.getElementById('newParticipantFields');
-
-    if (selectedLocation === "new") {
-      newLocationFields.style.display = 'block';
-    } else {
-      newLocationFields.style.display = 'none';
-    }
-  };
-
-  function showRemoveAgendaModal(schedule_id) {
-    event.preventDefault(); // Prevents default link behavior
-    event.stopPropagation(); // Stops the click event from bubbling up
-    $('#removeScheduleEventModal' + schedule_id).modal('show');
-  }
-</script>
 @endsection

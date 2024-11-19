@@ -55,6 +55,16 @@
     font-size: 24px;
     cursor: pointer;
   }
+
+  .success-message {
+    color: green;
+    background-color: #e8f5e9;
+    border: 1px solid #c8e6c9;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
 </style>
 <meta name="csrf-token" content="{{ csrf_token() }}">
 @section("content")
@@ -62,8 +72,20 @@
   <div class="col-md-12 col-xl-3 mb-4 mt-5">
     @auth
     @if(Auth::user()->roles->contains('id', 3))
-    <button type="button" class="btn btn-warning mt-3 mb-3 border-shadow" style="border-radius: 80px; font-weight: 700; font-size: 1.375rem; ">Cancelar</button>
-    <button type="button" class="btn btn-success mt-3 mb-3 border-shadow" style="border-radius: 80px; font-weight: 700; font-size: 1.375rem;">Confirmar</button>
+    @if(sizeof($eventos) > 0)
+    @if($invites->status === "Participou")
+    <div id="" class="success-message">
+      Presença marcada!
+    </div>
+    @else
+    <div id="entrance-actions">
+      <button type="button" class="btn btn-warning mt-3 mb-3 border-shadow" style="border-radius: 80px; font-weight: 700; font-size: 1.375rem; ">Cancelar</button>
+      <button type="button" class="btn btn-success mt-3 mb-3 border-shadow" style="border-radius: 80px; font-weight: 700; font-size: 1.375rem;" onclick="marcarPresenca({{$eventos[0]->event_id}},{{$participant->id}},'Participou')">Confirmar</button>
+    </div>
+    @endif
+    <div id="successMessage" class="success-message" style="display: none;">
+    </div>
+    @endif
     @endif
     @endauth
     <!-- Trigger the modal with a button -->
@@ -165,6 +187,31 @@
 </div>
 
 <script>
+  function marcarPresenca(event_id, participant_id, status) {
+    if (status === 'Participou') {
+      $.ajax({
+        url: '/staff/confirm/entrance/' + event_id + '/' + participant_id + '/' + status,
+        type: 'PUT',
+        data: {
+          event_id: event_id,
+          participant_id: participant_id,
+          status: status
+        },
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+          document.getElementById("entrance-actions").style.display = "none";
+          $('#successMessage').text('Presença marcada!').fadeIn();
+          console.log('Success:', response);
+        },
+        error: function(xhr, status, error) {
+          console.error('Error:', error);
+        }
+      });
+    }
+  }
+
   function downloadVCard() {
     const email = "{{$participant->email}}";
     const phone = "{{$participant->phone_number}}";

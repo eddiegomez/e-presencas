@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Participant;
 use App\Models\ParticipantType;
-use App\Models\ProtocoloEvento;
+use App\Models\StaffEvento;
 use App\Services\ParticipantService;
 use Exception;
 use Illuminate\Http\Request;
@@ -172,10 +172,11 @@ class ParticipantController extends Controller
         ->where('participants.email', base64_decode($hashed_mail))
         ->first();
       $eventos = [];
+      $invite = null;
       if (auth()->check() && Auth::user()->roles->contains('id', 3)) {
         $currentDateTime = Carbon::now(); // Get the current date and time
-        $eventos = ProtocoloEvento::leftjoin('events', 'events.id', '=', 'staff_evento.evento_id')
-          ->select('events.start_date', 'events.end_date', 'events.start_time', 'events.end_time')
+        $eventos = StaffEvento::leftjoin('events', 'events.id', '=', 'staff_evento.evento_id')
+          ->select('events.id as event_id', 'events.start_date', 'events.end_date', 'events.start_time', 'events.end_time')
           ->where('staff_id', Auth::user()->id)
           ->where(function ($query) use ($currentDateTime) {
             $query->where(function ($subQuery) use ($currentDateTime) {
@@ -188,10 +189,16 @@ class ParticipantController extends Controller
               });
           })
           ->get();
+
+        $invites = DB::table('invites')
+          ->select('status')
+          ->where('event_id', $eventos[0]->event_id)
+          ->where('participant_id', $participant->id)
+          ->first();
       }
 
       if ($participant != null) {
-        return response(view("businessCard", compact("participant", "participant", "eventos")));
+        return response(view("businessCard", compact("participant", "participant", "eventos", "invites")));
       }
     } catch (Exception $e) {
       $errorMessage = $e->getMessage();

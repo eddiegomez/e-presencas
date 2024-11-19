@@ -374,6 +374,7 @@
                   <div class="modal-body">
                     <center>
                       <h3 class="mt-5 mb-3">{{$participant->name}} {{$participant->last_name}}</h3>
+                      https://assiduidade.inage.gov.mz/showBusinessCard/{{base64_encode($participant->email)}}
                       {{-- Participant does not have a profile image --}}
                       <img class="mt-2" data-target="#displayQrcode" data-toggle="modal" src="data:image/png;base64,{{base64_encode(QrCode::color(0, 0, 0)->style('round')->eye('circle')->size(412)->format('png')->generate('https://assiduidade.inage.gov.mz/showBusinessCard/'. base64_encode($participant->email)))}}">
                     </center>

@@ -218,36 +218,19 @@ class InviteController extends Controller
     }
   }
 
-  public function confirmEntrance($encryptedevent, $encryptedparticipant)
+  public function confirmEntrance($event, $participant, $status)
   {
     try {
+      $invite = Invites::where('event_id', $event)
+        ->where('participant_id', $participant)
+        ->update(['status' => $status]);
 
-      $eventId = base64_decode($encryptedevent);
-      $participantId = base64_decode($encryptedparticipant);
-
-      $invite = $this->inviteService->getInviteByCompositeKey($eventId, $participantId);
-      $event = $invite->event;
-      $participant = $invite->participant;
-
-      return view('confirmEntrance', compact('event', 'encryptedevent', 'encryptedparticipant', 'participant', 'invite'));
+      return response()->json(['message' => 'Success']);
     } catch (Exception $e) {
-      $errorMessage = $e->getMessage();
-
-      return view('error.404', ['error' => $errorMessage]);
+      return response()->json(['error' => $e->getMessage()], 500);
     }
   }
 
-  public function confirmEntrancePost($encryptedEvent, $encryptedParticipant)
-  {
-    try {
-      $updatedInvite = $this->inviteService->confirmEntrance($encryptedEvent, $encryptedParticipant);
-      return redirect()->route("event.show", $updatedInvite->event_id)->with('success', 'A presenca do participante foi actualizada com sucesso!');
-    } catch (Exception $e) {
-      $errorMessage = $e->getMessage();
-
-      return view('error.404', ['error' => $errorMessage]);
-    }
-  }
 
   public function rejectInvite(string $encodedEvent, string $encodedParticipant)
   {

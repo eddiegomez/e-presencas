@@ -181,8 +181,7 @@ class EventController extends Controller
 
     $event = Event::findOrFail($id);
 
-    $data = $request->only(['name', 'date', 'banner', 'description', 'start_date', 'end_date']);
-
+    $data = $request->only(['name', 'date', 'banner', 'description', 'start_date', 'end_date', 'start_time', 'end_time']);
     $data = array_filter($data, function ($value) {
       return $value !== null;
     });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Invites;
 use App\Models\Participant;
 use App\Models\ParticipantType;
 use App\Models\StaffEvento;
@@ -202,6 +203,21 @@ class ParticipantController extends Controller
       }
     } catch (Exception $e) {
       $errorMessage = $e->getMessage();
+      return redirect()->back()->with('error', $errorMessage);
+    }
+  }
+
+  public function removeParticipantFromEvent(Request $request)
+  {
+    try {
+      Invites::where('participant_id', $request->participant_id)
+        ->where('event_id', $request->event_id)
+        ->delete();
+
+      return redirect()->back()->with('success', 'O participante foi removido do evento com sucesso.');
+    } catch (Exception $e) {
+      $errorMessage = $e->getMessage();
+
       return redirect()->back()->with('error', $errorMessage);
     }
   }

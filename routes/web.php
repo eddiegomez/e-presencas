@@ -79,6 +79,8 @@ Route::middleware(['auth', 'web'])->group(function () {
   Route::post('/participant/{id}/edit', [ParticipantController::class, 'update'])->name('participant.update');
   // Delete a participant Controller
   Route::post('/participant/{id}/delete', [ParticipantController::class, 'destroy'])->name('participant.destroy');
+  // Remove Participant from event
+  Route::post('/removeParticipantFromEvent', [ParticipantController::class, 'removeParticipantFromEvent'])->name('removeParticipantFromEvent');
 
   // Create a new Invite route
   Route::post('/inviteParticipant', [InviteController::class, 'store'])->name('invite.store');

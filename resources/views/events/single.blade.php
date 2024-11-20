@@ -361,12 +361,13 @@
                 </a>
 
                 <a class="btn btn-danger p-1" data-toggle="modal" href=""
-                  onclick='deleteParticipantModal({{ $participant->id }}, @json($participant->name." ".$participant->last_name))'>
+                  onclick='showRemoveParticipantModal({{ $participant->id }})'>
                   <i class='uil uil-trash-alt'></i>
                 </a>
               </td>
             </tr>
 
+            {{-- Display participant's QRCode--}}
             <div id="displayQrcodeModal{{ $participant->id }}" class="modal fade" role=dialog>
               <div class="modal-dialog modal-dialog-centered">
                 {{-- Modal content --}}
@@ -382,6 +383,32 @@
                 </div>
               </div>
             </div>
+            {{-- End of display participant's QRCode--}}
+
+            {{-- Remove Participant from Event Modal --}}
+            <div id="removeParticipantEventModal{{$participant->id}}" class="modal fade" role="dialog">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id=""> Remover {{$participant->name}} {{$participant->last_name}} do Evento</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                  </div>
+                  <div class="modal-body">
+                    <p>Tem certeza que pretende remover <strong>{{$participant->name}} {{$participant->last_name}}</strong> evento?</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <form id="" method="POST" action='{{ route("removeParticipantFromEvent") }}'>
+                      @csrf
+                      <input type="hidden" name="participant_id" value="{{$participant->id}}">
+                      <input type="hidden" name="event_id" value="{{$event->id}}">
+                      <button type="submit" class="btn btn-danger">Remover</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {{-- End of Remove Participant from Event --}}
             @endforeach
           </tbody>
         </table>
@@ -808,12 +835,8 @@
     $('#removeStaffEventModal' + event_staff_id).modal('show');
   }
 
-  // Function that triggers the deletion of a participant modal
-  function deleteParticipantModal(id, name) {
-    document.getElementById('DeleteParticipantModalLabel').innerHTML = 'Desconvidar ' + name;
-    document.getElementById('Dparticipant').value = id;
-
-    $('#DeleteParticipantModal').modal('show');
+  function showRemoveParticipantModal(id) {
+    $('#removeParticipantEventModal' + id).modal('show');
   }
 
 

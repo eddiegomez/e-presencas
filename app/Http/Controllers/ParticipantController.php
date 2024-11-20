@@ -189,16 +189,16 @@ class ParticipantController extends Controller
               });
           })
           ->get();
-
-        $invites = DB::table('invites')
-          ->select('status')
-          ->where('event_id', $eventos[0]->event_id)
-          ->where('participant_id', $participant->id)
-          ->first();
+        if (sizeof($eventos) > 0)
+          $invite = DB::table('invites')
+            ->select('status')
+            ->where('event_id', $eventos[0]->event_id)
+            ->where('participant_id', $participant->id)
+            ->first();
       }
 
       if ($participant != null) {
-        return response(view("businessCard", compact("participant", "participant", "eventos", "invites")));
+        return response(view("businessCard", compact("participant", "participant", "eventos", "invite")));
       }
     } catch (Exception $e) {
       $errorMessage = $e->getMessage();

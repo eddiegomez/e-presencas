@@ -72,8 +72,8 @@
   <div class="col-md-12 col-xl-3 mb-4 mt-5">
     @auth
     @if(Auth::user()->roles->contains('id', 3))
-    @if(sizeof($eventos) > 0)
-    @if($invites->status === "Participou")
+    @if($invite && $invite->status != null)
+    @if($invite->status === "Participou")
     <div id="" class="success-message">
       Presença marcada!
     </div>

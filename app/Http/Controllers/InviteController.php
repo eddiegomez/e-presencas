@@ -264,4 +264,34 @@ class InviteController extends Controller
     }
     return $name;
   }
+
+  public function removeParticipantFromEvent(Request $request)
+  {
+    try {
+      Invites::where('participant_id', $request->participant_id)
+        ->where('event_id', $request->event_id)
+        ->delete();
+
+      return redirect()->back()->with('success', 'O participante foi removido do evento com sucesso.');
+    } catch (Exception $e) {
+      $errorMessage = $e->getMessage();
+
+      return redirect()->back()->with('error', $errorMessage);
+    }
+  }
+
+  public function changeParticipantType(Request $request)
+  {
+    try {
+      Invites::where('participant_id', $request->participant_id)
+        ->where('event_id', $request->event_id)
+        ->update(['participant_type_id' => $request->type]);
+
+      return redirect()->back()->with('success', 'Tipo de participação alterado com sucesso.');
+    } catch (Exception $e) {
+      $errorMessage = $e->getMessage();
+
+      return redirect()->back()->with('error', $errorMessage);
+    }
+  }
 }

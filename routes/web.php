@@ -79,8 +79,7 @@ Route::middleware(['auth', 'web'])->group(function () {
   Route::post('/participant/{id}/edit', [ParticipantController::class, 'update'])->name('participant.update');
   // Delete a participant Controller
   Route::post('/participant/{id}/delete', [ParticipantController::class, 'destroy'])->name('participant.destroy');
-  // Remove Participant from event
-  Route::post('/removeParticipantFromEvent', [ParticipantController::class, 'removeParticipantFromEvent'])->name('removeParticipantFromEvent');
+
 
   // Create a new Invite route
   Route::post('/inviteParticipant', [InviteController::class, 'store'])->name('invite.store');
@@ -88,11 +87,14 @@ Route::middleware(['auth', 'web'])->group(function () {
   Route::post('/invite/destroy', [InviteController::class, 'destroy'])->name('invite.delete');
   //Update participant type
   Route::post('/invite/update/{eventId}', [InviteController::class, 'update'])->name('invite.update');
-
   // Confirmar Entrada Controllers
   Route::put('/staff/confirm/entrance/{event}/{participant}/{status}', [InviteController::class, 'confirmEntrance'])->name('participant.entrance');
-
+  //Confirm Participant Entrance
   Route::post('/confirm/entrance/{encryptedevent}/{encryptedparticipant}', [InviteController::class, 'confirmEntrancePost'])->name('confirmEntranceUpdate');
+  // Remove Participant from event
+  Route::post('/removeParticipantFromEvent', [InviteController::class, 'removeParticipantFromEvent'])->name('removeParticipantFromEvent');
+  // Change Participation Type
+  Route::post('/changeParticipantType', [InviteController::class, 'changeParticipantType'])->name('changeParticipantType');
 
 
   // Get all staff members Controller

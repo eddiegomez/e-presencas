@@ -356,7 +356,7 @@
               <td>{{ $participant->phone_number }}</td>
               <td class="text-right">
                 <a class="btn btn-secondary p-1" href="" data-toggle="modal"
-                  onclick='editParticipantModal({{ $participant->id }}, @json($participant->name." ".$participant->last_name), @json($participant->pivot->participant_type_id), "{{ route("participant.show", $participant->id) }}")'>
+                  onclick='showChangeParticipantTypeModal({{ $participant->id }})'>
                   <i class='uil uil-edit-alt'></i>
                 </a>
 
@@ -409,6 +409,44 @@
               </div>
             </div>
             {{-- End of Remove Participant from Event --}}
+
+            {{-- Update participant type --}}
+            <div id="changeParticipantTypeModal{{$participant->id}}" class="modal fade" role="dialog">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id=""> Alterar Tipo de Participante</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                  </div>
+                  <form id="" method="POST" action='{{ route("changeParticipantType") }}'>
+                    @csrf
+                    <div class="modal-body">
+                      <div class="form-group">
+                        <label for="participant">Tipo de Participante</label>
+                        <select class="form-control @error(" type") is-invalid @enderror custom-select" name="type"
+                          id="type" required>
+                          <option selected hidden value="">Escolha um tipo para o participante</option>
+                          @foreach ($participant_type as $type)
+                          <option value="{{ $type->id }}">{{ $type->name }}</option>
+                          @endforeach
+                        </select>
+                        @error("type")
+                        <p class="text-danger">{{ $message }}</p>
+                        @enderror
+                      </div>
+                      <input type="hidden" name="participant_id" value="{{$participant->id}}">
+                      <input type="hidden" name="event_id" value="{{$event->id}}">
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                      <button type="submit" class="btn btn-success">Alterar</button>
+                    </div>
+                  </form>
+
+                </div>
+              </div>
+            </div>
+            {{-- End of Update participant Type --}}
             @endforeach
           </tbody>
         </table>
@@ -839,6 +877,9 @@
     $('#removeParticipantEventModal' + id).modal('show');
   }
 
+  function showChangeParticipantTypeModal(id) {
+    $('#changeParticipantTypeModal' + id).modal('show');
+  }
 
   function checkLocationField() {
     var select = document.getElementById('address');

@@ -206,19 +206,4 @@ class ParticipantController extends Controller
       return redirect()->back()->with('error', $errorMessage);
     }
   }
-
-  public function removeParticipantFromEvent(Request $request)
-  {
-    try {
-      Invites::where('participant_id', $request->participant_id)
-        ->where('event_id', $request->event_id)
-        ->delete();
-
-      return redirect()->back()->with('success', 'O participante foi removido do evento com sucesso.');
-    } catch (Exception $e) {
-      $errorMessage = $e->getMessage();
-
-      return redirect()->back()->with('error', $errorMessage);
-    }
-  }
 }

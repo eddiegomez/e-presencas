@@ -328,6 +328,7 @@
               <th>Tipo</th>
               <th>Email</th>
               <th>Celular</th>
+              <th>Estado</th>
               <th class="text-right">Gerir</th>
             </tr>
           </thead>
@@ -361,6 +362,7 @@
               <!--<td>{{ $participant->status }}</td>-->
               <td>{{ $participant->email }}</td>
               <td>{{ $participant->phone_number }}</td>
+              <td>{{ $participant->pivot->status }}</td>
               <td class="text-right">
                 <a class="btn btn-secondary p-1" href="" data-toggle="modal"
                   onclick='showChangeParticipantTypeModal({{ $participant->id }})'>
@@ -883,23 +885,31 @@
       buttons: [{
           extend: 'excelHtml5',
           text: '<i class="fas fa-file-excel"></i> Exportar Excel', // Custom label
-          titleAttr: 'Baixar ficheiro Excel' // Tooltip text
+          titleAttr: 'Baixar ficheiro Excel', // Tooltip text
+          exportOptions: {
+            columns: [1, 2, 3, 4, 5] // Specify the column indexes to be exported
+          }
         },
         {
           extend: 'pdfHtml5',
           text: '<i class="fas fa-file-pdf"></i> Exportar PDF', // Custom label
-          titleAttr: 'Baixar ficheiro PDF' // Tooltip text
+          titleAttr: 'Baixar ficheiro PDF', // Tooltip text
+          exportOptions: {
+            columns: [1, 2, 3, 4, 5] // Specify the column indexes to be exported
+          }
         },
         {
           extend: 'print',
           text: '<i class="fas fa-print"></i> Imprimir', // Custom label with icon
-          titleAttr: 'Imprimir tabela de participantes' // Tooltip text
+          titleAttr: 'Imprimir tabela de participantes', // Tooltip text
+          exportOptions: {
+            columns: [1, 2, 3, 4, 5] // Specify the column indexes to be exported
+          }
         }
       ],
       responsive: true // Enables responsiveness
     });
   });
-
 
   function editParticipantModal(id, name, type, participantInfoUrl) {
     document.getElementById('EditParticipantModalLabel').innerHTML = "Alterar o tipo do participante " + name;

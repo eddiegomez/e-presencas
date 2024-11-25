@@ -23,6 +23,13 @@
     /* Change color as needed */
   }
 </style>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<!-- Required CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 @endsection
 
 @section("breadcrumb")
@@ -313,7 +320,7 @@
           </div>
         </div>
 
-        <table id="basic-datatable" class="table dt-responsive nowrap">
+        <table id="guests-datatable" class="table dt-responsive nowrap">
           <thead>
             <tr>
               <th>ID</th>
@@ -375,7 +382,6 @@
                   <div class="modal-body">
                     <center>
                       <h3 class="mt-5 mb-3">{{$participant->name}} {{$participant->last_name}}</h3>
-                      https://assiduidade.inage.gov.mz/showBusinessCard/{{base64_encode($participant->email)}}
                       {{-- Participant does not have a profile image --}}
                       <img class="mt-2" data-target="#displayQrcode" data-toggle="modal" src="data:image/png;base64,{{base64_encode(QrCode::color(0, 0, 0)->style('round')->eye('circle')->size(412)->format('png')->generate('https://assiduidade.inage.gov.mz/showBusinessCard/'. base64_encode($participant->email)))}}">
                     </center>
@@ -854,10 +860,43 @@
   </div>
 </div>
 
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+<!-- DataTables -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<!-- Buttons Extension -->
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+
+<!-- Additional Dependencies for Export Buttons -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 <script>
   $(document).ready(function() {
-    $('[data-plugin="custom-select"]').select2({
-      placeholder: "Clique para selecionar",
+    $.noConflict();
+    var table = $('#guests-datatable').DataTable({
+      dom: 'Bfrtip', // Enables export buttons
+      buttons: [{
+          extend: 'excelHtml5',
+          text: '<i class="fas fa-file-excel"></i> Exportar Excel', // Custom label
+          titleAttr: 'Baixar ficheiro Excel' // Tooltip text
+        },
+        {
+          extend: 'pdfHtml5',
+          text: '<i class="fas fa-file-pdf"></i> Exportar PDF', // Custom label
+          titleAttr: 'Baixar ficheiro PDF' // Tooltip text
+        },
+        {
+          extend: 'print',
+          text: '<i class="fas fa-print"></i> Imprimir', // Custom label with icon
+          titleAttr: 'Imprimir tabela de participantes' // Tooltip text
+        }
+      ],
+      responsive: true // Enables responsiveness
     });
   });
 

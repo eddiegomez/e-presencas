@@ -147,7 +147,7 @@
               </tbody>
             </table>
           </div>
-          <center><button type="button" class="btn btn-primary mt-3 border-shadow" style="border-radius: 80px; font-weight: 700; font-size: 1.375rem; background-color: #669999; border-color: #669999;" onclick="showFloatingWindow()">Gravar contacto</button>
+          <center><button type="button" class="btn btn-primary mt-3 border-shadow" style="border-radius: 80px; font-weight: 700; font-size: 1.375rem; background-color: #669999; border-color: #669999;" onclick="showFloatingWindow()">{{ __("save_contact") }}</button>
           </center>
 
           <div id="floatingWindow" class="floating-window" style="border-top-left-radius: 30px; border-top-right-radius: 30px;">
@@ -156,20 +156,32 @@
               <a href="data:text/vcard;charset=utf-8,BEGIN:VCARD%0AVERSION:3.0%0AN:{{$participant->last_name}};{{$participant->name}};;;%0AFN:{{$participant->name}}%0AORG:{{$participant->nome_org}}%0ATITLE:{{$participant->degree}}%0ATEL:{{$participant->phone_number}}%0AEMAIL:{{$participant->email}}%0AURL:{{$participant->website}}%0AADR:;;%0ANOTE:{{$participant->description}}%0AADR:;;{{$participant->location}};%0AEND:VCARD"
                 download="{{$participant->name}}{{$participant->last_name}}.vcf" class=" btn btn-primary mt-3 border-shadow" style="font-weight: 700; font-size: 1.375rem; background-color: #669999; border-color: #669999; width:100%; border-radius: 30px;">
                 <i data-feather="user-plus"></i>
-                <span> Guardar nos contactos </span>
+                <span> {{ __("save_to_contacts") }} </span>
               </a>
 
               <a href="#" class="btn mt-3 border-shadow" style="font-weight: 600; font-size: 1.375rem; width:100%" onclick="receiveByEmail()">
                 <i data-feather="mail" style="color: #669999"></i>
-                <span style="color: #669999;"> Receber por email </span>
+                <span style="color: #669999;"> {{ __("recieve_email") }} </span>
               </a>
               <a href="#" onclick="downloadVCard()" class="btn mt-3 border-shadow" style="font-weight: 600; font-size: 1.375rem; width:100%">
                 <i data-feather="download" style="color: #669999"></i>
-                <span style="color: #669999;"> Baixar vCard </span>
+                <span style="color: #669999;"> {{ __("download_vfcard") }} </span>
               </a>
               <!-- Add your form or content here -->
             </div>
           </div>
+        </div>
+        <div class="mt-2">
+          @if (App::getLocale() === 'pt')
+          <a href="{{ route('language.switch', ['lang' => 'en']) }}">
+            <img src="{{ URL::asset('assets/images/flags/us.jpg') }}" alt="Switch to English" width="34px" id="EN">
+          </a>
+          @elseif (App::getLocale() === 'en')
+          <a href="{{ route('language.switch', ['lang' => 'pt']) }}">
+            <img src="{{ URL::asset('assets/images/flags/mz.jpg') }}" alt="Mudar para Português" width="34px" id="PT">
+          </a>
+          @endif
+
         </div>
         <!--<div class="mt-2 pt-2 border-top">
         <h4 class="mb-3 fs-15">Skills</h4>

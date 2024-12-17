@@ -883,6 +883,22 @@
     var table = $('#guests-datatable').DataTable({
       dom: 'Bfrtip', // Enables export buttons
       buttons: [{
+          extend: 'copyHtml5',
+          text: '<i class="fas fa-copy"></i> Copiar', // Custom label with icon
+          titleAttr: 'Copiar para a área de transferência', // Tooltip text
+          exportOptions: {
+            columns: [1, 2, 3, 4, 5] // Specify the column indexes to be exported
+          }
+        },
+        {
+          extend: 'csvHtml5',
+          text: '<i class="fas fa-file-csv"></i> Exportar CSV', // Custom label with icon
+          titleAttr: 'Baixar ficheiro CSV', // Tooltip text
+          exportOptions: {
+            columns: [1, 2, 3, 4, 5] // Specify the column indexes to be exported
+          }
+        },
+        {
           extend: 'excelHtml5',
           text: '<i class="fas fa-file-excel"></i> Exportar Excel', // Custom label
           titleAttr: 'Baixar ficheiro Excel', // Tooltip text
@@ -910,6 +926,7 @@
       responsive: true // Enables responsiveness
     });
   });
+
 
   function editParticipantModal(id, name, type, participantInfoUrl) {
     document.getElementById('EditParticipantModalLabel').innerHTML = "Alterar o tipo do participante " + name;

@@ -11,6 +11,8 @@ use App\Http\Controllers\ContactController;
 use App\Models\Participant;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Session;
 
 /*
 |--------------------------------------------------------------------------
@@ -125,5 +127,15 @@ Route::post('/protocolo/{encryptedId}/confirmation', [StaffController::class, 'e
 // Confirm Presence Controller
 Route::get('/invite/accept/{encryptedevent}/{encryptedparticipant}', [InviteController::class, 'acceptInvite'])->name('invite.acceptInvite');
 Route::post('/send-email', [ContactController::class, 'sendEmail']);
+
+Route::get('lang/{lang}', function ($lang) {
+  // Set the locale in the session
+  if (in_array($lang, ['en', 'pt'])) { // Add your available languages
+      Session::put('locale', $lang);
+      App::setLocale($lang);
+  }
+  return redirect()->back();
+})->name('language.switch');
+
 
 Auth::routes();

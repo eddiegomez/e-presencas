@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Organization;
 use App\Models\User;
+use Illuminate\Database\Capsule\Manager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -129,6 +130,37 @@ class ManagerController extends Controller
     $manager->update();
 
     return redirect()->back()->with('success', 'Gestor foi actualizado com sucesso!');
+  }
+
+  public function changePwd(Request $request)
+  {
+    try {
+      $validator = Validator::make($request->all(), [
+        'manPassword' => ['required']
+      ], $this->customMessages += ['id' => 'Erro de formulação do ID']);
+
+      if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+      }
+    } catch (\Throwable $th) {
+      throw $th;
+    }
+
+    $data = $request->all();
+    $manager = User::findOrFail($data['id']);
+
+    if (!$manager) {
+      return redirect()->back()->with('warning', 'Nenhum gestor encontrado');
+    }
+
+    $manager->password = Hash::make($data['manPassword']);
+    $updated = $manager->update();
+
+    if ($updated) {
+      return redirect()->back()->with('success', 'Palavra-passe alterada com sucesso!');
+    } else {
+      return redirect()->back()->with('error', 'Erro de processamento');
+    }
   }
 
   /**

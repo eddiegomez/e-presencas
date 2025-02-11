@@ -103,9 +103,7 @@ class OrganizationController extends Controller
    */
   public function update(Request $request)
   {
-
     try {
-
       $validator = Validator::make($request->all(), [
         'id' => ['required', 'integer'],
         'name' => ['required', 'string', 'max:200', 'regex:/^[^\d]+$/'],
@@ -113,7 +111,7 @@ class OrganizationController extends Controller
         'phone' => ['required', 'numeric', 'digits:9'],
         'location' => ['required', 'string', 'max:255'],
         'website' => ['required', 'url']
-      ], $this->customMessages += ['id' => 'Algo esta errado com o ID']);
+      ], $this->customMessages += ['id' => 'Erro de formulação do ID']);
 
       if ($validator->fails()) {
         return redirect()->back()->withErrors($validator)->withInput();
@@ -137,9 +135,9 @@ class OrganizationController extends Controller
     $updated = $organization->update();
 
     if ($updated) {
-      return redirect()->back()->with('success', 'Esta instituicao foi guardada com sucesso!');
+      return redirect()->back()->with('success', 'Actualizada com sucesso!');
     } else {
-      return redirect()->back()->with('error', 'Algo deu errado na criacao');
+      return redirect()->back()->with('error', 'Erro de processamento');
     }
   }
 

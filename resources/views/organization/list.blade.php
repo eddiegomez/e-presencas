@@ -95,7 +95,6 @@
             onClick='editModal({{ $organization->id }},"{{ $organization->name }}",@json($organization->email), @json($organization->phone), @json($organization->location), @json($organization->website))'>
             <i class="uil uil-edit-alt"></i>
           </button>
-
           <button type="button" class="btn btn-danger font-size-11 p-1"
             onClick='deleteModal("{{ $organization->name }}", @json($organization->id))'>
             <i class="uil uil-trash"></i>
@@ -292,6 +291,7 @@
   </div>
 </div>
 
+
 {{-- Organization Details Modal --}}
 <div id="organizationDetailsModal" class="modal fade" role="dialog">
   <div class="modal-dialog">
@@ -376,7 +376,7 @@
   }
 
   function editModal(id, name, email, phone, location, website) {
-    document.getElementById("editOrganizationModalLabel").innerHTML = "Editar gestor de nome " + name;
+    document.getElementById("editOrganizationModalLabel").innerHTML = "Editar " + name;
     document.getElementById("EorganizationId").value = id;
     document.getElementById("Ename").value = name;
     document.getElementById("Eemail").value = email;
@@ -385,6 +385,7 @@
     document.getElementById("Ewebsite").value = website;
     $("#editOrganizationModal").modal('show');
   }
+
 
   function deleteModal(name, organizationId) {
     document.getElementById("deleteOrganizationModalLabel").innerHTML = "Eliminar " + name;

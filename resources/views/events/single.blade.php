@@ -312,12 +312,25 @@
 
           <div class="col-sm-8 col-xl-6 mb-3 p-0">
             <div class="float-sm-right mt-3 mt-sm-0">
-              <button type="button" class="btn btn-outline-secondary" data-toggle="modal"
-                data-target="#addParticipantModal">
-                <i class='uil uil-plus mr-1'></i>Adicionar Participante
-              </button>
+              <div class="dropdown">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="inviteDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class='uil uil-plus mr-1'></i>Convidar
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="inviteDropdown">
+                  <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addParticipantModal">
+                    Adicionar Participante
+                  </a>
+                  <a class="dropdown-item" href="#" onclick="copyInviteLink({{$event}})">
+                    Copiar link
+                  </a>
+                  <a class="dropdown-item" href="mailto:?subject=Convite&body=Segue o link para participar: https://exemplo.com/link-de-convite">
+                    Partilhar por email
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
+
         </div>
 
         <table id="guests-datatable" class="table dt-responsive nowrap">
@@ -980,6 +993,57 @@
 
   function displayQRCode(participant_id) {
     $('#displayQrcodeModal' + participant_id).modal('show');
+  }
+
+  function copyInviteLink(evento) {
+    // Geração de hash curto (5 caracteres base36)
+    const baseString = `${evento.id}-${evento.organization_id}`;
+    const hash = simpleHash(baseString);
+
+    // Construção da URL (ajuste para sua base real)
+    const baseUrl = window.location.origin + '/evento/';
+    const inviteLink = baseUrl + hash;
+
+    // Copiar para a área de transferência
+    navigator.clipboard.writeText(inviteLink).then(function() {
+      showToast('✅ Link copiado para a área de transferência!');
+    }, function(err) {
+      showToast('Erro ao copiar o link: ' + err);
+    });
+  }
+
+  // Função simples de hash curta
+  function simpleHash(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = (hash << 5) - hash + str.charCodeAt(i);
+      hash |= 0; // Converte para 32bit int
+    }
+    return Math.abs(hash).toString(36).substring(0, 5);
+  }
+
+  // Exibição de toast simples (sem dependências)
+  function showToast(message) {
+    let toast = document.getElementById('customToast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'customToast';
+      toast.style.position = 'fixed';
+      toast.style.top = '20px';
+      toast.style.right = '20px';
+      toast.style.zIndex = '9999';
+      toast.style.background = '#28a745';
+      toast.style.color = 'white';
+      toast.style.padding = '10px 15px';
+      toast.style.borderRadius = '4px';
+      toast.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
+      document.body.appendChild(toast);
+    }
+    toast.innerText = message;
+    toast.style.display = 'block';
+    setTimeout(() => {
+      toast.style.display = 'none';
+    }, 2000);
   }
 </script>
 

@@ -393,8 +393,8 @@ class EventController extends Controller
         $schedules = Schedule::where('event_id', $event->id)->get();
 
         return response(view('events.details', compact('event', 'schedules')));
-      }else{
-        return "nenhum evento";
+      } else {
+        return response(view('error.404'));
       }
     } catch (\Throwable $th) {
       throw $th;

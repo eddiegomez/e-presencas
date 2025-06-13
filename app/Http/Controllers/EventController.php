@@ -389,10 +389,13 @@ class EventController extends Controller
         ->select('events.*', 'organization.name as organizer', 'address.name as address', 'address.url as address_url')
         ->where('hash', $event_hash)
         ->first();
+      if ($event) {
+        $schedules = Schedule::where('event_id', $event->id)->get();
 
-      $schedules = Schedule::where('event_id', $event->id)->get();
-
-      return response(view('events.details', compact('event', 'schedules')));
+        return response(view('events.details', compact('event', 'schedules')));
+      }else{
+        return "nenhum evento";
+      }
     } catch (\Throwable $th) {
       throw $th;
       return redirect()->back()->with('Error', 'Erro ao processar pedido');

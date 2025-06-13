@@ -382,15 +382,20 @@ class EventController extends Controller
 
   public function applyEvent($event_hash)
   {
-    $event = Event::leftJoin('organization', 'organization.id', '=', 'events.organization_id')
-      ->leftJoin('event_address', 'event_address.event_id', '=', 'events.id')
-      ->leftJoin('address', 'address.id', '=', 'event_address.address_id')
-      ->select('events.*', 'organization.name as organizer', 'address.name as address', 'address.url as address_url')
-      ->where('hash', $event_hash)
-      ->first();
+    try {
+      $event = Event::leftJoin('organization', 'organization.id', '=', 'events.organization_id')
+        ->leftJoin('event_address', 'event_address.event_id', '=', 'events.id')
+        ->leftJoin('address', 'address.id', '=', 'event_address.address_id')
+        ->select('events.*', 'organization.name as organizer', 'address.name as address', 'address.url as address_url')
+        ->where('hash', $event_hash)
+        ->first();
 
-    $schedules = Schedule::where('event_id', $event->id)->get();
+      $schedules = Schedule::where('event_id', $event->id)->get();
 
-    return response(view('events.details', compact('event', 'schedules')));
+      return response(view('events.details', compact('event', 'schedules')));
+    } catch (\Throwable $th) {
+      throw $th;
+      return redirect()->back()->with('Error', 'Erro ao processar pedido');
+    }
   }
 }

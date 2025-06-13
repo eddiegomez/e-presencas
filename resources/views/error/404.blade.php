@@ -4,13 +4,9 @@
 <div class="account-pages my-5">
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-xl-4 col-lg-5 col-8">
-        <div class="text-center">
-          <div>
-            <img src="{{ asset('assets/images/not-found.png') }}" alt="Logo" height="" />
-          </div>
-        </div>
-      </div>
+      <center>
+        <img src="{{ asset('assets/images/not-found.png') }}" alt="Logo" height="400px" />
+      </center>
     </div>
 
     <div class="row">

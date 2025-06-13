@@ -133,11 +133,14 @@ Route::post('/send-email', [ContactController::class, 'sendEmail']);
 Route::get('lang/{lang}', function ($lang) {
   // Set the locale in the session
   if (in_array($lang, ['en', 'pt'])) { // Add your available languages
-      Session::put('locale', $lang);
-      App::setLocale($lang);
+    Session::put('locale', $lang);
+    App::setLocale($lang);
   }
   return redirect()->back();
 })->name('language.switch');
+
+// Get all staff members Controller
+Route::get('/evento/{encryptedEvent}', [EventController::class, 'applyEvent'])->name('evento');
 
 
 Auth::routes();

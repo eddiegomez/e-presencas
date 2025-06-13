@@ -68,8 +68,6 @@ class EventController extends Controller
    */
   public function store(Request $request)
   {
-
-    // dd($request->all());
     try {
       $this->validate(request(), [
         'name' => ['required', 'string', 'max:200'],
@@ -108,10 +106,10 @@ class EventController extends Controller
       $address = $data['address'];
     }
 
-
-
     $bannerUrl = $request->file('banner')->store('banners', 'public');
     $event = new Event();
+    //geracao do hash
+    $hash = substr(dechex(crc32($event->id . '-' . $event->organization_id)), 0, 5);
     $event->name = $data['name'];
     $event->start_date = $data['start_date'];
     $event->end_date = $data['end_date'];
@@ -119,6 +117,7 @@ class EventController extends Controller
     $event->end_time = $data['end_time'];
     $event->description = $data['description'];
     $event->banner_url = $bannerUrl;
+    $event->hash = $hash;
     $event->organization_id = Auth::user()->organization_id;
     $event->save();
 
@@ -379,5 +378,19 @@ class EventController extends Controller
       throw $th;
       return redirect()->back()->with('Error', 'Erro ao adicionar protocolo');
     }
+  }
+
+  public function applyEvent($event_hash)
+  {
+    $event = Event::leftJoin('organization', 'organization.id', '=', 'events.organization_id')
+      ->leftJoin('event_address', 'event_address.event_id', '=', 'events.id')
+      ->leftJoin('address', 'address.id', '=', 'event_address.address_id')
+      ->select('events.*', 'organization.name as organizer', 'address.name as address', 'address.url as address_url')
+      ->where('hash', $event_hash)
+      ->first();
+
+    $schedules = Schedule::where('event_id', $event->id)->get();
+
+    return response(view('events.details', compact('event', 'schedules')));
   }
 }

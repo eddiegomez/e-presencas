@@ -12,7 +12,6 @@
                 <div class="mx-auto mb-5 text-center">
                   <a href="/">
                     <img src="assets/images/logo.png" alt="" height="80" />
-                    {{-- <h3 class="d-inline align-middle ml-1 text-logo">Shreyu</h3> --}}
                   </a>
                 </div>
 

@@ -996,15 +996,8 @@
   }
 
   function copyInviteLink(evento) {
-    // Geração de hash curto (5 caracteres base36)
-    const baseString = `${evento.id}-${evento.organization_id}`;
-    const hash = simpleHash(baseString);
+    const inviteLink = `${window.location.origin}/evento/${evento.hash}`;
 
-    // Construção da URL (ajuste para sua base real)
-    const baseUrl = window.location.origin + '/evento/';
-    const inviteLink = baseUrl + hash;
-
-    // Copiar para a área de transferência
     navigator.clipboard.writeText(inviteLink).then(function() {
       showToast('✅ Link copiado para a área de transferência!');
     }, function(err) {

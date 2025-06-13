@@ -1,0 +1,112 @@
+@extends("layouts.event_details")
+
+@section("content")
+<div class="container register">
+    <div class="row">
+        <div class="col-md-3 col-12 register-left">
+            <img src="{{ asset('assets/images/logo.png') }}" alt="Logo" height="" />
+
+            <h3>ePresenças</h3>
+            <p>Desenvolvido pelo Instituto Nacional de Governo Electrónico (INAGE,IP)</p>
+            <a href="/"><input type="submit" value="Autenticar-se" /></a><br />
+        </div>
+
+        <div class="col-md-9 col-12 register-right">
+            <ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                        aria-controls="home" aria-selected="true">Detalhes do Evento</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                        aria-controls="profile" aria-selected="false">Registar-se</a>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="myTabContent">
+                <!-- Detalhes do evento -->
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <h3 class="register-heading">{{ $event->name }}</h3>
+
+                    <div class="row register-form" id="event-details">
+                        <div class="col-12 col-md-8 mb-2 d-flex align-items-center">
+                            <i class="bi bi-house-fill mr-2"></i>
+                            <span>{{ $event->organizer }}</span>
+                        </div>
+                        <div class="col-12 col-md-4 mb-2 d-flex align-items-center">
+                            <i class="bi bi-calendar-event-fill mr-2"></i>
+                            <span>{{ \Carbon\Carbon::parse($event->start_time)->format('d/m/Y') }}</span>
+                        </div>
+                        <div class="col-12 col-md-8 mb-2 d-flex align-items-center">
+                            <i class="bi bi-geo-alt-fill mr-2"></i>
+                            <a href="{{ $event->address_url }}" target="_blank"><span>{{ $event->address }}</span></a>
+                        </div>
+                        <div class="col-12 col-md-4 mb-2 d-flex align-items-center">
+                            <i class="bi bi-clock-fill mr-2"></i>
+                            <span>{{ \Carbon\Carbon::parse($event->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($event->end_time)->format('H:i') }}</span>
+                        </div>
+
+                        <div class="col-12 mb-2 d-flex align-items-start">
+                            <!--!<i class="bi bi-list-check mr-2 mt-1"></i>-->
+                            @if ($schedules->count() == 0)
+                            <span class="text-danger font-size-14">Nenhum programa anexado a este evento!</span>
+                            @endif
+
+                            @foreach ($schedules as $schedule)
+
+                            <a href="{{ asset('storage/schedules/' . $schedule->pdf_url) }}" target="_blank" class="d-flex align-items-center text-decoration-none mb-2 ml-1">
+                                <i class="bi bi-file-earmark-pdf-fill mr-2"></i>
+                                <span class="mt-1">{!! nl2br(e($schedule->name)) !!}</span>
+                            </a>
+
+                            @endforeach
+                        </div>
+                        <div class="col-12 mb-2 d-flex align-items-start">
+                            <i class="bi bi-chat-quote-fill mr-2 mt-1"></i>
+                            <span>{!! nl2br(e($event->description)) !!}</span>
+                        </div>
+                        <div class="col-12">
+                            <center>
+                                <img src="{{ asset('storage/'. $event->banner_url) }}" alt="Logo" height="150px" />
+                            </center>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Form de registo -->
+                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <h3 class="register-heading">{{ $event->name }}</h3>
+                    <div class="row register-form">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <input type="text" class="form-control" placeholder="Nome *" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <input type="email" class="form-control" placeholder="Email *" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <input type="text" maxlength="10" minlength="10" class="form-control" placeholder="Phone *" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <input type="text" class="form-control" placeholder="Apelido *" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <input type="text" class="form-control" placeholder="Ocupação *" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <textarea type="text" class="form-control" placeholder="Informação adicional " rows="3"></textarea>
+                            </div>
+                            <input type="submit" class="btnRegister" value="Registar" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@endsection

@@ -135,7 +135,7 @@
 
           {{-- Photo Input --}}
           <div class="form-group">
-            <input type="file" accept="image/*" class="form-control" id="upload" name="upload" required value="{{ old('upload') }}">
+            <input type="file" accept="image/*" class="form-control" id="upload" name="upload" value="{{ old('upload') }}">
             <div id="upload-demo"></div>
           </div>
 

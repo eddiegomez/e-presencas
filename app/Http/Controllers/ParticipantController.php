@@ -65,7 +65,7 @@ class ParticipantController extends Controller
         'email' => ['required', 'email'],
         'degree' => ['required', 'string'],
         'phone' => ['required', 'numeric',  'digits:9'],
-        'description' => ['required', 'string']
+        'description' => ['string']
       ], $this->customValidatorMessages);
 
       if ($validator->fails()) {
@@ -205,5 +205,31 @@ class ParticipantController extends Controller
       $errorMessage = $e->getMessage();
       return redirect()->back()->with('error', $errorMessage);
     }
+  }
+
+  public function register(Request $request)
+  {
+    $validated = $request->validate([
+      'name'         => 'required|string|max:255',
+      'last_name'    => 'required|string|max:255',
+      'email'        => 'required|email|max:255',
+      'phone_number' => 'required|string|min:9|max:12',
+      'degree'       => 'required|string|max:255',
+      'description'  => 'nullable|string',
+      'event_id'     => 'required|exists:events,id',
+    ]);
+
+    $participant = Participant::create($validated);
+
+    if ($participant) {
+      $invite = Invites::create([
+        'participant_id'      => $request->participant_id,
+        'event_id'            => $request->event_id,
+        'status'              => "Em espera",
+        'participant_type_id' => $request->participant_type_id,
+      ]);
+    }
+
+    return back()->with('success', 'Registo efectuado com sucesso!');
   }
 }

@@ -72,7 +72,11 @@ class ParticipantController extends Controller
         return redirect()->back()->withErrors($validator)->withInput();
       }
 
-      $profile_url = $request->file('upload')->store('profiles', 'public');
+      if ($request->upload) {
+        $profile_url = $request->file('upload')->store('profiles', 'public');
+      }else{
+        $profile_url = NULL;
+      }
 
       $data = $request->all();
       $participant = $this->participantService->createParticipant(

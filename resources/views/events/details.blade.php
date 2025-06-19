@@ -77,33 +77,54 @@
                 <!-- Form de registo -->
                 <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                     <h3 class="register-heading">{{ $event->name }}</h3>
-                    <div class="row register-form">
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <input type="text" class="form-control" placeholder="Nome *" />
-                            </div>
-                            <div class="form-group mb-3">
-                                <input type="email" class="form-control" placeholder="Email *" />
-                            </div>
-                            <div class="form-group mb-3">
-                                <input type="text" maxlength="10" minlength="10" class="form-control" placeholder="Phone *" />
+
+                    <form action="{{ route('participants.register') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="event_id" value="{{ $event->id }}">
+
+                        <div class="row register-form">
+                            <div class="row col-md-12">
+
+                                <div class="form-group mb-3 col-md-6">
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" placeholder="Nome *" value="{{ old('name') }}" required>
+                                    @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                </div>
+
+                                <div class="form-group mb-3 col-md-6">
+                                    <input type="text" class="form-control @error('last_name') is-invalid @enderror" name="last_name" placeholder="Apelido *" value="{{ old('last_name') }}" required>
+                                    @error('last_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                </div>
+
+                                <div class="form-group mb-3 col-md-6">
+                                    <input type="email" class="form-control @error('email') is-invalid @enderror" name="email" placeholder="Email *" value="{{ old('email') }}" required>
+                                    @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                </div>
+
+                                <div class="form-group mb-3 col-md-6">
+                                    <input type="text" maxlength="10" minlength="10" class="form-control @error('phone_number') is-invalid @enderror" name="phone_number" placeholder="Telefone *" value="{{ old('phone_number') }}" required>
+                                    @error('phone_number')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                </div>
+
+                                <div class="form-group mb-3 col-md-6">
+                                    <input type="text" class="form-control @error('degree') is-invalid @enderror" name="degree" placeholder="Ocupação *" value="{{ old('degree') }}" required>
+                                    @error('degree')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                </div>
+
+                                <div class="form-group mb-3 col-md-6">
+                                    <textarea class="form-control @error('description') is-invalid @enderror" name="description" placeholder="Informação adicional" rows="3">{{ old('description') }}</textarea>
+                                    @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                </div>
+
+                                <div class="form-group col-md-12">
+                                    <input type="submit" class="btnRegister btn btn-primary col-md-4" style="float: right;" value="Registar" />
+                                </div>
+
                             </div>
                         </div>
 
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <input type="text" class="form-control" placeholder="Apelido *" />
-                            </div>
-                            <div class="form-group mb-3">
-                                <input type="text" class="form-control" placeholder="Ocupação *" />
-                            </div>
-                            <div class="form-group mb-3">
-                                <textarea type="text" class="form-control" placeholder="Informação adicional " rows="3"></textarea>
-                            </div>
-                            <input type="submit" class="btnRegister" value="Registar" />
-                        </div>
-                    </div>
+                    </form>
                 </div>
+
             </div>
         </div>
     </div>

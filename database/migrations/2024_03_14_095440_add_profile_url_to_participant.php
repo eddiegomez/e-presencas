@@ -14,7 +14,7 @@ class AddProfileUrlToParticipant extends Migration
     public function up()
     {
         Schema::table('participants', function (Blueprint $table) {
-            $table->String('profile_url');
+            $table->String('profile_url')->nullable();
         });
     }
 

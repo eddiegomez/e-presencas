@@ -142,5 +142,8 @@ Route::get('lang/{lang}', function ($lang) {
 // Get all staff members Controller
 Route::get('/evento/{encryptedEvent}', [EventController::class, 'applyEvent'])->name('evento');
 
+//Self register to event
+Route::post('/participants', [ParticipantController::class, 'register'])->name('participants.register');
+
 
 Auth::routes();

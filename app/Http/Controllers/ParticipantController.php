@@ -74,7 +74,7 @@ class ParticipantController extends Controller
 
       if ($request->upload) {
         $profile_url = $request->file('upload')->store('profiles', 'public');
-      }else{
+      } else {
         $profile_url = NULL;
       }
 
@@ -223,7 +223,11 @@ class ParticipantController extends Controller
       'event_id'     => 'required|exists:events,id',
     ]);
 
-    $participant = Participant::create($validated);
+    $participant = DB::table('participants')->where('email', $request->email)->first();
+
+    if (!$participant) {
+      $participant = Participant::create($validated);
+    }
 
     if ($participant) {
       $invite = Invites::create([

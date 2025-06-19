@@ -230,14 +230,17 @@ class ParticipantController extends Controller
     }
 
     if ($participant) {
-      $invite = Invites::create([
-        'participant_id'      => $request->participant_id,
-        'event_id'            => $request->event_id,
-        'status'              => "Em espera",
-        'participant_type_id' => $request->participant_type_id,
-      ]);
+      $invite = DB::table('invites')->where('participant_id', $participant->id)->where('event_id', $request->event_id)->first();
+      if (!$invite) {
+        Invites::create([
+          'participant_id'      => $participant->id,
+          'event_id'            => $request->event_id,
+          'status'              => "Confirmado",
+          'participant_type_id' => 1,
+        ]);
+        return back()->with('success', 'Registo efectuado com sucesso!');
+      }
+      return back()->with('success', 'Já encontra-se registado a este evento!');
     }
-
-    return back()->with('success', 'Registo efectuado com sucesso!');
   }
 }

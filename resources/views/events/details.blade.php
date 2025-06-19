@@ -24,6 +24,13 @@
             </ul>
 
             <div class="tab-content" id="myTabContent">
+                @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+                </div>
+                @endif
+
                 <!-- Detalhes do evento -->
                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                     <h3 class="register-heading">{{ $event->name }}</h3>

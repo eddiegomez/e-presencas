@@ -108,7 +108,7 @@
                                 </div>
 
                                 <div class="form-group mb-3 col-md-6">
-                                    <input type="text" maxlength="10" minlength="10" class="form-control @error('phone_number') is-invalid @enderror" name="phone_number" placeholder="Telefone *" value="{{ old('phone_number') }}" required>
+                                    <input type="text" maxlength="13" minlength="8" class="form-control @error('phone_number') is-invalid @enderror" name="phone_number" placeholder="Telefone *" value="{{ old('phone_number') }}" required>
                                     @error('phone_number')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
 

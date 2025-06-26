@@ -101,11 +101,6 @@ Route::middleware(['auth', 'web'])->group(function () {
   Route::post('/changeParticipantType', [InviteController::class, 'changeParticipantType'])->name('changeParticipantType');
   // Attend to event
   Route::get('/openRoom/{id}', [InviteController::class, 'openRoom'])->name('participant.openRoom');
-  // Attend to event
-  Route::get('/attend/{id}', [InviteController::class, 'attend'])->name('participant.attend');
-  //Confirm Participant Entrance
-  Route::post('/entrance/{encryptedevent}', [InviteController::class, 'entrance'])->name('entrance');
-
 
   // Get all staff members Controller
   Route::get('/protocolos', [StaffController::class, 'index'])->name('protocolos.index');
@@ -147,9 +142,12 @@ Route::get('lang/{lang}', function ($lang) {
 
 // Get all staff members Controller
 Route::get('/evento/{encryptedEvent}', [EventController::class, 'applyEvent'])->name('evento');
-
 //Self register to event
 Route::post('/participants', [ParticipantController::class, 'register'])->name('participants.register');
+// Attend to event
+Route::get('/attend/{id}', [InviteController::class, 'attend'])->name('participant.attend');
+//Confirm Participant Entrance
+Route::post('/entrance/{encryptedevent}', [InviteController::class, 'entrance'])->name('entrance');
 
 
 Auth::routes();

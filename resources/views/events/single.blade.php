@@ -311,9 +311,15 @@
           </div>
 
           <div class="col-sm-8 col-xl-6 mb-3 p-0">
-            <div class="float-sm-right mt-3 mt-sm-0">
-              <div class="dropdown">
-                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="inviteDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <div class="d-flex justify-content-sm-end gap-2 mt-3 mt-sm-0">
+              <!-- Botão de Marcar Presenças -->
+              <a href="{{ url('/openRoom/' . $event->hash) }}" target="_blank" class="btn btn-outline-secondary">
+                <i class="uil uil-focus mr-2"></i>Abrir sala
+              </a>
+
+              <!-- Botão de Convidar com dropdown -->
+              <div class="dropdown me-2">
+                <button class="btn btn-outline-secondary dropdown-toggle ml-3" type="button" id="inviteDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <i class='uil uil-plus mr-1'></i>Convidar
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="inviteDropdown">
@@ -330,6 +336,7 @@
               </div>
             </div>
           </div>
+
 
         </div>
 

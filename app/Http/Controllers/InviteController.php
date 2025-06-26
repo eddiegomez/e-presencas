@@ -221,16 +221,14 @@ class InviteController extends Controller
   public function confirmEntrance($event, $participant, $status)
   {
     try {
-      $invite = Invites::where('event_id', $event)
+      Invites::where('event_id', $event)
         ->where('participant_id', $participant)
         ->update(['status' => $status]);
-
       return response()->json(['message' => 'Success']);
     } catch (Exception $e) {
       return response()->json(['error' => $e->getMessage()], 500);
     }
   }
-
 
   public function rejectInvite(string $encodedEvent, string $encodedParticipant)
   {
@@ -293,5 +291,58 @@ class InviteController extends Controller
 
       return redirect()->back()->with('error', $errorMessage);
     }
+  }
+
+  public function openRoom($hash)
+  {
+    return view('events.displayCode', compact('hash'));
+  }
+
+  public function attend($hash)
+  {
+    $event = Event::where('hash', $hash)->first();
+
+    return view('events.attend', compact('event'));
+  }
+
+
+  public function entrance(Request $request, $encryptedevent)
+  {
+    // Validate input
+    $request->validate([
+      'contacto' => 'required|string|max:255',
+    ]);
+
+    $contact = $request->input('contacto');
+
+    // Lookup event by encrypted hash
+    $event = Event::where('hash', $encryptedevent)->firstOrFail();
+
+    // Try to find participant by email or phone
+    $participant = Participant::where(function ($query) use ($contact) {
+      $query->where('email', $contact)
+        ->orWhere('phone_number', $contact);
+    })->first();
+
+    if (!$participant) {
+      return back()->withErrors(['contacto' => 'Participante não encontrado para este evento.']);
+    }
+
+    // Check if already marked
+    $alreadyPresent = Invites::select('status')
+      ->where('event_id', $event->id)
+      ->where('participant_id', $participant->id)
+      ->first();
+
+    if ($alreadyPresent === 'Presente') {
+      return back()->with('message', 'Presença já confirmada.');
+    }
+
+    $response = $this->confirmEntrance($event->id, $participant->id, "Presente");
+    if ($response->getStatusCode() === 200) {
+      return back()->with('message', 'Presença confirmada com sucesso!');
+    }
+
+    return back()->with('message', 'Erro ao processar pedido!');
   }
 }

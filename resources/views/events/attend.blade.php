@@ -13,8 +13,9 @@
             <center>
                 <div class="col-md-12">
                     @if (session('message'))
-                    <img src="{{ asset('assets/gifs/success.gif') }}" alt="Confirmado" style="width 80%;" />
-
+                    <div class="d-flex justify-content-center align-items-center w-100 mb-3" style="min-height: 200px;">
+                        <img src="{{ asset('assets/gifs/success.gif') }}" alt="Confirmado" class="img-fluid" style="max-width: 80%; height: auto;" />
+                    </div>
                     <div class="alert alert-info text-center d-flex align-items-center justify-content-center gap-2">
                         <span>{{ session('message') }}</span>
                     </div>

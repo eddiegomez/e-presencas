@@ -26,7 +26,7 @@
                     <img
                         id="qrcode"
                         onclick="displayQRCode(1)"
-                        src="data:image/png;base64,{{ base64_encode(QrCode::color(0, 0, 0)->style('round')->eye('circle')->size(300)->format('png')->generate('https://assiduidade.inage.gov.mz/attend/' . base64_encode('$hash'))) }}"
+                        src="data:image/png;base64,{{ base64_encode(QrCode::color(0, 0, 0)->style('round')->eye('circle')->size(300)->format('png')->generate('https://assiduidade.inage.gov.mz/attend/' . base64_encode($hash))) }}"
                         alt="QR Code" />
                 </div>
                 <div class="ml-3 timeline-content" style="position:relative; margin-left: 70px">

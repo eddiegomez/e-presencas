@@ -74,7 +74,7 @@ class InviteController extends Controller
 
           $exists = $this->participantService->checkParticipantByEmailOrPhoneNumber($data['email'], $data['phone_number']);
           if ($exists) {
-            $participant = Participant::where('email', $data['email'])->orWhere('phone_number', $data['phone_number'])->first();
+            $participant = Participant::where('id', $data['participant'])->first();
           } else {
             $participant = $this->participantService->createParticipant(
               $data['name'],

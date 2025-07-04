@@ -47,7 +47,7 @@
   <div class="col-lg-4 col-md-6 col-12 mb-4">
     <form id="searchForm">
       <div class="input-group">
-        <input type="text" class="form-control search-input mr-2" placeholder="Porcurar pelo nome">
+        <input type="text" class="form-control search-input mr-2" placeholder="Buscar pelo nome">
         <button class="btn btn-soft-primary input-group-text" type="button">
           <i class="uil uil-file-search-alt"></i>
         </button>
@@ -58,7 +58,7 @@
   <div class="col-lg-4 col-md-6 col-12  mb-4">
     <form id="searchForm">
       <div class="input-group">
-        <input type="text" class="form-control search-input mr-2" placeholder="Procurar pela organizacao">
+        <input type="text" class="form-control search-input mr-2" placeholder="Procurar pelo Gestor">
         <button class="btn btn-soft-primary input-group-text" type="button">
           <i class="uil uil-file-search-alt"></i>
         </button>
@@ -69,7 +69,7 @@
   <div class="col-lg-4 col-md-6 col-12 mb-4">
     <form id="searchForm">
       <div class="input-group">
-        <input type="text" class="form-control search-input mr-2" placeholder="Procurar pelo email">
+        <input type="text" class="form-control search-input mr-2" placeholder="Procurar por email">
         <button class="btn btn-soft-primary input-group-text" type="button">
           <i class="uil uil-file-search-alt"></i>
         </button>
@@ -107,7 +107,7 @@
   @else
   <div class="col-12">
     <div class="alert alert-warning text-center">
-      <h6 class="text-white">Ainda nao tem nenhum gestor registado!</h6>
+      <h6 class="text-white">Ainda nao tem nenhuma instituição registada!</h6>
     </div>
   </div>
   @endif

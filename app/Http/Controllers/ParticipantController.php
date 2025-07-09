@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Notifications\ShareVCard;
 
 class ParticipantController extends Controller
 {
@@ -89,7 +90,7 @@ class ParticipantController extends Controller
         $profile_url
       );
 
-      return redirect()->back()->with('success', 'O participante ' . $participant->name . ' ' . $participant->last_name . ' foi criado!');
+      return redirect()->back()->with('success', 'O participante ' . $participant->name . ' ' . $participant->last_name . ' foi registado com sucesso!');
     } catch (Exception $e) {
       $errorMessage = $e->getMessage();
 
@@ -242,5 +243,17 @@ class ParticipantController extends Controller
       }
       return back()->with('success', 'Já encontra-se registado a este evento!');
     }
+  }
+
+
+  public function shareVFCard()
+  {
+    $participant = Participant::find(6);
+
+    if (!$participant) {
+      return "Participante não encontrado.";
+    }
+
+    $participant->notify(new ShareVCard($participant));
   }
 }

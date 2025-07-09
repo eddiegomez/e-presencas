@@ -149,5 +149,8 @@ Route::get('/attend/{id}', [InviteController::class, 'attend'])->name('participa
 //Confirm Participant Entrance
 Route::post('/entrance/{encryptedevent}', [InviteController::class, 'entrance'])->name('entrance');
 
+Route::get('/participants/share-vcard', [ParticipantController::class, 'shareVFCard'])
+    ->name('participants.shareVCard');
+
 
 Auth::routes();

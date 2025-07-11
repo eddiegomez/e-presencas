@@ -1,32 +1,43 @@
 <?php
-namespace App\Notifications;
-use Illuminate\Notifications\Notification;
-use App\Mail\ShareVCardMail;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
+namespace App\Mail;
 
-class ShareVCard extends Notification
+use Illuminate\Bus\Queueable;
+use Illuminate\Mail\Mailable;
+use Illuminate\Queue\SerializesModels;
+
+class ShareVCardMail extends Mailable
 {
-    public $participant;
+    use Queueable, SerializesModels;
 
-    public function __construct($participant)
+    public $participant;
+    public $qrCodePath;
+    public $cid;
+
+    public function __construct($participant, $qrCodePath)
     {
         $this->participant = $participant;
+        $this->qrCodePath = $qrCodePath;
+        $this->cid = 'qr_code_' . uniqid(); // apenas o ID, sem "cid:"
     }
 
-    public function via($notifiable)
+    public function build()
     {
-        return ['mail'];
-    }
-
-    public function toMail($notifiable)
-    {
-        $qrCodeRaw = QrCode::format('png')
-            ->size(180)
-            ->style('round')
-            ->eye('circle')
-            ->color(0, 0, 0)
-            ->generate('https://assiduidade.inage.gov.mz/showBusinessCard/' . base64_encode($this->participant->email));
-
-        return new ShareVCardMail($this->participant, $qrCodeRaw);
+        return $this->subject("Convite para Participar do Evento")
+            ->view('emails.share_vcard')
+            ->with([
+                'participant' => $this->participant,
+                'cid' => $this->cid,
+            ])
+            ->attach($this->qrCodePath, [
+                'as' => 'qrcode.png',
+                'mime' => 'image/png',
+            ])
+            ->withSwiftMessage(function ($message) {
+                foreach ($message->getChildren() as $child) {
+                    if (method_exists($child, 'getFilename') && $child->getFilename() === 'qrcode.png') {
+                        $child->setId($this->cid);
+                    }
+                }
+            });
     }
 }

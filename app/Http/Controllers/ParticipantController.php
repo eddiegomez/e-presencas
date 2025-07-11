@@ -14,7 +14,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use App\Notifications\ShareVCard;
+use App\Mail\ShareVCardMail;
+use Illuminate\Support\Facades\Mail;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ParticipantController extends Controller
 {
@@ -245,15 +247,34 @@ class ParticipantController extends Controller
     }
   }
 
-
   public function shareVFCard()
   {
-    $participant = Participant::find(6);
-
+    $participant = DB::table('participants')
+      ->leftjoin('organization', 'organization.id', '=', 'participants.organization_id')
+      ->select('participants.*', 'organization.name as nome_org', 'organization.website', 'organization.location')
+      ->where('participants.id', 6)
+      ->first();
     if (!$participant) {
       return "Participante não encontrado.";
     }
 
-    $participant->notify(new ShareVCard($participant));
+    $fileName = 'qrcode_' . uniqid() . '.png';
+    $filePath = storage_path('app/public/' . $fileName);
+
+    QrCode::format('png')
+      ->size(180)
+      ->style('round')
+      ->eye('circle')
+      ->generate(
+        'https://assiduidade.inage.gov.mz/showBusinessCard/' . base64_encode($participant->email),
+        $filePath
+      );
+
+    Mail::to($participant->email)->send(new ShareVCardMail($participant, $filePath));
+
+    // Limpa imagem temporária
+    unlink($filePath);
+
+    return "Email enviado com sucesso.";
   }
 }

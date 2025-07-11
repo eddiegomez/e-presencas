@@ -1,13 +1,9 @@
 <?php
-
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
-use Symfony\Component\Mime\Email;
 
 class ShareVCardMail extends Mailable
 {
@@ -15,29 +11,35 @@ class ShareVCardMail extends Mailable
 
     public $participant;
     public $qrCodePath;
+    public $cid;
 
-    public function __construct($participant, $qrCodeRaw)
+    public function __construct($participant, $qrCodePath)
     {
         $this->participant = $participant;
-
-        // Cria arquivo temporário
-        $filename = 'qrcode_' . Str::random(10) . '.png';
-        $path = storage_path('app/public/' . $filename);
-
-        File::put($path, $qrCodeRaw);
-
-        $this->qrCodePath = $path;
+        $this->qrCodePath = $qrCodePath;
+        $this->cid = 'qr_code_' . uniqid(); // ID sem o "cid:" prefixo
     }
 
     public function build()
     {
-        return $this->subject("Partilha do Cartão de Visita Digital")
+        $email = $this->subject("Partilha de Cartão de Visita")
             ->view('emails.share_vcard')
             ->with([
                 'participant' => $this->participant,
+                'cid' => $this->cid,
             ])
-            ->withSymfonyMessage(function (Email $message) {
-                $message->embedFromPath($this->qrCodePath, 'qrcodeimg');
-            });
+            ->attach($this->qrCodePath, [
+                'as' => 'qrcode.png',
+                'mime' => 'image/png',
+            ]);
+
+        // Define o Content-ID (CID) manualmente para o anexo
+        return $email->withSwiftMessage(function ($message) {
+            foreach ($message->getChildren() as $child) {
+                if (method_exists($child, 'getFilename') && $child->getFilename() === 'qrcode.png') {
+                    $child->setId($this->cid); // define o cid do anexo
+                }
+            }
+        });
     }
 }

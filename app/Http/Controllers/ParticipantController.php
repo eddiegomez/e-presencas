@@ -92,6 +92,8 @@ class ParticipantController extends Controller
         $profile_url
       );
 
+      $this->shareVFCard($participant->id);
+
       return redirect()->back()->with('success', 'O participante ' . $participant->name . ' ' . $participant->last_name . ' foi registado com sucesso!');
     } catch (Exception $e) {
       $errorMessage = $e->getMessage();
@@ -247,13 +249,14 @@ class ParticipantController extends Controller
     }
   }
 
-  public function shareVFCard()
+  public function shareVFCard($id)
   {
     $participant = DB::table('participants')
       ->leftjoin('organization', 'organization.id', '=', 'participants.organization_id')
       ->select('participants.*', 'organization.name as nome_org', 'organization.website', 'organization.location')
-      ->where('participants.id', 6)
+      ->where('participants.id', $id)
       ->first();
+
     if (!$participant) {
       return "Participante não encontrado.";
     }

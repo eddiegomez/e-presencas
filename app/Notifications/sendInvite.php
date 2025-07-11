@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\HtmlString;
 
 class sendInvite extends Notification
 {
@@ -49,10 +50,30 @@ class sendInvite extends Notification
     $event = $this->event;
     $participant = $this->participant;
 
+    // Generate base64 QR Code
+    $qrCodeRaw = QrCode::format('png')
+      ->size(180)
+      ->style('round')
+      ->eye('circle')
+      ->color(0, 0, 0)
+      ->generate('https://assiduidade.inage.gov.mz/showBusinessCard/' . base64_encode($participant->email));
+
+    $qrCodeData = base64_encode($qrCodeRaw);
+
+    // HTML block: centered, downloadable QR code
+    $qrCodeImgTag = '
+    <div style="text-align: center; margin-top: 20px;">
+        <p><strong>Guarde o código abaixo para garantir sua entrada no evento:</strong></p>
+        <a href="data:image/png;base64,' . $qrCodeData . '" download="qrcode.png">
+            <img src="data:image/png;base64,' . $qrCodeData . '" alt="QR Code" style="margin-top: 10px; max-width: 200px; height: auto;" />
+            <p style="font-size: 12px; color: #888;">Clique no código para baixar</p>
+        </a>
+    </div>';
+
     return (new MailMessage)
       ->subject("Convite para Participar do(a) " . $event->name)
       ->greeting("Olá " . $participant->name)
-      ->line("Temos o prazer de convidá-lo(a) para participar do(a), " . $event->name . ".")
+      ->line("Temos o prazer de convidá-lo(a) para participar do(a) " . $event->name . ".")
       ->line("**Detalhes do Evento:**")
       ->line("**Data de início:** " . $event->start_date)
       ->line("**Data de término:** " . $event->end_date)
@@ -61,8 +82,10 @@ class sendInvite extends Notification
       ->action("Confirmar", route("invite.acceptInvite", [
         "encryptedevent" => base64_encode($event->id),
         "encryptedparticipant" => base64_encode($participant->id)
-      ]));
+      ]))
+      ->line(new HtmlString($qrCodeImgTag)); // QR code HTML
   }
+
 
   /**
    * Get the array representation of the notification.

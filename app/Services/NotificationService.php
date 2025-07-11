@@ -24,7 +24,6 @@ class NotificationService
       return true;
     } catch (Exception $e) {
       // Log or handle the exception if needed
-      dd($e);
       return false;
     }
   }

@@ -141,12 +141,10 @@ class InviteController extends Controller
   {
     try {
 
-
       $invite = $this->inviteService->getInviteByCompositeKey(base64_decode($encryptedevent), base64_decode($encryptedparticipant));
 
       $this->inviteService->acceptInvite($encryptedevent, $encryptedparticipant);
       $sendAccessQrCode = new InviteAccepted($invite->qr_url, $invite->event);
-
 
       $this->notificationService->sendEmail($invite->participant->email, $sendAccessQrCode);
 
